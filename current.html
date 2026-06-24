@@ -1132,53 +1132,38 @@ async function fetchLiveScores(){
   const refreshBar = document.getElementById('refreshBar');
   const liveData = matchesData.map(() => null);
 
-  function nameTokens(m, side){
-    const primary = (side === 'home' ? m.searchHome : m.searchAway).toLowerCase();
-    const alt = side === 'home' ? (m.altHomeTokens || []) : (m.altAwayTokens || []);
-    return [primary.split(' ')[0], ...alt.map(t => t.toLowerCase())];
-  }
+  function findMatch(fixtures, m){
+    const homeSearch = (m.searchHome || m.home).toLowerCase();
+    const awaySearch = (m.searchAway || m.away).toLowerCase();
+    const altHome = (m.altHomeTokens || []).map(t => t.toLowerCase());
+    const altAway = (m.altAwayTokens || []).map(t => t.toLowerCase());
 
-  function findMatch(events, m){
-    const homeTokens = nameTokens(m, 'home');
-    const awayTokens = nameTokens(m, 'away');
-    return events.find(ev => {
-      const h = (ev.strHomeTeam || '').toLowerCase();
-      const a = (ev.strAwayTeam || '').toLowerCase();
-      const homeMatch = homeTokens.some(t => h.includes(t));
-      const awayMatch = awayTokens.some(t => a.includes(t));
+    return fixtures.find(f => {
+      const h = (f.teams?.home?.name || '').toLowerCase();
+      const a = (f.teams?.away?.name || '').toLowerCase();
+      const homeMatch = h.includes(homeSearch.split(' ')[0]) ||
+                        altHome.some(t => h.includes(t));
+      const awayMatch = a.includes(awaySearch.split(' ')[0]) ||
+                        altAway.some(t => a.includes(t));
       return homeMatch && awayMatch;
     });
   }
 
   try {
-    const today = new Date().toISOString().slice(0,10);
-    // Try multiple endpoints/leagues for better World Cup coverage
-    const urls = [
-      'https://www.thesportsdb.com/api/v1/json/3/eventsday.php?d=' + today + '&s=Soccer',
-      'https://www.thesportsdb.com/api/v1/json/3/eventsday.php?d=' + today + '&l=4429', // FIFA World Cup league id
-    ];
-
-    let events = [];
-    for (const url of urls){
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data && data.events) events = events.concat(data.events);
-      } catch(innerErr){
-        // ignore individual endpoint failures, try next
-      }
-    }
+    const res = await fetch('/.netlify/functions/scores');
+    const data = await res.json();
+    const fixtures = data.response || [];
 
     matchesData.forEach((m, idx) => {
-      const match = findMatch(events, m);
-
-      if (match){
-        const homeScore = match.intHomeScore !== null ? parseInt(match.intHomeScore) : null;
-        const awayScore = match.intAwayScore !== null ? parseInt(match.intAwayScore) : null;
+      const fix = findMatch(fixtures, m);
+      if (fix){
+        const homeScore = fix.goals?.home !== null ? fix.goals.home : null;
+        const awayScore = fix.goals?.away !== null ? fix.goals.away : null;
+        const statusShort = fix.fixture?.status?.short || '';
         let status = 'pending';
-        if (match.strStatus === 'Match Finished' || match.strStatus === 'FT'){
+        if (statusShort === 'FT' || statusShort === 'AET' || statusShort === 'PEN'){
           status = 'ft';
-        } else if (homeScore !== null && awayScore !== null && match.strStatus && match.strStatus !== 'Not Started'){
+        } else if (['1H','HT','2H','ET','BT','P','SUSP','INT','LIVE'].includes(statusShort)){
           status = 'live';
         }
         liveData[idx] = { homeScore, awayScore, status };
