@@ -5,7 +5,7 @@ exports.handler = async function(event) {
   
   try {
     const response = await fetch(
-      'https://v3.football.api-sports.io/fixtures?live=all&league=1&season=2026',
+      'https://v3.football.api-sports.io/fixtures?live=all',
       {
         headers: {
           'x-rapidapi-host': 'v3.football.api-sports.io',
