@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 exports.handler = async function(event) {
   const apiKey = process.env.API_FOOTBALL_KEY;
   
