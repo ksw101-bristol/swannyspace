@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hypertrophy Block — Jun 20 to Aug 4</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#e8ff47">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gym">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f; --surface: #161618; --surface2: #1e1e21;
+    --border: #2a2a2e; --accent: #e8ff47; --accent2: #ff6b35;
+    --text: #f0f0ee; --muted: #888; --green: #4ade80;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 20px 16px; position: sticky; top: 0; z-index: 100; }
+  .header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(24px, 6vw, 38px); letter-spacing: 2px; color: var(--accent); line-height: 1; }
+  .header-sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
+  .progress-bar-wrap { margin-top: 12px; background: var(--surface2); border-radius: 2px; height: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 0.5s ease; }
+  .progress-label { margin-top: 6px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); display: flex; justify-content: space-between; }
+  .tabs { display: flex; gap: 4px; padding: 14px 20px 0; overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex-shrink: 0; padding: 7px 13px; border-radius: 4px 4px 0 0; border: 1px solid var(--border); border-bottom: none; background: var(--surface); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+  .tab:hover { color: var(--text); }
+  .tab.active { background: var(--surface2); color: var(--accent); border-color: var(--accent); }
+  .content { padding: 0 20px 40px; }
+  .week-panel { display: none; background: var(--surface2); border: 1px solid var(--border); border-radius: 0 4px 4px 4px; padding: 20px; }
+  .week-panel.active { display: block; }
+  .week-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+  .week-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--text); }
+  .week-badge { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+  .badge-vol { background: rgba(232,255,71,0.1); color: var(--accent); border: 1px solid rgba(232,255,71,0.3); }
+  .badge-int { background: rgba(255,107,53,0.1); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); }
+  .badge-peak { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+  .week-note { background: var(--surface); border-left: 3px solid var(--accent); padding: 10px 14px; font-size: 13px; color: var(--muted); margin-bottom: 16px; border-radius: 0 4px 4px 0; line-height: 1.5; }
+  .sessions-grid { display: grid; gap: 10px; }
+  .session-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .session-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; cursor: pointer; user-select: none; transition: background 0.2s; }
+  .session-header:hover { background: var(--surface2); }
+  .session-left { display: flex; align-items: center; gap: 10px; }
+  .session-day { font-family: 'Bebas Neue', sans-serif; font-size: 12px; letter-spacing: 2px; color: var(--muted); min-width: 52px; }
+  .session-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .session-type { display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; margin-left: 8px; }
+  .type-push { background: rgba(255,107,53,0.15); color: var(--accent2); }
+  .type-pull { background: rgba(74,222,128,0.12); color: var(--green); }
+  .type-legs { background: rgba(147,112,219,0.15); color: #b794f4; }
+  .type-upper { background: rgba(232,255,71,0.12); color: var(--accent); }
+  .session-toggle { font-size: 16px; color: var(--muted); transition: transform 0.2s; }
+  .session-card.open .session-toggle { transform: rotate(180deg); }
+  .session-done-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); background: transparent; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+  .session-done-btn.done { background: var(--green); border-color: var(--green); }
+  .exercises { display: none; padding: 0 15px 15px; }
+  .session-card.open .exercises { display: block; }
+  .ex-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .ex-table thead th { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; text-align: left; padding: 0 8px 8px; border-bottom: 1px solid var(--border); }
+  .ex-table tbody tr { border-bottom: 1px solid rgba(42,42,46,0.5); transition: background 0.15s; }
+  .ex-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+  .ex-table tbody tr:last-child { border-bottom: none; }
+  .ex-table tbody td { padding: 9px 8px; vertical-align: middle; }
+  .ex-name { font-weight: 500; color: var(--text); }
+  .ex-equip { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .ex-sets { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); white-space: nowrap; }
+  .ex-rpe { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent2); }
+  .ex-rest { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .ex-check { width: 18px; height: 18px; border-radius: 3px; border: 1.5px solid var(--border); background: transparent; cursor: pointer; accent-color: var(--green); }
+  .session-note { margin-top: 10px; padding: 8px 10px; background: var(--surface2); border-radius: 4px; font-size: 11px; color: var(--muted); line-height: 1.5; font-style: italic; }
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px; }
+  .stat-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); letter-spacing: 1px; line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .phase-timeline { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 18px; }
+  .phase-block { border-radius: 4px; padding: 8px 5px; text-align: center; }
+  .phase-block .ph-week { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+  .phase-block .ph-name { font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 1px; line-height: 1.2; }
+  .phase-block .ph-dates { font-size: 8px; margin-top: 3px; opacity: 0.7; }
+  .ph-vol { background: rgba(232,255,71,0.1); color: var(--accent); border: 1px solid rgba(232,255,71,0.2); }
+  .ph-int { background: rgba(255,107,53,0.1); color: var(--accent2); border: 1px solid rgba(255,107,53,0.2); }
+  .ph-peak { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+  .principles-block { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 14px; }
+  .principles-block h3 { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 2px; color: var(--accent); margin-bottom: 10px; }
+  .principle-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 9px; font-size: 13px; line-height: 1.5; }
+  .principle-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .principle-text { color: var(--muted); }
+  .principle-text strong { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>HYPERTROPHY BLOCK</h1>
+  <div class="header-sub">Jun 20 – Aug 4 &nbsp;·&nbsp; PPL + Upper &nbsp;·&nbsp; 4 Days/Week &nbsp;·&nbsp; 7 Weeks</div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="masterProgress" style="width:0%"></div></div>
+  <div class="progress-label"><span id="progressText">0 / 28 sessions</span><span id="progressPct">0%</span></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview')">Overview</div>
+  <div class="tab" onclick="switchTab('w1')">Wk 1</div>
+  <div class="tab" onclick="switchTab('w2')">Wk 2</div>
+  <div class="tab" onclick="switchTab('w3')">Wk 3</div>
+  <div class="tab" onclick="switchTab('w4')">Wk 4</div>
+  <div class="tab" onclick="switchTab('w5')">Wk 5</div>
+  <div class="tab" onclick="switchTab('w6')">Wk 6</div>
+  <div class="tab" onclick="switchTab('w7')">Wk 7</div>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div class="week-panel active" id="tab-overview">
+  <div class="overview-grid">
+    <div class="stat-card"><div class="stat-label">Duration</div><div class="stat-value">7</div><div class="stat-sub">weeks</div></div>
+    <div class="stat-card"><div class="stat-label">Sessions</div><div class="stat-value">28</div><div class="stat-sub">total workouts</div></div>
+    <div class="stat-card"><div class="stat-label">Split</div><div class="stat-value">PPL+</div><div class="stat-sub">Push/Pull/Legs/Upper</div></div>
+    <div class="stat-card"><div class="stat-label">Frequency</div><div class="stat-value">4×</div><div class="stat-sub">per week</div></div>
+  </div>
+  <div class="phase-timeline">
+    <div class="phase-block ph-vol"><div class="ph-week">Wk 1</div><div class="ph-name">Vol Base</div><div class="ph-dates">Jun 20</div></div>
+    <div class="phase-block ph-vol"><div class="ph-week">Wk 2</div><div class="ph-name">Vol Base</div><div class="ph-dates">Jun 23</div></div>
+    <div class="phase-block ph-vol"><div class="ph-week">Wk 3</div><div class="ph-name">Vol+</div><div class="ph-dates">Jun 30</div></div>
+    <div class="phase-block ph-vol"><div class="ph-week">Wk 4</div><div class="ph-name">Vol+</div><div class="ph-dates">Jul 7</div></div>
+    <div class="phase-block ph-int"><div class="ph-week">Wk 5</div><div class="ph-name">Intensify</div><div class="ph-dates">Jul 14</div></div>
+    <div class="phase-block ph-int"><div class="ph-week">Wk 6</div><div class="ph-name">Intensify</div><div class="ph-dates">Jul 21</div></div>
+    <div class="phase-block ph-peak"><div class="ph-week">Wk 7</div><div class="ph-name">Peak</div><div class="ph-dates">Jul 28</div></div>
+  </div>
+  <div class="principles-block">
+    <h3>PROGRAMME PRINCIPLES</h3>
+    <div class="principle-row"><div class="principle-icon">📈</div><div class="principle-text"><strong>Progressive overload:</strong> Add weight or a rep each session. Log every lift — this is the primary driver of hypertrophy.</div></div>
+    <div class="principle-row"><div class="principle-icon">🎯</div><div class="principle-text"><strong>RPE-based effort:</strong> RPE 7 = 3 reps left in tank. RPE 8 = 2 left. RPE 9 = 1 left. Week 7 pushes to RPE 9.</div></div>
+    <div class="principle-row"><div class="principle-icon">⏱️</div><div class="principle-text"><strong>Rest periods:</strong> Compounds (bench, row, squat, press) 2–3 min. Isolation work 60–90 sec.</div></div>
+    <div class="principle-row"><div class="principle-icon">🔁</div><div class="principle-text"><strong>Two-week phases:</strong> Weeks repeat exercises so you can load heavier in week 2 of each phase, then exercises rotate for the next phase.</div></div>
+    <div class="principle-row"><div class="principle-icon">🍗</div><div class="principle-text"><strong>Nutrition:</strong> 0.8–1g protein per lb bodyweight. A 200–300 kcal surplus maximises muscle building across a 7-week block.</div></div>
+    <div class="principle-row"><div class="principle-icon">😴</div><div class="principle-text"><strong>Sleep:</strong> 7–9 hours. Most muscle protein synthesis happens at rest — especially in Weeks 5–7.</div></div>
+  </div>
+  <div class="principles-block">
+    <h3>SUGGESTED SCHEDULE</h3>
+    <div class="principle-row"><div class="principle-icon">📅</div><div class="principle-text"><strong>Wk 1:</strong> Fri 20 (Legs) · Sat 21 (Push) · Mon 23 (Pull) · Wed 25 (Upper)</div></div>
+    <div class="principle-row"><div class="principle-icon">📅</div><div class="principle-text"><strong>Wk 2:</strong> Fri 27 (Legs) · Sat 28 (Push) · Mon 30 (Pull) · Wed 2 Jul (Upper)</div></div>
+    <div class="principle-row"><div class="principle-icon">📅</div><div class="principle-text"><strong>Wk 3:</strong> Fri 4 Jul (Legs) · Sat 5 Jul (Push) · Mon 7 Jul (Pull) · Wed 9 Jul (Upper)</div></div>
+    <div class="principle-row"><div class="principle-icon">📅</div><div class="principle-text"><strong>Wk 4:</strong> Fri 11 (Legs) · Sat 12 (Push) · Mon 14 (Pull) · Wed 16 (Upper)</div></div>
+    <div class="principle-row"><div class="principle-icon">📅</div><div class="principle-text"><strong>Wk 5:</strong> Fri 18 (Legs) · Sat 19 (Push) · Mon 21 (Pull) · Wed 23 (Upper)</div></div>
+    <div class="principle-row"><div class="principle-icon">📅</div><div class="principle-text"><strong>Wk 6:</strong> Fri 25 (Legs) · Sat 26 (Push) · Mon 28 (Pull) · Wed 30 (Upper)</div></div>
+    <div class="principle-row"><div class="principle-icon">📅</div><div class="principle-text"><strong>Wk 7:</strong> Fri 1 Aug (Legs) · Sat 2 Aug (Push) · Mon 4 Aug (Pull) · Wed 6 Aug (Upper)</div></div>
+    <div class="principle-row"><div class="principle-icon">💡</div><div class="principle-text">Flex days around your schedule — just keep at least one rest day between sessions.</div></div>
+  </div>
+</div>
+
+<!-- WEEK 1 -->
+<div class="week-panel" id="tab-w1">
+  <div class="week-header"><div class="week-title">WEEK 1 — Volume Base</div><div class="week-badge badge-vol">Jun 20–25</div></div>
+  <div class="week-note">Establish working weights. Focus on form and mind-muscle connection. RPE 7 across all work sets — 3 reps in the tank. Log every weight so you can progress in Week 2.</div>
+  <div class="sessions-grid">
+
+    <div class="session-card" id="w1-s1">
+      <div class="session-header" onclick="toggleSession('w1-s1')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w1-s1-done')" id="w1-s1-done"></button>
+          <div><span class="session-day">FRI 20</span> <span class="session-name">Legs <span class="session-type type-legs">Quads · Hams · Glutes</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Back Squat</div><div class="ex-equip">Full depth</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">7</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Press</div><div class="ex-equip">Machine · feet shoulder-width</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Romanian Deadlift</div><div class="ex-equip">Hip hinge · slow eccentric</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">7</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Curl</div><div class="ex-equip">Machine</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Plank</div><div class="ex-equip">Bodyweight</div></td><td class="ex-sets">3×45s</td><td class="ex-rpe">—</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w1-s2">
+      <div class="session-header" onclick="toggleSession('w1-s2')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w1-s2-done')" id="w1-s2-done"></button>
+          <div><span class="session-day">SAT 21</span> <span class="session-name">Push <span class="session-type type-push">Chest · Shoulders · Tris</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bench Press</div><div class="ex-equip">Flat bench</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">7</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Press</div><div class="ex-equip">Incline bench</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">7</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Cable Chest Fly</div><div class="ex-equip">Pec deck or cable crossover</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Seated DB Shoulder Press</div><div class="ex-equip">Dumbbells</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">7</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">Controlled — no swing</div></td><td class="ex-sets">3×15</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Tricep Pushdown</div><div class="ex-equip">Cable · rope or bar</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w1-s3">
+      <div class="session-header" onclick="toggleSession('w1-s3')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w1-s3-done')" id="w1-s3-done"></button>
+          <div><span class="session-day">MON 23</span> <span class="session-name">Pull <span class="session-type type-pull">Back · Biceps · Rear Delts</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bent-Over Row</div><div class="ex-equip">Overhand grip</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">7</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Lat Pulldown</div><div class="ex-equip">Cable · wide grip</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">7</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Single-Arm Row</div><div class="ex-equip">Bench supported</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">7</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Rear Delt Fly</div><div class="ex-equip">Machine or DB reverse fly</div></td><td class="ex-sets">3×15</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Hammer Curl</div><div class="ex-equip">Alternating</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Curl</div><div class="ex-equip">3-sec eccentric</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+        <div class="session-note">Incline curl: slow the negative to 3 seconds for maximum bicep long-head stretch.</div>
+      </div>
+    </div>
+
+    <div class="session-card" id="w1-s4">
+      <div class="session-header" onclick="toggleSession('w1-s4')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w1-s4-done')" id="w1-s4-done"></button>
+          <div><span class="session-day">WED 25</span> <span class="session-name">Upper <span class="session-type type-upper">Arms · Shoulders · Accessory</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Overhead Press</div><div class="ex-equip">Standing</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">7</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">Strict form</div></td><td class="ex-sets">4×15</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Preacher Curl</div><div class="ex-equip">Dumbbell or EZ bar</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Skull Crusher</div><div class="ex-equip">Flat bench</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Chest-Supported DB Row</div><div class="ex-equip">Incline bench</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Face Pull</div><div class="ex-equip">Cable or band · shoulder health</div></td><td class="ex-sets">3×15</td><td class="ex-rpe">6</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK 2 -->
+<div class="week-panel" id="tab-w2">
+  <div class="week-header"><div class="week-title">WEEK 2 — Volume Base+</div><div class="week-badge badge-vol">Jun 27 – Jul 2</div></div>
+  <div class="week-note">Same exercises as Week 1. Add 2.5–5kg to barbell lifts, 1–2 reps to isolation work. An extra set on key movements. Every set should feel earned.</div>
+  <div class="sessions-grid">
+
+    <div class="session-card" id="w2-s1">
+      <div class="session-header" onclick="toggleSession('w2-s1')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w2-s1-done')" id="w2-s1-done"></button>
+          <div><span class="session-day">FRI 27</span> <span class="session-name">Legs <span class="session-type type-legs">Quads · Hams · Glutes</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Back Squat</div><div class="ex-equip">+2.5–5kg vs Wk1</div></td><td class="ex-sets">4×9</td><td class="ex-rpe">7–8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Press</div><div class="ex-equip">+weight</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">7–8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Romanian Deadlift</div><div class="ex-equip">+1–2 reps</div></td><td class="ex-sets">3×11</td><td class="ex-rpe">7–8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Curl</div><div class="ex-equip">+weight or rep</div></td><td class="ex-sets">3×13</td><td class="ex-rpe">7–8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Plank</div><div class="ex-equip">Bodyweight</div></td><td class="ex-sets">3×50s</td><td class="ex-rpe">—</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w2-s2">
+      <div class="session-header" onclick="toggleSession('w2-s2')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w2-s2-done')" id="w2-s2-done"></button>
+          <div><span class="session-day">SAT 28</span> <span class="session-name">Push <span class="session-type type-push">Chest · Shoulders · Tris</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bench Press</div><div class="ex-equip">+2.5–5kg vs Wk1</div></td><td class="ex-sets">4×9</td><td class="ex-rpe">7–8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Press</div><div class="ex-equip">+1 rep per set</div></td><td class="ex-sets">3×11</td><td class="ex-rpe">7–8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Cable Chest Fly</div><div class="ex-equip">Add 4th set</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">7</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Seated DB Shoulder Press</div><div class="ex-equip">+1–2 reps</div></td><td class="ex-sets">3×11</td><td class="ex-rpe">7–8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">Add 4th set</div></td><td class="ex-sets">4×15</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Tricep Pushdown</div><div class="ex-equip">+weight or rep</div></td><td class="ex-sets">3×13</td><td class="ex-rpe">7–8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w2-s3">
+      <div class="session-header" onclick="toggleSession('w2-s3')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w2-s3-done')" id="w2-s3-done"></button>
+          <div><span class="session-day">MON 30</span> <span class="session-name">Pull <span class="session-type type-pull">Back · Biceps · Rear Delts</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bent-Over Row</div><div class="ex-equip">+2.5–5kg vs Wk1</div></td><td class="ex-sets">4×9</td><td class="ex-rpe">7–8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Lat Pulldown</div><div class="ex-equip">+1 rep per set</div></td><td class="ex-sets">3×11</td><td class="ex-rpe">7–8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Single-Arm Row</div><div class="ex-equip">Add 4th set</div></td><td class="ex-sets">4×10</td><td class="ex-rpe">7–8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Rear Delt Fly</div><div class="ex-equip">Add 4th set</div></td><td class="ex-sets">4×15</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Hammer Curl</div><div class="ex-equip">+1–2 reps</div></td><td class="ex-sets">3×13</td><td class="ex-rpe">7–8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Curl</div><div class="ex-equip">3-sec eccentric</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w2-s4">
+      <div class="session-header" onclick="toggleSession('w2-s4')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w2-s4-done')" id="w2-s4-done"></button>
+          <div><span class="session-day">WED 2 JUL</span> <span class="session-name">Upper <span class="session-type type-upper">Arms · Shoulders · Accessory</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Overhead Press</div><div class="ex-equip">+2.5kg vs Wk1</div></td><td class="ex-sets">4×9</td><td class="ex-rpe">7–8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">Add 5th set</div></td><td class="ex-sets">5×15</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Preacher Curl</div><div class="ex-equip">+1–2 reps</div></td><td class="ex-sets">3×13</td><td class="ex-rpe">8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Skull Crusher</div><div class="ex-equip">+1–2 reps</div></td><td class="ex-sets">3×13</td><td class="ex-rpe">8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Chest-Supported DB Row</div><div class="ex-equip">+weight or reps</div></td><td class="ex-sets">3×13</td><td class="ex-rpe">7–8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Face Pull</div><div class="ex-equip">Cable or band</div></td><td class="ex-sets">3×15</td><td class="ex-rpe">6</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK 3 -->
+<div class="week-panel" id="tab-w3">
+  <div class="week-header"><div class="week-title">WEEK 3 — Volume+</div><div class="week-badge badge-vol">Jul 4–9</div></div>
+  <div class="week-note">Exercise rotation. New movements keep adaptation stimulus fresh. Same RPE 7–8 but volume ticks up. Add sets where marked.</div>
+  <div class="sessions-grid">
+
+    <div class="session-card" id="w3-s1">
+      <div class="session-header" onclick="toggleSession('w3-s1')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w3-s1-done')" id="w3-s1-done"></button>
+          <div><span class="session-day">FRI 4 JUL</span> <span class="session-name">Legs <span class="session-type type-legs">Quads · Hams · Glutes</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Back Squat</div><div class="ex-equip">5th set added</div></td><td class="ex-sets">5×8</td><td class="ex-rpe">7–8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Hack Squat / Goblet Squat</div><div class="ex-equip">Machine or DB — swap for variety</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7–8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Walking Lunge</div><div class="ex-equip">Alternating</div></td><td class="ex-sets">3×10 each</td><td class="ex-rpe">7</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Curl</div><div class="ex-equip">Add a set</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">7–8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Calf Raise</div><div class="ex-equip">Machine or standing</div></td><td class="ex-sets">4×15</td><td class="ex-rpe">7</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w3-s2">
+      <div class="session-header" onclick="toggleSession('w3-s2')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w3-s2-done')" id="w3-s2-done"></button>
+          <div><span class="session-day">SAT 5 JUL</span> <span class="session-name">Push <span class="session-type type-push">Chest · Shoulders · Tris</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bench Press</div><div class="ex-equip">5th set added</div></td><td class="ex-sets">5×8</td><td class="ex-rpe">7–8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Press</div><div class="ex-equip">4th set added</div></td><td class="ex-sets">4×10</td><td class="ex-rpe">7–8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Machine Chest Press</div><div class="ex-equip">Swap fly for compound variety</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7–8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Arnold Press</div><div class="ex-equip">Full ROM</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">7–8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">5th set added</div></td><td class="ex-sets">5×15</td><td class="ex-rpe">7–8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Overhead Tricep Extension</div><div class="ex-equip">DB or cable</div></td><td class="ex-sets">3×12</td><td class="ex-rpe">7–8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w3-s3">
+      <div class="session-header" onclick="toggleSession('w3-s3')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w3-s3-done')" id="w3-s3-done"></button>
+          <div><span class="session-day">MON 7 JUL</span> <span class="session-name">Pull <span class="session-type type-pull">Back · Biceps · Rear Delts</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bent-Over Row</div><div class="ex-equip">5th set added</div></td><td class="ex-sets">5×8</td><td class="ex-rpe">7–8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Seated Cable Row</div><div class="ex-equip">Close grip</div></td><td class="ex-sets">4×10</td><td class="ex-rpe">7–8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Single-Arm Row</div><div class="ex-equip">4th set · heavier</div></td><td class="ex-sets">4×10</td><td class="ex-rpe">7–8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Rear Delt Fly</div><div class="ex-equip">4th set added</div></td><td class="ex-sets">4×15</td><td class="ex-rpe">7–8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Barbell Curl</div><div class="ex-equip">Straight bar</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">7–8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Curl</div><div class="ex-equip">3-sec eccentric · 4th set</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w3-s4">
+      <div class="session-header" onclick="toggleSession('w3-s4')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w3-s4-done')" id="w3-s4-done"></button>
+          <div><span class="session-day">WED 9 JUL</span> <span class="session-name">Upper <span class="session-type type-upper">Arms · Shoulders · Accessory</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Overhead Press</div><div class="ex-equip">5th set added</div></td><td class="ex-sets">5×8</td><td class="ex-rpe">7–8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">Slight weight increase</div></td><td class="ex-sets">5×15</td><td class="ex-rpe">7–8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">EZ Bar Curl</div><div class="ex-equip">Standing</div></td><td class="ex-sets">4×10</td><td class="ex-rpe">8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Skull Crusher</div><div class="ex-equip">4th set added</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Chest-Supported DB Row</div><div class="ex-equip">Heavier DBs</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">7–8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Face Pull</div><div class="ex-equip">Cable or band</div></td><td class="ex-sets">3×20</td><td class="ex-rpe">6</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK 4 -->
+<div class="week-panel" id="tab-w4">
+  <div class="week-header"><div class="week-title">WEEK 4 — Volume++</div><div class="week-badge badge-vol">Jul 11–16</div></div>
+  <div class="week-note">Same exercises as Week 3. Add weight to every barbell lift. Add 1–2 reps to isolations. Peak volume week — highest total sets of the block.</div>
+  <div class="sessions-grid">
+
+    <div class="session-card" id="w4-s1">
+      <div class="session-header" onclick="toggleSession('w4-s1')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w4-s1-done')" id="w4-s1-done"></button>
+          <div><span class="session-day">FRI 11 JUL</span> <span class="session-name">Legs <span class="session-type type-legs">Quads · Hams · Glutes</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Back Squat</div><div class="ex-equip">+2.5–5kg vs Wk3</div></td><td class="ex-sets">5×9</td><td class="ex-rpe">8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Hack Squat / Goblet Squat</div><div class="ex-equip">+weight</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Walking Lunge</div><div class="ex-equip">Heavier DBs</div></td><td class="ex-sets">3×12 each</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Curl</div><div class="ex-equip">+weight</div></td><td class="ex-sets">4×13</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Calf Raise</div><div class="ex-equip">+weight or reps</div></td><td class="ex-sets">4×20</td><td class="ex-rpe">7–8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w4-s2">
+      <div class="session-header" onclick="toggleSession('w4-s2')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w4-s2-done')" id="w4-s2-done"></button>
+          <div><span class="session-day">SAT 12 JUL</span> <span class="session-name">Push <span class="session-type type-push">Chest · Shoulders · Tris</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bench Press</div><div class="ex-equip">+2.5–5kg vs Wk3</div></td><td class="ex-sets">5×9</td><td class="ex-rpe">8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Press</div><div class="ex-equip">+1 rep per set</div></td><td class="ex-sets">4×11</td><td class="ex-rpe">8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Machine Chest Press</div><div class="ex-equip">+weight</div></td><td class="ex-sets">3×13</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Arnold Press</div><div class="ex-equip">+1–2 reps</div></td><td class="ex-sets">3×11</td><td class="ex-rpe">8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">+slight weight</div></td><td class="ex-sets">5×15</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Overhead Tricep Extension</div><div class="ex-equip">+weight or reps</div></td><td class="ex-sets">3×13</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w4-s3">
+      <div class="session-header" onclick="toggleSession('w4-s3')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w4-s3-done')" id="w4-s3-done"></button>
+          <div><span class="session-day">MON 14 JUL</span> <span class="session-name">Pull <span class="session-type type-pull">Back · Biceps · Rear Delts</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bent-Over Row</div><div class="ex-equip">+2.5–5kg vs Wk3</div></td><td class="ex-sets">5×9</td><td class="ex-rpe">8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Seated Cable Row</div><div class="ex-equip">+weight</div></td><td class="ex-sets">4×11</td><td class="ex-rpe">8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Single-Arm Row</div><div class="ex-equip">Heavier DB</div></td><td class="ex-sets">4×11</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Rear Delt Fly</div><div class="ex-equip">+weight</div></td><td class="ex-sets">4×15</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Barbell Curl</div><div class="ex-equip">+weight</div></td><td class="ex-sets">3×11</td><td class="ex-rpe">8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Curl</div><div class="ex-equip">+1 rep — 3-sec eccentric</div></td><td class="ex-sets">4×13</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w4-s4">
+      <div class="session-header" onclick="toggleSession('w4-s4')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w4-s4-done')" id="w4-s4-done"></button>
+          <div><span class="session-day">WED 16 JUL</span> <span class="session-name">Upper <span class="session-type type-upper">Arms · Shoulders · Accessory</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Overhead Press</div><div class="ex-equip">+2.5kg vs Wk3</div></td><td class="ex-sets">5×9</td><td class="ex-rpe">8</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">+slight weight</div></td><td class="ex-sets">5×15</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">EZ Bar Curl</div><div class="ex-equip">+weight</div></td><td class="ex-sets">4×11</td><td class="ex-rpe">8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Skull Crusher</div><div class="ex-equip">+weight or reps</div></td><td class="ex-sets">4×13</td><td class="ex-rpe">8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Chest-Supported DB Row</div><div class="ex-equip">Heavier DBs</div></td><td class="ex-sets">4×13</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Face Pull</div><div class="ex-equip">Cable or band</div></td><td class="ex-sets">3×20</td><td class="ex-rpe">6</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK 5 -->
+<div class="week-panel" id="tab-w5">
+  <div class="week-header"><div class="week-title">WEEK 5 — Intensify</div><div class="week-badge badge-int">Jul 18–23</div></div>
+  <div class="week-note">Phase shift. Drop reps, increase weight. Compounds move to 5×6. RPE climbs to 8–8.5. Volume drops slightly but intensity climbs. You should feel the difference immediately.</div>
+  <div class="sessions-grid">
+
+    <div class="session-card" id="w5-s1">
+      <div class="session-header" onclick="toggleSession('w5-s1')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w5-s1-done')" id="w5-s1-done"></button>
+          <div><span class="session-day">FRI 18 JUL</span> <span class="session-name">Legs <span class="session-type type-legs">Quads · Hams · Glutes</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Back Squat</div><div class="ex-equip">Heavier than Wk4</div></td><td class="ex-sets">5×6</td><td class="ex-rpe">8</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Press</div><div class="ex-equip">Back to this movement · heavier</div></td><td class="ex-sets">4×10</td><td class="ex-rpe">8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Romanian Deadlift</div><div class="ex-equip">Heaviest DBs so far</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Curl</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">4×10</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Calf Raise + Plank superset</div><div class="ex-equip">Finisher</div></td><td class="ex-sets">3×15+45s</td><td class="ex-rpe">7</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w5-s2">
+      <div class="session-header" onclick="toggleSession('w5-s2')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w5-s2-done')" id="w5-s2-done"></button>
+          <div><span class="session-day">SAT 19 JUL</span> <span class="session-name">Push <span class="session-type type-push">Chest · Shoulders · Tris</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bench Press</div><div class="ex-equip">Heavier than Wk4</div></td><td class="ex-sets">5×6</td><td class="ex-rpe">8</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Press</div><div class="ex-equip">Heavier DBs</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Cable Chest Fly</div><div class="ex-equip">Heavier — full stretch</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Shoulder Press</div><div class="ex-equip">Heaviest DBs so far</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">Slight weight increase</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Tricep Pushdown</div><div class="ex-equip">Heavier — controlled eccentric</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w5-s3">
+      <div class="session-header" onclick="toggleSession('w5-s3')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w5-s3-done')" id="w5-s3-done"></button>
+          <div><span class="session-day">MON 21 JUL</span> <span class="session-name">Pull <span class="session-type type-pull">Back · Biceps · Rear Delts</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bent-Over Row</div><div class="ex-equip">Heavier than Wk4</div></td><td class="ex-sets">5×6</td><td class="ex-rpe">8</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Lat Pulldown</div><div class="ex-equip">Back in — heavier than Wk2</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Single-Arm Row</div><div class="ex-equip">Heaviest DB so far</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Rear Delt Fly</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Barbell Curl</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">3×8</td><td class="ex-rpe">8</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Curl</div><div class="ex-equip">Heavier — 3-sec negative</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">8.5</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w5-s4">
+      <div class="session-header" onclick="toggleSession('w5-s4')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w5-s4-done')" id="w5-s4-done"></button>
+          <div><span class="session-day">WED 23 JUL</span> <span class="session-name">Upper <span class="session-type type-upper">Arms · Shoulders · Accessory</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Overhead Press</div><div class="ex-equip">Heavier than Wk4</div></td><td class="ex-sets">5×6</td><td class="ex-rpe">8</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">5×12</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Preacher Curl</div><div class="ex-equip">Back in — heavier</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Skull Crusher</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Chest-Supported DB Row</div><div class="ex-equip">Heavier — squeeze at top</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Face Pull</div><div class="ex-equip">Cable or band</div></td><td class="ex-sets">3×15</td><td class="ex-rpe">6</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK 6 -->
+<div class="week-panel" id="tab-w6">
+  <div class="week-header"><div class="week-title">WEEK 6 — Intensify+</div><div class="week-badge badge-int">Jul 25–30</div></div>
+  <div class="week-note">Same exercises as Week 5. Load heavier across the board. RPE 8.5. Drop sets introduced on key isolation movements. This is where the block peaks in effort.</div>
+  <div class="sessions-grid">
+
+    <div class="session-card" id="w6-s1">
+      <div class="session-header" onclick="toggleSession('w6-s1')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w6-s1-done')" id="w6-s1-done"></button>
+          <div><span class="session-day">FRI 25 JUL</span> <span class="session-name">Legs <span class="session-type type-legs">Quads · Hams · Glutes</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Back Squat</div><div class="ex-equip">+2.5–5kg vs Wk5</div></td><td class="ex-sets">5×6</td><td class="ex-rpe">8.5</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Press</div><div class="ex-equip">Heavier + drop set on last set</div></td><td class="ex-sets">4×10+DS</td><td class="ex-rpe">8.5</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Romanian Deadlift</div><div class="ex-equip">+weight</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Curl</div><div class="ex-equip">+weight</div></td><td class="ex-sets">4×10</td><td class="ex-rpe">8.5</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Calf Raise + Plank superset</div><div class="ex-equip">+reps on calf raise</div></td><td class="ex-sets">3×20+50s</td><td class="ex-rpe">7</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+        <div class="session-note">DS = drop set. Immediately drop weight ~40% and go to failure on the final leg press set.</div>
+      </div>
+    </div>
+
+    <div class="session-card" id="w6-s2">
+      <div class="session-header" onclick="toggleSession('w6-s2')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w6-s2-done')" id="w6-s2-done"></button>
+          <div><span class="session-day">SAT 26 JUL</span> <span class="session-name">Push <span class="session-type type-push">Chest · Shoulders · Tris</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bench Press</div><div class="ex-equip">+2.5–5kg vs Wk5</div></td><td class="ex-sets">5×6</td><td class="ex-rpe">8.5</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Press</div><div class="ex-equip">Heavier + drop set final set</div></td><td class="ex-sets">4×8+DS</td><td class="ex-rpe">8.5</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Cable Chest Fly</div><div class="ex-equip">Heavier — full stretch</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">8.5</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Shoulder Press</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise + Drop Set</div><div class="ex-equip">Drop 50% on final set · go to failure</div></td><td class="ex-sets">4×12+DS</td><td class="ex-rpe">8.5</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Tricep Pushdown</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">8.5</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w6-s3">
+      <div class="session-header" onclick="toggleSession('w6-s3')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w6-s3-done')" id="w6-s3-done"></button>
+          <div><span class="session-day">MON 28 JUL</span> <span class="session-name">Pull <span class="session-type type-pull">Back · Biceps · Rear Delts</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bent-Over Row</div><div class="ex-equip">+2.5–5kg vs Wk5</div></td><td class="ex-sets">5×6</td><td class="ex-rpe">8.5</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Lat Pulldown</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">2 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Single-Arm Row</div><div class="ex-equip">Heavier + drop set final set</div></td><td class="ex-sets">4×8+DS</td><td class="ex-rpe">8.5</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Rear Delt Fly</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">4×12</td><td class="ex-rpe">8.5</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Barbell Curl</div><div class="ex-equip">Heavier</div></td><td class="ex-sets">3×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Curl + Drop Set</div><div class="ex-equip">Drop on final set — burn out</div></td><td class="ex-sets">3×10+DS</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w6-s4">
+      <div class="session-header" onclick="toggleSession('w6-s4')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w6-s4-done')" id="w6-s4-done"></button>
+          <div><span class="session-day">WED 30 JUL</span> <span class="session-name">Upper <span class="session-type type-upper">Arms · Shoulders · Accessory</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Overhead Press</div><div class="ex-equip">+2.5kg vs Wk5</div></td><td class="ex-sets">5×6</td><td class="ex-rpe">8.5</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise + Drop Set</div><div class="ex-equip">3-wave drop on final set</div></td><td class="ex-sets">5×12+DS</td><td class="ex-rpe">8.5</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Preacher Curl</div><div class="ex-equip">Heavier — 3-sec negative</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Skull Crusher</div><div class="ex-equip">Heavier — full stretch</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">75 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Chest-Supported DB Row</div><div class="ex-equip">Heaviest so far</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Face Pull superset Lateral Raise</div><div class="ex-equip">Burnout finisher</div></td><td class="ex-sets">3×15+12</td><td class="ex-rpe">8</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK 7 -->
+<div class="week-panel" id="tab-w7">
+  <div class="week-header"><div class="week-title">WEEK 7 — Peak</div><div class="week-badge badge-peak">Aug 1–6</div></div>
+  <div class="week-note">Heaviest week of the entire block. RPE 8.5–9. 1 rep in the tank on compounds. Drop sets on multiple isolations. Sleep and nutrition are non-negotiable. Leave everything in the gym.</div>
+  <div class="sessions-grid">
+
+    <div class="session-card" id="w7-s1">
+      <div class="session-header" onclick="toggleSession('w7-s1')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w7-s1-done')" id="w7-s1-done"></button>
+          <div><span class="session-day">FRI 1 AUG</span> <span class="session-name">Legs <span class="session-type type-legs">Quads · Hams · Glutes</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Back Squat</div><div class="ex-equip">Heaviest of entire block</div></td><td class="ex-sets">5×5</td><td class="ex-rpe">8.5–9</td><td class="ex-rest">3–4 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Press</div><div class="ex-equip">Heaviest + drop set</div></td><td class="ex-sets">4×8+DS</td><td class="ex-rpe">9</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Romanian Deadlift</div><div class="ex-equip">Heaviest DBs</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">8.5</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Leg Curl</div><div class="ex-equip">Heaviest + drop set</div></td><td class="ex-sets">4×8+DS</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Weighted Calf Raise</div><div class="ex-equip">Heaviest — full range</div></td><td class="ex-sets">4×20</td><td class="ex-rpe">8</td><td class="ex-rest">60 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w7-s2">
+      <div class="session-header" onclick="toggleSession('w7-s2')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w7-s2-done')" id="w7-s2-done"></button>
+          <div><span class="session-day">SAT 2 AUG</span> <span class="session-name">Push <span class="session-type type-push">Chest · Shoulders · Tris</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bench Press</div><div class="ex-equip">Heaviest of entire block</div></td><td class="ex-sets">5×5</td><td class="ex-rpe">8.5–9</td><td class="ex-rest">3–4 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Press</div><div class="ex-equip">Heaviest + drop set</div></td><td class="ex-sets">4×6+DS</td><td class="ex-rpe">9</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Cable Chest Fly</div><div class="ex-equip">Heavy — maximum stretch</div></td><td class="ex-sets">3×10</td><td class="ex-rpe">8.5</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Shoulder Press</div><div class="ex-equip">Heaviest DBs</div></td><td class="ex-sets">4×6</td><td class="ex-rpe">8.5–9</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise + Drop Set</div><div class="ex-equip">3-wave drop on final 2 sets</div></td><td class="ex-sets">5×12+DS</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Tricep Pushdown</div><div class="ex-equip">Heaviest — controlled</div></td><td class="ex-sets">3×8</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w7-s3">
+      <div class="session-header" onclick="toggleSession('w7-s3')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w7-s3-done')" id="w7-s3-done"></button>
+          <div><span class="session-day">MON 4 AUG</span> <span class="session-name">Pull <span class="session-type type-pull">Back · Biceps · Rear Delts</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Bent-Over Row</div><div class="ex-equip">Heaviest of entire block</div></td><td class="ex-sets">5×5</td><td class="ex-rpe">8.5–9</td><td class="ex-rest">3–4 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Lat Pulldown</div><div class="ex-equip">Heaviest + drop set</div></td><td class="ex-sets">4×6+DS</td><td class="ex-rpe">9</td><td class="ex-rest">3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Single-Arm Row</div><div class="ex-equip">Heaviest DB</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">9</td><td class="ex-rest">2–3 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Rear Delt Fly + Drop Set</div><div class="ex-equip">Drop on final set</div></td><td class="ex-sets">4×12+DS</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Barbell Curl</div><div class="ex-equip">Heaviest</div></td><td class="ex-sets">4×6</td><td class="ex-rpe">8.5–9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Incline Curl + Drop Set</div><div class="ex-equip">Final set: burn it completely out</div></td><td class="ex-sets">3×8+DS</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="session-card" id="w7-s4">
+      <div class="session-header" onclick="toggleSession('w7-s4')">
+        <div class="session-left">
+          <button class="session-done-btn" onclick="event.stopPropagation();markDone('w7-s4-done')" id="w7-s4-done"></button>
+          <div><span class="session-day">WED 6 AUG</span> <span class="session-name">Upper <span class="session-type type-upper">Arms · Shoulders · PEAK</span></span></div>
+        </div><div class="session-toggle">▾</div>
+      </div>
+      <div class="exercises">
+        <table class="ex-table"><thead><tr><th>Exercise</th><th>Sets×Reps</th><th>RPE</th><th>Rest</th><th>✓</th></tr></thead><tbody>
+          <tr><td><div class="ex-name">Barbell Overhead Press</div><div class="ex-equip">Heaviest of entire block</div></td><td class="ex-sets">5×5</td><td class="ex-rpe">8.5–9</td><td class="ex-rest">3–4 min</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Lateral Raise + Triple Drop</div><div class="ex-equip">3-wave drop on final 2 sets</div></td><td class="ex-sets">5×12+DS</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Preacher Curl</div><div class="ex-equip">Heaviest — 3-sec negative</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">DB Skull Crusher</div><div class="ex-equip">Heaviest — full stretch, controlled</div></td><td class="ex-sets">4×8</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Chest-Supported DB Row</div><div class="ex-equip">Heaviest + drop set</div></td><td class="ex-sets">4×8+DS</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+          <tr><td><div class="ex-name">Face Pull + Lateral Raise superset</div><div class="ex-equip">Block finisher — leave nothing</div></td><td class="ex-sets">3×15+12</td><td class="ex-rpe">9</td><td class="ex-rest">90 sec</td><td><input type="checkbox" class="ex-check" onchange="updateProgress()"></td></tr>
+        </tbody></table>
+        <div class="session-note">Last session of the block. 28 workouts done. Deload for a week after this — the gains consolidate during rest, not the grind.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const TOTAL = 28;
+const STORE_KEY = 'hypertrophy-block-jun-aug-2026';
+
+function saveState() {
+  const state = {};
+  document.querySelectorAll('.session-done-btn').forEach(btn => {
+    state[btn.id] = btn.classList.contains('done');
+  });
+  document.querySelectorAll('.ex-check').forEach((chk, i) => {
+    state['ex-' + i] = chk.checked;
+  });
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+}
+
+function loadState() {
+  const raw = localStorage.getItem(STORE_KEY);
+  if (!raw) return;
+  const state = JSON.parse(raw);
+  document.querySelectorAll('.session-done-btn').forEach(btn => {
+    if (state[btn.id]) btn.classList.add('done');
+  });
+  document.querySelectorAll('.ex-check').forEach((chk, i) => {
+    if (state['ex-' + i]) chk.checked = true;
+  });
+  updateProgress();
+}
+
+function switchTab(id) {
+  const ids = ['overview','w1','w2','w3','w4','w5','w6','w7'];
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ids[i]===id));
+  document.querySelectorAll('.week-panel').forEach(p => p.classList.toggle('active', p.id==='tab-'+id));
+  localStorage.setItem(STORE_KEY + '-tab', id);
+}
+
+function toggleSession(id) { document.getElementById(id).classList.toggle('open'); }
+
+function markDone(btnId) {
+  document.getElementById(btnId).classList.toggle('done');
+  updateProgress();
+  saveState();
+}
+
+function updateProgress() {
+  const done = document.querySelectorAll('.session-done-btn.done').length;
+  const pct = Math.round(done/TOTAL*100);
+  document.getElementById('masterProgress').style.width = pct+'%';
+  document.getElementById('progressText').textContent = done+' / '+TOTAL+' sessions';
+  document.getElementById('progressPct').textContent = pct+'%';
+}
+
+document.querySelectorAll('.ex-check').forEach(chk => {
+  chk.addEventListener('change', () => { updateProgress(); saveState(); });
+});
+
+// Restore last active tab
+window.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  const lastTab = localStorage.getItem(STORE_KEY + '-tab');
+  if (lastTab) switchTab(lastTab);
+});
+
+// Register service worker for PWA offline support
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

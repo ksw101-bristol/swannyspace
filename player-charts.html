@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — Player Prediction Styles</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+  :root{--grass:#1f4d2c;--grass-dark:#163a20;--chalk:#f4f1e8;--gold:#e0a526;--line:rgba(244,241,232,0.18);}
+  *{box-sizing:border-box;}
+  html{background:var(--grass);color-scheme:dark;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--grass)!important;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,0.025) 0px,rgba(255,255,255,0.025) 40px,transparent 40px,transparent 80px);color:var(--chalk)!important;min-height:100vh;padding:32px 16px 64px;}
+  .wrap{max-width:900px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(244,241,232,0.5);text-decoration:none;margin-bottom:28px;}
+  .back-link:hover{color:var(--gold);}
+  header{margin-bottom:28px;}
+  .kicker{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;}
+  h1{font-family:'Archivo Black',sans-serif;font-size:clamp(1.8rem,6vw,2.8rem);line-height:1.05;margin:0 0 12px;text-transform:uppercase;letter-spacing:-0.01em;}
+  header p{font-size:14px;line-height:1.6;color:rgba(244,241,232,0.78);margin:0;}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,241,232,0.6);margin:20px 0 28px;}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .legend i{display:inline-block;width:14px;height:14px;border-radius:50%;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;}
+  .player-card{background:rgba(244,241,232,0.06);border:1px solid var(--line);border-radius:4px;padding:16px;}
+  .player-name{font-family:'Archivo Black',sans-serif;font-size:clamp(0.95rem,2.5vw,1.15rem);text-transform:uppercase;margin-bottom:4px;}
+  .player-stats{font-family:'Space Mono',monospace;font-size:10px;color:rgba(244,241,232,0.45);margin-bottom:10px;letter-spacing:0.06em;}
+  canvas{display:block;width:100%!important;}
+  footer{margin-top:40px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(244,241,232,0.35);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="charts.html">← Back to match charts</a>
+
+  <header>
+    <p class="kicker">Group Stage · All Games To Date · Player Analysis</p>
+    <h1>Prediction Styles</h1>
+    <p>Each chart shows one person's spread of predictions across all group stage matches played so far — Home goals on the X axis, Away goals on the Y axis. Bigger dots = more predictions at that scoreline.</p>
+  </header>
+
+  <div class="legend">
+    <span><i style="background:rgba(74,144,217,0.85)"></i> Home win prediction</span>
+    <span><i style="background:rgba(196,85,77,0.85)"></i> Away win prediction</span>
+    <span><i style="background:rgba(160,140,100,0.85)"></i> Draw prediction</span>
+  </div>
+
+  <div class="grid" id="actual-chart" style="margin-bottom:32px;"></div>
+
+  <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">Player Distributions</div>
+  <div class="grid" id="charts"></div>
+
+  <footer>Swanny's World Cup 2026 · Prediction League</footer>
+</div>
+
+<script>
+const actualsData = {
+  name: "Actual Results — All Games To Date",
+  isActual: true,
+  preds: [[2,0],[2,1],[1,1],[4,1],[1,1],[1,1],[0,1],[2,0],[7,1],[2,2],[1,0],[5,1],[0,0],[1,1],[1,1],[2,2],[3,1],[1,4],[3,0],[3,1],[1,1],[4,2],[1,0],[1,3],[1,1],[4,1],[6,0],[1,0],[2,0],[0,1],[3,0],[0,1],[5,1],[2,1],[0,0],[0,4],[4,0],[0,0],[2,2],[1,3],[2,0],[3,0],[3,2],[1,2],[5,0],[0,0]]
+};
+
+const players = [
+  { name: "Kirk Walsh",
+    preds: [[2,0],[2,1],[0,1],[1,1],[0,3],[2,1],[0,2],[0,2],[5,0],[2,1],[1,1],[3,1],[4,0],[3,1],[0,1],[2,1],[2,0],[0,3],[3,1],[2,0],[2,0],[2,2],[1,1],[0,3],[2,0],[1,1],[2,1],[2,2],[2,0],[1,3],[5,0],[1,0],[2,1],[3,2],[3,1],[0,2],[2,0],[3,1],[3,0],[0,2],[3,0],[5,0],[1,2],[0,2],[4,0],[2,0]] },
+  { name: "Lee May",
+    preds: [[3,1],[2,1],[0,2],[2,1],[0,1],[2,1],[0,1],[1,2],[4,0],[2,1],[1,1],[1,0],[3,0],[2,1],[0,2],[1,0],[2,0],[0,2],[2,0],[2,0],[3,1],[2,1],[1,0],[0,2],[1,0],[1,1],[1,0],[2,2],[3,1],[0,1],[2,0],[1,2],[1,1],[2,1],[2,0],[0,2],[1,0],[2,1],[1,0],[1,1],[2,0],[3,0],[1,2],[0,1],[3,0],[2,0]] },
+  { name: "Mike Budd",
+    preds: [[1,0],[1,1],[1,2],[1,2],[0,2],[2,1],[1,3],[0,1],[4,0],[1,1],[1,2],[1,0],[4,0],[2,1],[0,1],[1,1],[3,1],[0,3],[1,1],[2,0],[4,1],[2,0],[3,1],[0,1],[2,1],[2,1],[2,0],[1,1],[3,1],[2,2],[4,1],[1,0],[1,1],[2,2],[3,0],[1,3],[3,1],[1,1],[2,0],[1,2],[1,1],[5,1],[1,2],[2,0],[4,0],[3,1]] },
+  { name: "Richard Boyce",
+    preds: [[2,2],[1,1],[0,4],[2,1],[0,3],[1,2],[0,2],[2,0],[5,0],[2,1],[1,1],[3,1],[4,0],[2,0],[0,2],[2,2],[3,1],[1,2],[0,1],[3,0],[2,1],[1,1],[2,1],[0,2],[3,0],[1,1],[2,0],[2,2],[1,2],[0,3],[3,0],[2,1],[0,0],[2,0],[1,0],[1,3],[2,0],[3,0],[1,0],[1,2],[2,0],[4,0],[2,1],[0,0],[3,0],[1,1]] },
+  { name: "Jordy Chalmers",
+    preds: [[3,0],[1,1],[0,2],[1,1],[0,2],[3,1],[0,2],[2,1],[3,0],[2,2],[2,1],[2,0],[4,0],[2,1],[1,3],[1,2],[3,1],[0,2],[2,0],[3,0],[5,0],[2,0],[2,1],[0,3],[2,1],[1,1],[2,1],[2,1],[3,1],[1,3],[4,0],[2,0],[1,2],[2,1],[5,0],[1,2],[4,1],[2,0],[3,0],[1,2],[2,1],[4,1],[1,1],[0,2],[6,0],[1,0]] },
+  { name: "Steve Kenna",
+    preds: [[3,0],[1,0],[1,1],[2,1],[0,3],[2,1],[0,3],[1,1],[4,0],[2,1],[2,1],[3,1],[5,0],[2,0],[1,2],[2,1],[3,1],[0,3],[2,0],[2,0],[4,0],[1,0],[2,0],[1,2],[2,1],[1,1],[2,0],[2,1],[3,1],[0,2],[4,0],[2,1],[1,1],[2,0],[2,0],[0,2],[3,0],[3,0],[2,0],[1,1],[2,1],[3,0],[2,1],[1,1],[3,0],[2,0]] },
+  { name: "Cameron Walsh",
+    preds: [[3,1],[1,1],[2,0],[2,1],[0,2],[2,2],[0,1],[1,2],[4,0],[2,1],[1,1],[2,0],[5,0],[2,1],[1,2],[2,0],[2,1],[0,2],[2,0],[2,1],[2,0],[2,1],[2,1],[1,1],[2,0],[1,1],[2,0],[2,1],[2,2],[1,2],[3,0],[2,0],[1,1],[2,1],[2,0],[1,3],[4,2],[2,1],[2,1],[1,1],[3,1],[4,1],[2,1],[1,2],[1,0],[2,0]] },
+  { name: "James Boyce",
+    preds: [[3,0],[1,2],[1,0],[1,1],[0,2],[2,1],[0,1],[0,2],[4,0],[2,1],[1,1],[2,0],[2,0],[1,0],[0,3],[1,2],[2,0],[0,2],[2,0],[1,0],[3,1],[1,0],[2,0],[1,2],[2,0],[1,0],[2,0],[2,1],[2,1],[0,2],[6,0],[1,1],[1,0],[2,0],[4,0],[1,3],[3,0],[2,0],[1,0],[0,2],[3,1],[3,0],[2,1],[0,2],[2,0],[2,0]] },
+  { name: "Cathy & Oliver",
+    preds: [[2,0],[2,1],[2,1],[1,0],[0,2],[2,0],[1,2],[0,2],[3,0],[2,1],[1,1],[2,1],[4,0],[3,1],[0,2],[2,1],[2,1],[0,3],[3,0],[1,1],[3,0],[2,1],[2,1],[0,2],[1,0],[1,1],[2,0],[2,1],[2,1],[1,2],[5,0],[1,2],[1,2],[4,1],[2,0],[1,2],[5,1],[3,1],[3,0],[1,2],[4,0],[4,0],[2,2],[1,2],[3,0],[3,1]] },
+  { name: "Lee Grainger",
+    preds: [[2,1],[1,1],[1,1],[1,0],[0,2],[3,1],[0,2],[1,1],[4,0],[2,1],[2,1],[1,0],[3,0],[2,1],[0,1],[0,1],[3,1],[0,2],[3,1],[2,0],[2,0],[2,0],[2,0],[0,2],[1,1],[1,0],[1,1],[2,1],[2,1],[0,1],[3,0],[1,1],[2,1],[3,0],[2,0],[0,2],[3,0],[3,0],[2,0],[1,1],[3,0],[4,0],[1,0],[0,1],[3,0],[2,1]] },
+  { name: "Jason (2-1) Parsons",
+    preds: [[2,1],[2,1],[2,1],[2,1],[0,2],[3,1],[1,3],[1,2],[3,0],[2,1],[1,2],[2,1],[4,0],[2,1],[1,2],[2,1],[3,1],[0,2],[2,0],[2,1],[3,0],[2,1],[2,1],[1,2],[2,1],[2,1],[3,1],[1,2],[3,1],[1,3],[3,0],[2,1],[2,1],[2,1],[2,1],[1,2],[3,1],[3,1],[3,1],[1,2],[3,1],[3,1],[2,1],[1,2],[2,1],[3,1]] },
+  { name: "Georgia & Harry May",
+    preds: [[3,1],[1,1],[2,1],[2,0],[2,1],[1,0],[1,1],[1,0],[2,0],[1,0],[0,1],[1,1],[2,0],[1,1],[0,2],[1,0],[2,1],[0,3],[2,1],[2,0],[2,0],[1,0],[1,0],[1,2],[2,1],[1,0],[1,0],[1,1],[2,0],[0,2],[3,0],[1,1],[2,1],[3,0],[2,0],[0,2],[1,0],[1,0],[1,0],[1,1],[2,0],[3,0],[2,1],[0,1],[3,0],[2,0]] },
+  { name: "Dave Budd",
+    preds: [[3,1],[1,1],[1,1],[1,2],[0,2],[1,0],[0,2],[0,1],[6,0],[2,1],[2,2],[1,0],[6,0],[2,1],[0,2],[1,1],[2,0],[0,3],[2,1],[2,0],[3,1],[1,0],[1,0],[0,2],[1,0],[1,0],[2,0],[1,2],[3,1],[0,2],[3,0],[1,1],[2,1],[3,1],[4,1],[0,2],[4,0],[2,0],[3,1],[0,2],[2,1],[5,0],[2,1],[1,1],[4,0],[3,2]] },
+  { name: "Elliot Walsh",
+    preds: [[3,1],[1,1],[2,0],[2,0],[0,4],[2,1],[0,2],[1,1],[5,0],[2,1],[2,2],[1,0],[3,0],[1,0],[1,2],[2,2],[2,1],[1,2],[3,1],[2,0],[3,1],[1,1],[2,0],[1,3],[2,0],[2,1],[3,1],[1,1],[4,0],[1,2],[8,0],[2,2],[3,2],[5,2],[4,1],[1,3],[7,1],[3,0],[2,0],[1,2],[4,1],[7,0],[2,2],[0,2],[5,1],[2,1]] },
+  { name: "Chris Hunt",
+    preds: [[2,0],[1,1],[0,2],[2,0],[0,3],[3,1],[0,2],[1,1],[5,0],[2,2],[2,1],[2,0],[6,0],[2,2],[0,2],[2,1],[3,2],[0,3],[2,0],[2,0],[3,0],[3,1],[3,0],[0,3],[2,0],[1,2],[1,1],[2,2],[3,1],[0,2],[4,0],[0,2],[2,2],[2,1],[3,0],[1,3],[5,0],[3,0],[3,0],[0,3],[3,0],[4,0],[2,2],[0,2],[5,0],[3,1]] }
+];
+
+function drawChart(canvas, player){
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.offsetWidth - 32;
+  const SIZE = Math.min(W, 320);
+  const PAD = {top:16, right:16, bottom:40, left:40};
+  const plotW = SIZE - PAD.left - PAD.right;
+  const plotH = SIZE - PAD.top - PAD.bottom;
+
+  const allH = player.preds.map(p=>p[0]);
+  const allA = player.preds.map(p=>p[1]);
+  const maxH = Math.max(...allH, 1);
+  const maxA = Math.max(...allA, 1);
+
+  canvas.width = SIZE * dpr;
+  canvas.height = SIZE * dpr;
+  canvas.style.width = SIZE + 'px';
+  canvas.style.height = SIZE + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, SIZE, SIZE);
+
+  function xp(v){ return PAD.left + (v/maxH)*plotW; }
+  function yp(v){ return PAD.top + plotH - (v/maxA)*plotH; }
+
+  // grid
+  for(let v=0;v<=maxH;v++){
+    ctx.beginPath(); ctx.strokeStyle='rgba(244,241,232,0.1)'; ctx.lineWidth=1;
+    ctx.moveTo(xp(v),PAD.top); ctx.lineTo(xp(v),PAD.top+plotH); ctx.stroke();
+    ctx.fillStyle='rgba(244,241,232,0.45)'; ctx.font=`10px "Space Mono",monospace`; ctx.textAlign='center';
+    ctx.fillText(v, xp(v), PAD.top+plotH+14);
+  }
+  for(let v=0;v<=maxA;v++){
+    ctx.beginPath(); ctx.strokeStyle='rgba(244,241,232,0.1)'; ctx.lineWidth=1;
+    ctx.moveTo(PAD.left,yp(v)); ctx.lineTo(PAD.left+plotW,yp(v)); ctx.stroke();
+    ctx.fillStyle='rgba(244,241,232,0.45)'; ctx.font=`10px "Space Mono",monospace`; ctx.textAlign='right';
+    ctx.fillText(v, PAD.left-6, yp(v)+4);
+  }
+
+  // X=Y diagonal
+  const diagEnd = Math.min(maxH, maxA);
+  ctx.beginPath(); ctx.strokeStyle='rgba(244,241,232,0.2)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+  ctx.moveTo(xp(0),yp(0)); ctx.lineTo(xp(diagEnd),yp(diagEnd)); ctx.stroke(); ctx.setLineDash([]);
+
+  // zone labels
+  ctx.font=`8px "Space Mono",monospace`; ctx.fillStyle='rgba(244,241,232,0.2)';
+  ctx.textAlign='left';  ctx.fillText('AWAY WIN', PAD.left+4, PAD.top+14);
+  ctx.textAlign='right'; ctx.fillText('HOME WIN', PAD.left+plotW-2, PAD.top+plotH-6);
+
+  // axis labels
+  ctx.fillStyle='rgba(244,241,232,0.5)'; ctx.font=`9px "Space Mono",monospace`; ctx.textAlign='center';
+  ctx.fillText('HOME GOALS →', PAD.left+plotW/2, SIZE-4);
+  ctx.save(); ctx.translate(10, PAD.top+plotH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('AWAY GOALS →', 0, 0); ctx.restore();
+
+  // count predictions
+  const counts = {};
+  player.preds.forEach(([h,a])=>{ const k=`${h},${a}`; counts[k]=(counts[k]||0)+1; });
+
+  // draw dots
+  Object.entries(counts).forEach(([key, count])=>{
+    const [h,a] = key.split(',').map(Number);
+    const r = 7 + (count-1)*4;
+    let fill, stroke;
+    if(h > a)      { fill='rgba(74,144,217,0.75)';  stroke='rgba(74,144,217,1)'; }
+    else if(a > h) { fill='rgba(196,85,77,0.75)';   stroke='rgba(196,85,77,1)'; }
+    else           { fill='rgba(160,140,100,0.75)';  stroke='rgba(200,180,130,1)'; }
+    ctx.beginPath();
+    ctx.arc(xp(h), yp(a), r, 0, Math.PI*2);
+    ctx.fillStyle=fill; ctx.fill();
+    ctx.strokeStyle=stroke; ctx.lineWidth=1.5; ctx.stroke();
+    if(count>1){
+      ctx.fillStyle='rgba(244,241,232,0.95)';
+      ctx.font=`bold ${Math.min(11,r)}px Inter,sans-serif`;
+      ctx.textAlign='center';
+      ctx.fillText(count, xp(h), yp(a)+4);
+    }
+  });
+}
+
+function getStats(preds){
+  let hw=0, aw=0, d=0;
+  preds.forEach(([h,a])=>{ if(h>a) hw++; else if(a>h) aw++; else d++; });
+  const avgH = (preds.reduce((s,[h])=>s+h,0)/preds.length).toFixed(1);
+  const avgA = (preds.reduce((s,[,a])=>s+a,0)/preds.length).toFixed(1);
+  return `${preds.length} predictions · avg ${avgH}–${avgA} · ${hw}H ${d}D ${aw}A`;
+}
+
+// Render actual results chart first
+const actualContainer = document.getElementById('actual-chart');
+const actualCard = document.createElement('div');
+actualCard.className = 'player-card';
+actualCard.style.borderColor = 'var(--gold)';
+actualCard.style.background = 'rgba(224,165,38,0.06)';
+actualCard.innerHTML = `
+  <div class="player-name" style="color:var(--gold)">${actualsData.name}</div>
+  <div class="player-stats">${getStats(actualsData.preds)}</div>
+  <canvas id="pc_actuals"></canvas>`;
+actualContainer.appendChild(actualCard);
+
+const container = document.getElementById('charts');
+players.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'player-card';
+  card.innerHTML = `
+    <div class="player-name">${p.name}</div>
+    <div class="player-stats">${getStats(p.preds)}</div>
+    <canvas id="pc_${p.name.replace(/\s/g,'_').replace(/[^a-zA-Z0-9_]/g,'')}"></canvas>`;
+  container.appendChild(card);
+});
+
+requestAnimationFrame(()=>{
+  drawChart(document.getElementById('pc_actuals'), actualsData);
+  players.forEach(p=>{
+    const id = 'pc_' + p.name.replace(/\s/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+    drawChart(document.getElementById(id), p);
+  });
+});
+window.addEventListener('resize',()=>{
+  drawChart(document.getElementById('pc_actuals'), actualsData);
+  players.forEach(p=>{
+    const id = 'pc_' + p.name.replace(/\s/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+    drawChart(document.getElementById(id), p);
+  });
+});
+</script>
+</body>
+</html>

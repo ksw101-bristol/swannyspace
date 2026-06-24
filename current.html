@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — Live: Round 4</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --grass: #1f4d2c;
+    --grass-dark: #163a20;
+    --chalk: #f4f1e8;
+    --gold: #e0a526;
+    --line: rgba(244,241,232,0.18);
+    --green: #3fa34d;
+    --orange: #e07b26;
+    --yellow: #d9c23a;
+  }
+
+  *{box-sizing:border-box;}
+  html{ background: var(--grass); color-scheme: dark; }
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background: var(--grass) !important;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 40px, transparent 40px, transparent 80px);
+    color: var(--chalk) !important;
+    min-height:100vh;
+    padding: 32px 16px 64px;
+  }
+
+  .wrap{ max-width: 880px; margin: 0 auto; }
+
+  header{ margin-bottom: 32px; }
+  .kicker{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+  h1{
+    font-family:'Archivo Black', sans-serif;
+    font-size: clamp(2rem, 7vw, 3rem);
+    line-height: 1.05;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+  header p{
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(244,241,232,0.78);
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  .match-card{
+    background: rgba(244,241,232,0.06);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+  .match-meta{
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.55);
+    margin-bottom: 14px;
+  }
+  .match-meta .num{ color: var(--gold); font-weight:700; }
+
+  .fixture-title{
+    font-family:'Archivo Black', sans-serif;
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+    text-transform: uppercase;
+    text-align:center;
+    margin-bottom: 4px;
+  }
+  .fixture-title .vs{
+    color: rgba(244,241,232,0.35);
+    font-size: 0.7em;
+    margin: 0 8px;
+  }
+
+  .actual-row{
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 10px;
+  }
+  .status-pill{
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight:700;
+    letter-spacing: 0.12em;
+  }
+  .status-pending{ background: rgba(244,241,232,0.12); color: rgba(244,241,232,0.5); }
+  .status-live{ background: var(--green); color: var(--grass-dark); animation: pulse 1.6s infinite; }
+  .status-ft{ background: var(--gold); color: var(--grass-dark); }
+  .live-score{ font-family:'Space Mono', monospace; font-weight:700; font-size: 16px; color: var(--chalk); }
+
+  @keyframes pulse{
+    0%,100%{ opacity:1; }
+    50%{ opacity:0.55; }
+  }
+
+  table{
+    width:100%;
+    border-collapse: collapse;
+    font-family:'Space Mono', monospace;
+    font-size: 13px;
+  }
+  thead th{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    text-align:center;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  thead th:first-child{ text-align:left; }
+  tbody td{
+    text-align:center;
+    padding: 10px 6px;
+    border-bottom: 1px solid rgba(244,241,232,0.08);
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  td.player-name{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    text-align:left;
+    font-size: 14px;
+  }
+  td.score{
+    font-size: 17px;
+    font-weight:700;
+    color: var(--chalk);
+  }
+  td.pts{
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size: 13px;
+  }
+  .sep{ color: rgba(244,241,232,0.35); padding: 0 2px; }
+
+  .pts-badge{
+    display:inline-block;
+    min-width: 26px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .pts-5{ background: var(--green); color: var(--grass-dark); }
+  .pts-2{ background: var(--orange); color: var(--grass-dark); }
+  .pts-1{ background: var(--yellow); color: var(--grass-dark); }
+  .pts-0{ background: rgba(244,241,232,0.08); color: rgba(244,241,232,0.4); }
+
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 14px;
+    justify-content:center;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.6);
+    margin: 8px 0 32px;
+  }
+  .legend span{ display:flex; align-items:center; gap:6px; }
+  .legend i{
+    display:inline-block;
+    width: 12px; height: 12px;
+    border-radius: 3px;
+  }
+  .legend .i5{ background: var(--green); }
+  .legend .i2{ background: var(--orange); }
+  .legend .i1{ background: var(--yellow); }
+  .legend .i0{ background: rgba(244,241,232,0.15); }
+
+  .leaderboard{ margin-top: 12px; margin-bottom: 32px; }
+  .leaderboard h2{
+    font-family:'Archivo Black', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+  .lb-table{
+    width:100%;
+    border-collapse: collapse;
+    font-family:'Space Mono', monospace;
+    font-size: 13px;
+    background: rgba(244,241,232,0.06);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow:hidden;
+  }
+  .lb-table th{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    text-align:left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .lb-table th:not(:first-child){ text-align:center; }
+  .lb-table td{
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(244,241,232,0.08);
+  }
+  .lb-table tr:last-child td{ border-bottom:none; }
+  .lb-table td:not(:first-child){ text-align:center; }
+  .lb-table td.name{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+  }
+  .lb-table td.total{
+    font-weight:700;
+    color: var(--gold);
+    font-size:16px;
+  }
+  .lb-table tr.leader td.total{ color: var(--green); }
+
+  .note{
+    font-family:'Space Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: rgba(244,241,232,0.5);
+    text-align:center;
+    margin-top: 32px;
+  }
+
+  .refresh-bar{
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.4);
+    margin-top: -16px;
+    margin-bottom: 28px;
+  }
+
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.5);
+    text-decoration:none;
+    margin-bottom: 28px;
+  }
+  .back-link:hover{ color: var(--gold); }
+
+  footer{
+    margin-top: 40px;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.35);
+  }
+
+  @media (max-width: 480px){
+    table{ font-size: 11px; }
+    thead th{ font-size: 10px; padding: 6px 3px; }
+    tbody td{ padding: 8px 3px; }
+    td.score{ font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back-link" href="index.html">← Back to home</a>
+
+  <header>
+    <p class="kicker">Group Stage · Round 4 · Live</p>
+    <h1>Live Predictions Tracker</h1>
+    <p>Everyone's picks for Round 4 (games 25-48), scored live as goals go in. Page checks for live scores automatically every 60 seconds.</p>
+  </header>
+
+  <div class="legend">
+    <span><i class="i5"></i> 5 pts — exact score</span>
+    <span><i class="i2"></i> 2 pts — correct result + goal diff</span>
+    <span><i class="i1"></i> 1 pt — correct result</span>
+    <span><i class="i0"></i> 0 pts</span>
+  </div>
+
+  <div class="refresh-bar" id="refreshBar">Checking for live scores…</div>
+
+  <div id="matches"></div>
+
+  <div class="leaderboard">
+    <h2>Running Total</h2>
+    <table class="lb-table">
+      <thead>
+        <tr><th>Player</th><th>Previous Rounds</th><th>This Round</th><th>Total</th></tr>
+      </thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+
+  <p class="note">Live scores provided by TheSportsDB. If a match hasn't kicked off yet, or live data isn't available for this fixture, the card will show "Not started" — points will appear automatically once a score is detected.</p>
+
+  <footer>World Cup 2026 · Prediction League</footer>
+</div>
+
+<script>
+// Points carried over from completed previous rounds (cumulative, excluding the round shown on this page)
+const previousRoundsPoints = {
+  "Kirk Walsh": 21,
+  "Lee May": 29,
+  "Mike Budd": 21,
+  "Richard Boyce": 25,
+  "Jordy Chalmers": 25,
+  "Steve Kenna": 27,
+  "Cameron Walsh": 19,
+  "James Boyce": 16,
+  "Cathy & Oliver": 28,
+  "Lee Grainger": 26,
+  "Jason (2-1) Parsons": 22,
+  "Georgia & Harry May": 23,
+  "Dave Budd": 28,
+  "Elliot Walsh": 22,
+  "Chris Hunt": 28
+};
+
+const matchesData = [
+  {
+    num: "25",
+    meta: "Thu 18 Jun · 17:00 UK · Group A",
+    home: "Czechia",
+    away: "South Africa",
+    searchHome: "Czechia",
+    searchAway: "South Africa",
+    actualHome: 1,
+    actualAway: 1,
+    predictions: [
+      { name: "Kirk Walsh", h: 2, a: 0 },
+      { name: "Lee May", h: 1, a: 0 },
+      { name: "Mike Budd", h: 2, a: 1 },
+      { name: "Richard Boyce", h: 3, a: 0 },
+      { name: "Jordy Chalmers", h: 2, a: 1 },
+      { name: "Steve Kenna", h: 2, a: 1 },
+      { name: "Cameron Walsh", h: 2, a: 0 },
+      { name: "James Boyce", h: 2, a: 0 },
+      { name: "Cathy & Oliver", h: 1, a: 0 },
+      { name: "Lee Grainger", h: 1, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 2, a: 1 },
+      { name: "Georgia & Harry May", h: 2, a: 1 },
+      { name: "Dave Budd", h: 1, a: 0 },
+      { name: "Elliot Walsh", h: 2, a: 0 },
+      { name: "Chris Hunt", h: 2, a: 0 }
+    ]
+  },
+  {
+    num: "26",
+    meta: "Thu 18 Jun · 20:00 UK · Group B",
+    home: "Switzerland",
+    away: "Bosnia & Herzegovina",
+    searchHome: "Switzerland",
+    searchAway: "Bosnia & Herzegovina",
+    altAwayTokens: ["bosnia", "herzegovina"],
+    actualHome: 4,
+    actualAway: 1,
+    predictions: [
+      { name: "Kirk Walsh", h: 1, a: 1 },
+      { name: "Lee May", h: 1, a: 1 },
+      { name: "Mike Budd", h: 2, a: 1 },
+      { name: "Richard Boyce", h: 1, a: 1 },
+      { name: "Jordy Chalmers", h: 1, a: 1 },
+      { name: "Steve Kenna", h: 1, a: 1 },
+      { name: "Cameron Walsh", h: 1, a: 1 },
+      { name: "James Boyce", h: 1, a: 0 },
+      { name: "Cathy & Oliver", h: 1, a: 1 },
+      { name: "Lee Grainger", h: 1, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 2, a: 1 },
+      { name: "Georgia & Harry May", h: 1, a: 0 },
+      { name: "Dave Budd", h: 1, a: 0 },
+      { name: "Elliot Walsh", h: 2, a: 1 },
+      { name: "Chris Hunt", h: 1, a: 2 }
+    ]
+  },
+  {
+    num: "27",
+    meta: "Thu 18 Jun · 23:00 UK · Group B",
+    home: "Canada",
+    away: "Qatar",
+    searchHome: "Canada",
+    searchAway: "Qatar",
+    actualHome: 6,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 2, a: 1 },
+      { name: "Lee May", h: 1, a: 0 },
+      { name: "Mike Budd", h: 2, a: 0 },
+      { name: "Richard Boyce", h: 2, a: 0 },
+      { name: "Jordy Chalmers", h: 2, a: 1 },
+      { name: "Steve Kenna", h: 2, a: 0 },
+      { name: "Cameron Walsh", h: 2, a: 0 },
+      { name: "James Boyce", h: 2, a: 0 },
+      { name: "Cathy & Oliver", h: 2, a: 0 },
+      { name: "Lee Grainger", h: 1, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 1 },
+      { name: "Georgia & Harry May", h: 1, a: 0 },
+      { name: "Dave Budd", h: 2, a: 0 },
+      { name: "Elliot Walsh", h: 3, a: 1 },
+      { name: "Chris Hunt", h: 1, a: 1 }
+    ]
+  },
+  {
+    num: "28",
+    meta: "Fri 19 Jun · 02:00 UK · Group A",
+    home: "Mexico",
+    away: "South Korea",
+    searchHome: "Mexico",
+    searchAway: "South Korea",
+    altAwayTokens: ["korea"],
+    actualHome: 1,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 2, a: 2 },
+      { name: "Lee May", h: 2, a: 2 },
+      { name: "Mike Budd", h: 1, a: 1 },
+      { name: "Richard Boyce", h: 2, a: 2 },
+      { name: "Jordy Chalmers", h: 2, a: 1 },
+      { name: "Steve Kenna", h: 2, a: 1 },
+      { name: "Cameron Walsh", h: 2, a: 1 },
+      { name: "James Boyce", h: 2, a: 1 },
+      { name: "Cathy & Oliver", h: 2, a: 1 },
+      { name: "Lee Grainger", h: 2, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 1, a: 2 },
+      { name: "Georgia & Harry May", h: 1, a: 1 },
+      { name: "Dave Budd", h: 1, a: 2 },
+      { name: "Elliot Walsh", h: 1, a: 1 },
+      { name: "Chris Hunt", h: 2, a: 2 }
+    ]
+  },
+  {
+    num: "29",
+    meta: "Fri 19 Jun · 20:00 UK · Group D",
+    home: "USA",
+    away: "Australia",
+    searchHome: "USA",
+    searchAway: "Australia",
+    actualHome: 2,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 2, a: 0 },
+      { name: "Lee May", h: 3, a: 1 },
+      { name: "Mike Budd", h: 3, a: 1 },
+      { name: "Richard Boyce", h: 1, a: 2 },
+      { name: "Jordy Chalmers", h: 3, a: 1 },
+      { name: "Steve Kenna", h: 3, a: 1 },
+      { name: "Cameron Walsh", h: 2, a: 2 },
+      { name: "James Boyce", h: 2, a: 1 },
+      { name: "Cathy & Oliver", h: 2, a: 1 },
+      { name: "Lee Grainger", h: 2, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 1 },
+      { name: "Georgia & Harry May", h: 2, a: 0 },
+      { name: "Dave Budd", h: 3, a: 1 },
+      { name: "Elliot Walsh", h: 4, a: 0 },
+      { name: "Chris Hunt", h: 3, a: 1 }
+    ]
+  },
+  {
+    num: "30",
+    meta: "Fri 19 Jun · 23:00 UK · Group C",
+    home: "Scotland",
+    away: "Morocco",
+    searchHome: "Scotland",
+    searchAway: "Morocco",
+    actualHome: 0,
+    actualAway: 1,
+    predictions: [
+      { name: "Kirk Walsh", h: 1, a: 3 },
+      { name: "Lee May", h: 0, a: 1 },
+      { name: "Mike Budd", h: 2, a: 2 },
+      { name: "Richard Boyce", h: 0, a: 3 },
+      { name: "Jordy Chalmers", h: 1, a: 3 },
+      { name: "Steve Kenna", h: 0, a: 2 },
+      { name: "Cameron Walsh", h: 1, a: 2 },
+      { name: "James Boyce", h: 0, a: 2 },
+      { name: "Cathy & Oliver", h: 1, a: 2 },
+      { name: "Lee Grainger", h: 0, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 1, a: 3 },
+      { name: "Georgia & Harry May", h: 0, a: 2 },
+      { name: "Dave Budd", h: 0, a: 2 },
+      { name: "Elliot Walsh", h: 1, a: 2 },
+      { name: "Chris Hunt", h: 0, a: 2 }
+    ]
+  },
+  {
+    num: "31",
+    meta: "Sat 20 Jun · 01:30 UK · Group C",
+    home: "Brazil",
+    away: "Haiti",
+    searchHome: "Brazil",
+    searchAway: "Haiti",
+    actualHome: 3,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 5, a: 0 },
+      { name: "Lee May", h: 2, a: 0 },
+      { name: "Mike Budd", h: 4, a: 1 },
+      { name: "Richard Boyce", h: 3, a: 0 },
+      { name: "Jordy Chalmers", h: 4, a: 0 },
+      { name: "Steve Kenna", h: 4, a: 0 },
+      { name: "Cameron Walsh", h: 3, a: 0 },
+      { name: "James Boyce", h: 6, a: 0 },
+      { name: "Cathy & Oliver", h: 5, a: 0 },
+      { name: "Lee Grainger", h: 3, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 0 },
+      { name: "Georgia & Harry May", h: 3, a: 0 },
+      { name: "Dave Budd", h: 3, a: 0 },
+      { name: "Elliot Walsh", h: 8, a: 0 },
+      { name: "Chris Hunt", h: 4, a: 0 }
+    ]
+  },
+  {
+    num: "32",
+    meta: "Sat 20 Jun · 04:00 UK · Group D",
+    home: "Turkey",
+    away: "Paraguay",
+    searchHome: "Turkey",
+    searchAway: "Paraguay",
+    altAwayTokens: ["turkiye", "türkiye"],
+    actualHome: 0,
+    actualAway: 1,
+    predictions: [
+      { name: "Kirk Walsh", h: 1, a: 0 },
+      { name: "Lee May", h: 1, a: 2 },
+      { name: "Mike Budd", h: 1, a: 0 },
+      { name: "Richard Boyce", h: 2, a: 1 },
+      { name: "Jordy Chalmers", h: 2, a: 0 },
+      { name: "Steve Kenna", h: 2, a: 1 },
+      { name: "Cameron Walsh", h: 2, a: 0 },
+      { name: "James Boyce", h: 1, a: 1 },
+      { name: "Cathy & Oliver", h: 1, a: 2 },
+      { name: "Lee Grainger", h: 1, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 2, a: 1 },
+      { name: "Georgia & Harry May", h: 1, a: 1 },
+      { name: "Dave Budd", h: 1, a: 1 },
+      { name: "Elliot Walsh", h: 2, a: 2 },
+      { name: "Chris Hunt", h: 0, a: 2 }
+    ]
+  },
+  {
+    num: "33",
+    meta: "Sat 20 Jun · 18:00 UK · Group F",
+    home: "Netherlands",
+    away: "Sweden",
+    searchHome: "Netherlands",
+    searchAway: "Sweden",
+    actualHome: 5,
+    actualAway: 1,
+    predictions: [
+      { name: "Kirk Walsh", h: 2, a: 1 },
+      { name: "Lee May", h: 1, a: 1 },
+      { name: "Mike Budd", h: 1, a: 1 },
+      { name: "Richard Boyce", h: 0, a: 0 },
+      { name: "Jordy Chalmers", h: 1, a: 2 },
+      { name: "Steve Kenna", h: 1, a: 1 },
+      { name: "Cameron Walsh", h: 1, a: 1 },
+      { name: "James Boyce", h: 1, a: 0 },
+      { name: "Cathy & Oliver", h: 1, a: 2 },
+      { name: "Lee Grainger", h: 2, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 2, a: 1 },
+      { name: "Georgia & Harry May", h: 2, a: 1 },
+      { name: "Dave Budd", h: 2, a: 1 },
+      { name: "Elliot Walsh", h: 3, a: 2 },
+      { name: "Chris Hunt", h: 2, a: 2 }
+    ]
+  },
+  {
+    num: "34",
+    meta: "Sat 20 Jun · 21:00 UK · Group E",
+    home: "Germany",
+    away: "Ivory Coast",
+    searchHome: "Germany",
+    searchAway: "Ivory Coast",
+    altAwayTokens: ["côte d'ivoire", "cote d'ivoire"],
+    actualHome: 2,
+    actualAway: 1,
+    predictions: [
+      { name: "Kirk Walsh", h: 3, a: 2 },
+      { name: "Lee May", h: 2, a: 1 },
+      { name: "Mike Budd", h: 2, a: 2 },
+      { name: "Richard Boyce", h: 2, a: 0 },
+      { name: "Jordy Chalmers", h: 2, a: 1 },
+      { name: "Steve Kenna", h: 2, a: 0 },
+      { name: "Cameron Walsh", h: 2, a: 1 },
+      { name: "James Boyce", h: 2, a: 0 },
+      { name: "Cathy & Oliver", h: 4, a: 1 },
+      { name: "Lee Grainger", h: 3, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 2, a: 1 },
+      { name: "Georgia & Harry May", h: 3, a: 0 },
+      { name: "Dave Budd", h: 3, a: 1 },
+      { name: "Elliot Walsh", h: 5, a: 2 },
+      { name: "Chris Hunt", h: 2, a: 1 }
+    ]
+  },
+  {
+    num: "35",
+    meta: "Sun 21 Jun · 01:00 UK · Group E",
+    home: "Ecuador",
+    away: "Curacao",
+    searchHome: "Ecuador",
+    searchAway: "Curacao",
+    altAwayTokens: ["curaçao"],
+    actualHome: 0,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 3, a: 1 },
+      { name: "Lee May", h: 2, a: 0 },
+      { name: "Mike Budd", h: 3, a: 0 },
+      { name: "Richard Boyce", h: 1, a: 0 },
+      { name: "Jordy Chalmers", h: 5, a: 0 },
+      { name: "Steve Kenna", h: 2, a: 0 },
+      { name: "Cameron Walsh", h: 2, a: 0 },
+      { name: "James Boyce", h: 4, a: 0 },
+      { name: "Cathy & Oliver", h: 2, a: 0 },
+      { name: "Lee Grainger", h: 2, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 2, a: 1 },
+      { name: "Georgia & Harry May", h: 2, a: 0 },
+      { name: "Dave Budd", h: 4, a: 1 },
+      { name: "Elliot Walsh", h: 4, a: 1 },
+      { name: "Chris Hunt", h: 3, a: 0 }
+    ]
+  },
+  {
+    num: "36",
+    meta: "Sun 21 Jun · 05:00 UK · Group F",
+    home: "Tunisia",
+    away: "Japan",
+    searchHome: "Tunisia",
+    searchAway: "Japan",
+    actualHome: 0,
+    actualAway: 4,
+    predictions: [
+      { name: "Kirk Walsh", h: 0, a: 2 },
+      { name: "Lee May", h: 0, a: 2 },
+      { name: "Mike Budd", h: 1, a: 3 },
+      { name: "Richard Boyce", h: 1, a: 3 },
+      { name: "Jordy Chalmers", h: 1, a: 2 },
+      { name: "Steve Kenna", h: 0, a: 2 },
+      { name: "Cameron Walsh", h: 1, a: 3 },
+      { name: "James Boyce", h: 1, a: 3 },
+      { name: "Cathy & Oliver", h: 1, a: 2 },
+      { name: "Lee Grainger", h: 0, a: 2 },
+      { name: "Jason (2-1) Parsons", h: 1, a: 2 },
+      { name: "Georgia & Harry May", h: 0, a: 2 },
+      { name: "Dave Budd", h: 0, a: 2 },
+      { name: "Elliot Walsh", h: 1, a: 3 },
+      { name: "Chris Hunt", h: 1, a: 3 }
+    ]
+  },
+  {
+    num: "37",
+    meta: "Sun 21 Jun · 17:00 UK · Group H",
+    home: "Spain",
+    away: "Saudi Arabia",
+    searchHome: "Spain",
+    searchAway: "Saudi Arabia",
+    actualHome: 4,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 2, a: 0 },
+      { name: "Lee May", h: 1, a: 0 },
+      { name: "Mike Budd", h: 3, a: 1 },
+      { name: "Richard Boyce", h: 2, a: 0 },
+      { name: "Jordy Chalmers", h: 4, a: 1 },
+      { name: "Steve Kenna", h: 3, a: 0 },
+      { name: "Cameron Walsh", h: 4, a: 2 },
+      { name: "James Boyce", h: 3, a: 0 },
+      { name: "Cathy & Oliver", h: 5, a: 1 },
+      { name: "Lee Grainger", h: 3, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 1 },
+      { name: "Georgia & Harry May", h: 1, a: 0 },
+      { name: "Dave Budd", h: 4, a: 0 },
+      { name: "Elliot Walsh", h: 7, a: 1 },
+      { name: "Chris Hunt", h: 5, a: 0 }
+    ]
+  },
+  {
+    num: "38",
+    meta: "Sun 21 Jun · 20:00 UK · Group G",
+    home: "Belgium",
+    away: "Iran",
+    searchHome: "Belgium",
+    searchAway: "Iran",
+    actualHome: 0,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 3, a: 1 },
+      { name: "Lee May", h: 2, a: 1 },
+      { name: "Mike Budd", h: 1, a: 1 },
+      { name: "Richard Boyce", h: 3, a: 0 },
+      { name: "Jordy Chalmers", h: 2, a: 0 },
+      { name: "Steve Kenna", h: 3, a: 0 },
+      { name: "Cameron Walsh", h: 2, a: 1 },
+      { name: "James Boyce", h: 2, a: 0 },
+      { name: "Cathy & Oliver", h: 3, a: 1 },
+      { name: "Lee Grainger", h: 3, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 1 },
+      { name: "Georgia & Harry May", h: 1, a: 0 },
+      { name: "Dave Budd", h: 2, a: 0 },
+      { name: "Elliot Walsh", h: 3, a: 0 },
+      { name: "Chris Hunt", h: 3, a: 0 }
+    ]
+  },
+  {
+    num: "39",
+    meta: "Sun 21 Jun · 23:00 UK · Group H",
+    home: "Uruguay",
+    away: "Cape Verde",
+    searchHome: "Uruguay",
+    searchAway: "Cape Verde",
+    actualHome: 2,
+    actualAway: 2,
+    predictions: [
+      { name: "Kirk Walsh", h: 3, a: 0 },
+      { name: "Lee May", h: 1, a: 0 },
+      { name: "Mike Budd", h: 2, a: 0 },
+      { name: "Richard Boyce", h: 1, a: 0 },
+      { name: "Jordy Chalmers", h: 3, a: 0 },
+      { name: "Steve Kenna", h: 2, a: 0 },
+      { name: "Cameron Walsh", h: 2, a: 1 },
+      { name: "James Boyce", h: 1, a: 0 },
+      { name: "Cathy & Oliver", h: 3, a: 0 },
+      { name: "Lee Grainger", h: 2, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 1 },
+      { name: "Georgia & Harry May", h: 1, a: 0 },
+      { name: "Dave Budd", h: 3, a: 1 },
+      { name: "Elliot Walsh", h: 2, a: 0 },
+      { name: "Chris Hunt", h: 3, a: 0 }
+    ]
+  },
+  {
+    num: "40",
+    meta: "Mon 22 Jun · 02:00 UK · Group G",
+    home: "New Zealand",
+    away: "Egypt",
+    searchHome: "New Zealand",
+    searchAway: "Egypt",
+    actualHome: 1,
+    actualAway: 3,
+    predictions: [
+      { name: "Kirk Walsh", h: 0, a: 2 },
+      { name: "Lee May", h: 1, a: 1 },
+      { name: "Mike Budd", h: 1, a: 2 },
+      { name: "Richard Boyce", h: 1, a: 2 },
+      { name: "Jordy Chalmers", h: 1, a: 2 },
+      { name: "Steve Kenna", h: 1, a: 1 },
+      { name: "Cameron Walsh", h: 1, a: 1 },
+      { name: "James Boyce", h: 0, a: 2 },
+      { name: "Cathy & Oliver", h: 1, a: 2 },
+      { name: "Lee Grainger", h: 1, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 1, a: 2 },
+      { name: "Georgia & Harry May", h: 1, a: 1 },
+      { name: "Dave Budd", h: 0, a: 2 },
+      { name: "Elliot Walsh", h: 1, a: 2 },
+      { name: "Chris Hunt", h: 0, a: 3 }
+    ]
+  },
+  {
+    num: "41",
+    meta: "Mon 22 Jun · 18:00 UK · Group J",
+    home: "Argentina",
+    away: "Austria",
+    searchHome: "Argentina",
+    searchAway: "Austria",
+    actualHome: 2,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 3, a: 0 },
+      { name: "Lee May", h: 2, a: 0 },
+      { name: "Mike Budd", h: 1, a: 1 },
+      { name: "Richard Boyce", h: 2, a: 0 },
+      { name: "Jordy Chalmers", h: 2, a: 1 },
+      { name: "Steve Kenna", h: 2, a: 1 },
+      { name: "Cameron Walsh", h: 3, a: 1 },
+      { name: "James Boyce", h: 3, a: 1 },
+      { name: "Cathy & Oliver", h: 4, a: 0 },
+      { name: "Lee Grainger", h: 3, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 1 },
+      { name: "Georgia & Harry May", h: 2, a: 0 },
+      { name: "Dave Budd", h: 2, a: 1 },
+      { name: "Elliot Walsh", h: 4, a: 1 },
+      { name: "Chris Hunt", h: 3, a: 0 }
+    ]
+  },
+  {
+    num: "42",
+    meta: "Mon 22 Jun · 22:00 UK · Group I",
+    home: "France",
+    away: "Iraq",
+    searchHome: "France",
+    searchAway: "Iraq",
+    actualHome: 3,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 5, a: 0 },
+      { name: "Lee May", h: 3, a: 0 },
+      { name: "Mike Budd", h: 5, a: 1 },
+      { name: "Richard Boyce", h: 4, a: 0 },
+      { name: "Jordy Chalmers", h: 4, a: 1 },
+      { name: "Steve Kenna", h: 3, a: 0 },
+      { name: "Cameron Walsh", h: 4, a: 1 },
+      { name: "James Boyce", h: 3, a: 0 },
+      { name: "Cathy & Oliver", h: 4, a: 0 },
+      { name: "Lee Grainger", h: 4, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 1 },
+      { name: "Georgia & Harry May", h: 3, a: 0 },
+      { name: "Dave Budd", h: 5, a: 0 },
+      { name: "Elliot Walsh", h: 7, a: 0 },
+      { name: "Chris Hunt", h: 4, a: 0 }
+    ]
+  },
+  {
+    num: "43",
+    meta: "Tue 23 Jun · 01:00 UK · Group I",
+    home: "Norway",
+    away: "Senegal",
+    searchHome: "Norway",
+    searchAway: "Senegal",
+    actualHome: 3,
+    actualAway: 2,
+    predictions: [
+      { name: "Kirk Walsh", h: 1, a: 2 },
+      { name: "Lee May", h: 1, a: 2 },
+      { name: "Mike Budd", h: 1, a: 2 },
+      { name: "Richard Boyce", h: 2, a: 1 },
+      { name: "Jordy Chalmers", h: 1, a: 1 },
+      { name: "Steve Kenna", h: 2, a: 1 },
+      { name: "Cameron Walsh", h: 2, a: 1 },
+      { name: "James Boyce", h: 2, a: 1 },
+      { name: "Cathy & Oliver", h: 2, a: 2 },
+      { name: "Lee Grainger", h: 1, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 2, a: 1 },
+      { name: "Georgia & Harry May", h: 2, a: 1 },
+      { name: "Dave Budd", h: 2, a: 1 },
+      { name: "Elliot Walsh", h: 2, a: 2 },
+      { name: "Chris Hunt", h: 2, a: 2 }
+    ]
+  },
+  {
+    num: "44",
+    meta: "Tue 23 Jun · 04:00 UK · Group J",
+    home: "Jordan",
+    away: "Algeria",
+    searchHome: "Jordan",
+    searchAway: "Algeria",
+    actualHome: 1,
+    actualAway: 2,
+    predictions: [
+      { name: "Kirk Walsh", h: 0, a: 2 },
+      { name: "Lee May", h: 0, a: 1 },
+      { name: "Mike Budd", h: 2, a: 0 },
+      { name: "Richard Boyce", h: 0, a: 0 },
+      { name: "Jordy Chalmers", h: 0, a: 2 },
+      { name: "Steve Kenna", h: 1, a: 1 },
+      { name: "Cameron Walsh", h: 1, a: 2 },
+      { name: "James Boyce", h: 0, a: 2 },
+      { name: "Cathy & Oliver", h: 1, a: 2 },
+      { name: "Lee Grainger", h: 0, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 1, a: 2 },
+      { name: "Georgia & Harry May", h: 0, a: 1 },
+      { name: "Dave Budd", h: 1, a: 1 },
+      { name: "Elliot Walsh", h: 0, a: 2 },
+      { name: "Chris Hunt", h: 0, a: 2 }
+    ]
+  },
+  {
+    num: "45",
+    meta: "Tue 23 Jun · 18:00 UK · Group K",
+    home: "Portugal",
+    away: "Uzbekistan",
+    searchHome: "Portugal",
+    searchAway: "Uzbekistan",
+    actualHome: 5,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 4, a: 0 },
+      { name: "Lee May", h: 3, a: 0 },
+      { name: "Mike Budd", h: 4, a: 0 },
+      { name: "Richard Boyce", h: 3, a: 0 },
+      { name: "Jordy Chalmers", h: 6, a: 0 },
+      { name: "Steve Kenna", h: 3, a: 0 },
+      { name: "Cameron Walsh", h: 1, a: 0 },
+      { name: "James Boyce", h: 2, a: 0 },
+      { name: "Cathy & Oliver", h: 3, a: 0 },
+      { name: "Lee Grainger", h: 3, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 2, a: 1 },
+      { name: "Georgia & Harry May", h: 3, a: 0 },
+      { name: "Dave Budd", h: 4, a: 0 },
+      { name: "Elliot Walsh", h: 5, a: 1 },
+      { name: "Chris Hunt", h: 5, a: 0 }
+    ]
+  },
+  {
+    num: "46",
+    meta: "Tue 23 Jun · 21:00 UK · Group L",
+    home: "England",
+    away: "Ghana",
+    searchHome: "England",
+    searchAway: "Ghana",
+    actualHome: 0,
+    actualAway: 0,
+    predictions: [
+      { name: "Kirk Walsh", h: 2, a: 0 },
+      { name: "Lee May", h: 2, a: 0 },
+      { name: "Mike Budd", h: 3, a: 1 },
+      { name: "Richard Boyce", h: 1, a: 1 },
+      { name: "Jordy Chalmers", h: 1, a: 0 },
+      { name: "Steve Kenna", h: 2, a: 0 },
+      { name: "Cameron Walsh", h: 2, a: 0 },
+      { name: "James Boyce", h: 2, a: 0 },
+      { name: "Cathy & Oliver", h: 3, a: 1 },
+      { name: "Lee Grainger", h: 2, a: 1 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 1 },
+      { name: "Georgia & Harry May", h: 2, a: 0 },
+      { name: "Dave Budd", h: 3, a: 2 },
+      { name: "Elliot Walsh", h: 2, a: 1 },
+      { name: "Chris Hunt", h: 3, a: 1 }
+    ]
+  },
+  {
+    num: "47",
+    meta: "Wed 24 Jun · 00:00 UK · Group L",
+    home: "Panama",
+    away: "Croatia",
+    searchHome: "Panama",
+    searchAway: "Croatia",
+    actualHome: null,
+    actualAway: null,
+    predictions: [
+      { name: "Kirk Walsh", h: 0, a: 2 },
+      { name: "Lee May", h: 0, a: 2 },
+      { name: "Mike Budd", h: 0, a: 2 },
+      { name: "Richard Boyce", h: 1, a: 3 },
+      { name: "Jordy Chalmers", h: 1, a: 3 },
+      { name: "Steve Kenna", h: 0, a: 2 },
+      { name: "Cameron Walsh", h: 1, a: 1 },
+      { name: "James Boyce", h: 0, a: 2 },
+      { name: "Cathy & Oliver", h: 1, a: 3 },
+      { name: "Lee Grainger", h: 0, a: 3 },
+      { name: "Jason (2-1) Parsons", h: 1, a: 3 },
+      { name: "Georgia & Harry May", h: 0, a: 2 },
+      { name: "Dave Budd", h: 0, a: 1 },
+      { name: "Elliot Walsh", h: 0, a: 3 },
+      { name: "Chris Hunt", h: 0, a: 2 }
+    ]
+  },
+  {
+    num: "48",
+    meta: "Wed 24 Jun · 03:00 UK · Group K",
+    home: "Colombia",
+    away: "Congo DR",
+    searchHome: "Colombia",
+    searchAway: "Congo DR",
+    altAwayTokens: ["congo dr", "dr congo", "democratic republic"],
+    actualHome: null,
+    actualAway: null,
+    predictions: [
+      { name: "Kirk Walsh", h: 4, a: 1 },
+      { name: "Lee May", h: 2, a: 0 },
+      { name: "Mike Budd", h: 2, a: 0 },
+      { name: "Richard Boyce", h: 0, a: 2 },
+      { name: "Jordy Chalmers", h: 3, a: 0 },
+      { name: "Steve Kenna", h: 3, a: 0 },
+      { name: "Cameron Walsh", h: 2, a: 0 },
+      { name: "James Boyce", h: 1, a: 0 },
+      { name: "Cathy & Oliver", h: 2, a: 1 },
+      { name: "Lee Grainger", h: 2, a: 0 },
+      { name: "Jason (2-1) Parsons", h: 3, a: 1 },
+      { name: "Georgia & Harry May", h: 2, a: 0 },
+      { name: "Dave Budd", h: 3, a: 1 },
+      { name: "Elliot Walsh", h: 2, a: 1 },
+      { name: "Chris Hunt", h: 3, a: 0 }
+    ]
+  }
+];
+
+
+
+
+function calcPoints(predH, predA, actH, actA){
+  if (actH === null || actA === null) return null;
+  if (predH === actH && predA === actA) return 5;
+  const predDiff = predH - predA;
+  const actDiff = actH - actA;
+  const sign = x => (x > 0) - (x < 0);
+  if (sign(predDiff) === sign(actDiff)){
+    if (predDiff === actDiff) return 2;
+    return 1;
+  }
+  return 0;
+}
+
+function ptsClass(pts){
+  if (pts === null) return '';
+  return 'pts-' + pts;
+}
+
+// Returns {homeScore, awayScore, status} - prefers confirmed actual score from spreadsheet,
+// falls back to live API data, falls back to 'pending'
+function getMatchResult(m, liveData, idx){
+  if (m.actualHome !== null && m.actualHome !== undefined &&
+      m.actualAway !== null && m.actualAway !== undefined){
+    return { homeScore: m.actualHome, awayScore: m.actualAway, status: 'ft', confirmed: true };
+  }
+  const live = liveData[idx];
+  if (live) return { ...live, confirmed: false };
+  return { homeScore: null, awayScore: null, status: 'pending', confirmed: false };
+}
+
+function renderLeaderboard(liveData){
+  const thisRound = {};
+  matchesData[0].predictions.forEach(p => thisRound[p.name] = 0);
+
+  matchesData.forEach((m, idx) => {
+    const result = getMatchResult(m, liveData, idx);
+    const actH = result.homeScore;
+    const actA = result.awayScore;
+    m.predictions.forEach(p => {
+      const pts = calcPoints(p.h, p.a, actH, actA);
+      thisRound[p.name] += (pts || 0);
+    });
+  });
+
+  const combined = Object.keys(thisRound).map(name => {
+    const prev = previousRoundsPoints[name] || 0;
+    const cur = thisRound[name];
+    return { name, prev, cur, total: prev + cur };
+  });
+
+  combined.sort((a,b) => b.total - a.total);
+  const tbody = document.getElementById('leaderboardBody');
+  tbody.innerHTML = '';
+  const topScore = combined.length ? combined[0].total : 0;
+
+  combined.forEach(({name, prev, cur, total}) => {
+    const tr = document.createElement('tr');
+    if (total === topScore && total > 0) tr.className = 'leader';
+    tr.innerHTML = `<td class="name">${name}</td><td>${prev}</td><td>${cur}</td><td class="total">${total}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderMatches(liveData){
+  const container = document.getElementById('matches');
+  container.innerHTML = '';
+
+  matchesData.forEach((m, idx) => {
+    const result = getMatchResult(m, liveData, idx);
+    const actH = result.homeScore;
+    const actA = result.awayScore;
+    const status = result.status;
+
+    const card = document.createElement('div');
+    card.className = 'match-card';
+
+    let statusHtml = '';
+    if (status === 'live'){
+      statusHtml = `<span class="status-pill status-live">Live</span><span class="live-score">${actH} – ${actA}</span>`;
+    } else if (status === 'ft'){
+      const label = result.confirmed ? 'Full Time' : 'Full Time';
+      statusHtml = `<span class="status-pill status-ft">${label}</span><span class="live-score">${actH} – ${actA}</span>`;
+    } else {
+      statusHtml = `<span class="status-pill status-pending">Not started</span>`;
+    }
+
+    let rows = '';
+    m.predictions.forEach(p => {
+      const pts = calcPoints(p.h, p.a, actH, actA);
+      const ptsHtml = pts === null
+        ? '<span class="pts-badge pts-0" style="opacity:0.4">—</span>'
+        : `<span class="pts-badge ${ptsClass(pts)}">${pts}</span>`;
+      rows += `<tr>
+        <td class="player-name">${p.name}</td>
+        <td class="score">${p.h} <span class="sep">–</span> ${p.a}</td>
+        <td class="pts">${ptsHtml}</td>
+      </tr>`;
+    });
+
+    card.innerHTML = `
+      <div class="match-meta"><span class="num">Match ${m.num}</span><span>${m.meta}</span></div>
+      <div class="fixture-title">${m.home} <span class="vs">vs</span> ${m.away}</div>
+      <div class="actual-row">${statusHtml}</div>
+      <table>
+        <thead>
+          <tr><th>Player</th><th>Score</th><th>Pts</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// Fetch live event data from TheSportsDB free API
+async function fetchLiveScores(){
+  const refreshBar = document.getElementById('refreshBar');
+  const liveData = matchesData.map(() => null);
+
+  function nameTokens(m, side){
+    const primary = (side === 'home' ? m.searchHome : m.searchAway).toLowerCase();
+    const alt = side === 'home' ? (m.altHomeTokens || []) : (m.altAwayTokens || []);
+    return [primary.split(' ')[0], ...alt.map(t => t.toLowerCase())];
+  }
+
+  function findMatch(events, m){
+    const homeTokens = nameTokens(m, 'home');
+    const awayTokens = nameTokens(m, 'away');
+    return events.find(ev => {
+      const h = (ev.strHomeTeam || '').toLowerCase();
+      const a = (ev.strAwayTeam || '').toLowerCase();
+      const homeMatch = homeTokens.some(t => h.includes(t));
+      const awayMatch = awayTokens.some(t => a.includes(t));
+      return homeMatch && awayMatch;
+    });
+  }
+
+  try {
+    const today = new Date().toISOString().slice(0,10);
+    // Try multiple endpoints/leagues for better World Cup coverage
+    const urls = [
+      'https://www.thesportsdb.com/api/v1/json/3/eventsday.php?d=' + today + '&s=Soccer',
+      'https://www.thesportsdb.com/api/v1/json/3/eventsday.php?d=' + today + '&l=4429', // FIFA World Cup league id
+    ];
+
+    let events = [];
+    for (const url of urls){
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.events) events = events.concat(data.events);
+      } catch(innerErr){
+        // ignore individual endpoint failures, try next
+      }
+    }
+
+    matchesData.forEach((m, idx) => {
+      const match = findMatch(events, m);
+
+      if (match){
+        const homeScore = match.intHomeScore !== null ? parseInt(match.intHomeScore) : null;
+        const awayScore = match.intAwayScore !== null ? parseInt(match.intAwayScore) : null;
+        let status = 'pending';
+        if (match.strStatus === 'Match Finished' || match.strStatus === 'FT'){
+          status = 'ft';
+        } else if (homeScore !== null && awayScore !== null && match.strStatus && match.strStatus !== 'Not Started'){
+          status = 'live';
+        }
+        liveData[idx] = { homeScore, awayScore, status };
+      }
+    });
+
+    const foundCount = liveData.filter(d => d !== null).length;
+    refreshBar.textContent = 'Last checked: ' + new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) +
+      ' (' + foundCount + '/' + matchesData.length + ' matches found)';
+  } catch(e){
+    refreshBar.textContent = 'Live score check unavailable — showing predictions only';
+  }
+
+  renderMatches(liveData);
+  renderLeaderboard(liveData);
+}
+
+fetchLiveScores();
+setInterval(fetchLiveScores, 60000);
+</script>
+</body>
+</html>

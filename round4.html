@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — Group Stage Predictions — Round 4</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --grass: #1f4d2c;
+    --grass-dark: #163a20;
+    --chalk: #f4f1e8;
+    --gold: #e0a526;
+    --line: rgba(244,241,232,0.18);
+  }
+
+  *{box-sizing:border-box;}
+  html{
+    background: var(--grass);
+    color-scheme: dark;
+  }
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background: var(--grass) !important;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 40px, transparent 40px, transparent 80px);
+    color: var(--chalk) !important;
+    min-height:100vh;
+    padding: 32px 16px 64px;
+  }
+
+  .wrap{ max-width: 640px; margin: 0 auto; }
+
+  header{ margin-bottom: 36px; }
+  .kicker{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+  h1{
+    font-family:'Archivo Black', sans-serif;
+    font-size: clamp(2.1rem, 8vw, 3.2rem);
+    line-height: 1.05;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+  header p{
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(244,241,232,0.78);
+    margin: 0;
+    max-width: 50ch;
+  }
+
+  form{ display:flex; flex-direction:column; gap: 18px; }
+
+  .name-field{
+    background: rgba(244,241,232,0.06);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 18px;
+  }
+  .name-field label{
+    display:block;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .name-field input{
+    width:100%;
+    background: var(--grass-dark);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--chalk);
+    font-family:'Inter',sans-serif;
+    font-size: 16px;
+    padding: 10px 12px;
+  }
+  .name-field input:focus{ outline: 2px solid var(--gold); outline-offset: 1px; }
+
+  .match{
+    background: rgba(244,241,232,0.06);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 18px;
+    position: relative;
+  }
+  .match-meta{
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.55);
+    margin-bottom: 14px;
+  }
+  .match-meta .num{ color: var(--gold); font-weight:700; }
+
+  .teams{
+    display:grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+  }
+  .team{
+    font-family:'Archivo Black', sans-serif;
+    font-size: clamp(1.05rem, 4.5vw, 1.4rem);
+    text-transform: uppercase;
+    line-height: 1.15;
+  }
+  .team.home{ text-align: right; }
+  .team.away{ text-align: left; }
+
+  .score-input{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    justify-content:center;
+  }
+  .score-input input{
+    width: 56px;
+    height: 56px;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size: 24px;
+    font-weight:700;
+    background: var(--grass-dark);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    color: var(--chalk);
+    -moz-appearance: textfield;
+  }
+  .score-input input::-webkit-outer-spin-button,
+  .score-input input::-webkit-inner-spin-button{
+    -webkit-appearance: none; margin:0;
+  }
+  .score-input input:focus{ outline: 2px solid var(--gold); outline-offset: 1px; }
+  .score-sep{
+    font-family:'Archivo Black', sans-serif;
+    font-size: 24px;
+    color: rgba(244,241,232,0.35);
+  }
+
+  .submit-btn{
+    margin-top: 8px;
+    background: var(--gold);
+    color: var(--grass-dark);
+    border: none;
+    border-radius: 4px;
+    padding: 18px;
+    font-family:'Archivo Black', sans-serif;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .submit-btn:hover{ background: #f0b942; transform: translateY(-1px); }
+  .submit-btn:active{ transform: translateY(0); }
+
+  .note{
+    font-family:'Space Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: rgba(244,241,232,0.5);
+    text-align:center;
+    margin-top: 4px;
+  }
+
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.5);
+    text-decoration:none;
+    margin-bottom: 28px;
+  }
+  .back-link:hover{ color: var(--gold); }
+
+  footer{
+    margin-top: 40px;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.35);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back-link" href="index.html">← Back to home</a>
+
+  <header>
+    <p class="kicker">Group Stage · Round 4 (Games 25–48)</p>
+    <h1>Call your scores</h1>
+    <p>Predict the result of games 25 through 48 — the middle round of group games. Fill in your name and a scoreline for each match, then hit send — it'll open your email app with everything filled in. Just press send there too.</p>
+  </header>
+
+  <form id="predictionForm">
+
+    <div class="name-field">
+      <label for="playerName">Your name</label>
+      <input type="text" id="playerName" name="playerName" placeholder="e.g. Kirk" required>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 25</span><span>Thu 18 Jun · 17:00 UK · Group A</span></div>
+      <div class="teams">
+        <div class="team home">Czechia</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m25h" name="m25h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m25a" name="m25a" required>
+        </div>
+        <div class="team away">South Africa</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 26</span><span>Thu 18 Jun · 20:00 UK · Group B</span></div>
+      <div class="teams">
+        <div class="team home">Switzerland</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m26h" name="m26h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m26a" name="m26a" required>
+        </div>
+        <div class="team away">Bosnia & Herzegovina</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 27</span><span>Thu 18 Jun · 23:00 UK · Group B</span></div>
+      <div class="teams">
+        <div class="team home">Canada</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m27h" name="m27h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m27a" name="m27a" required>
+        </div>
+        <div class="team away">Qatar</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 28</span><span>Fri 19 Jun · 02:00 UK · Group A</span></div>
+      <div class="teams">
+        <div class="team home">Mexico</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m28h" name="m28h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m28a" name="m28a" required>
+        </div>
+        <div class="team away">South Korea</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 29</span><span>Fri 19 Jun · 20:00 UK · Group D</span></div>
+      <div class="teams">
+        <div class="team home">USA</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m29h" name="m29h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m29a" name="m29a" required>
+        </div>
+        <div class="team away">Australia</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 30</span><span>Fri 19 Jun · 20:00 UK · Group C</span></div>
+      <div class="teams">
+        <div class="team home">Scotland</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m30h" name="m30h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m30a" name="m30a" required>
+        </div>
+        <div class="team away">Morocco</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 31</span><span>Sat 20 Jun · 02:00 UK · Group C</span></div>
+      <div class="teams">
+        <div class="team home">Brazil</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m31h" name="m31h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m31a" name="m31a" required>
+        </div>
+        <div class="team away">Haiti</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 32</span><span>Sat 20 Jun · 05:00 UK · Group D</span></div>
+      <div class="teams">
+        <div class="team home">Turkey</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m32h" name="m32h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m32a" name="m32a" required>
+        </div>
+        <div class="team away">Paraguay</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 33</span><span>Sat 20 Jun · 18:00 UK · Group F</span></div>
+      <div class="teams">
+        <div class="team home">Netherlands</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m33h" name="m33h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m33a" name="m33a" required>
+        </div>
+        <div class="team away">Sweden</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 34</span><span>Sat 20 Jun · 21:00 UK · Group E</span></div>
+      <div class="teams">
+        <div class="team home">Germany</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m34h" name="m34h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m34a" name="m34a" required>
+        </div>
+        <div class="team away">Ivory Coast</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 35</span><span>Sun 21 Jun · 01:00 UK · Group E</span></div>
+      <div class="teams">
+        <div class="team home">Ecuador</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m35h" name="m35h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m35a" name="m35a" required>
+        </div>
+        <div class="team away">Curacao</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 36</span><span>Sun 21 Jun · 05:00 UK · Group F</span></div>
+      <div class="teams">
+        <div class="team home">Tunisia</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m36h" name="m36h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m36a" name="m36a" required>
+        </div>
+        <div class="team away">Japan</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 37</span><span>Sun 21 Jun · 17:00 UK · Group H</span></div>
+      <div class="teams">
+        <div class="team home">Spain</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m37h" name="m37h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m37a" name="m37a" required>
+        </div>
+        <div class="team away">Saudi Arabia</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 38</span><span>Sun 21 Jun · 20:00 UK · Group G</span></div>
+      <div class="teams">
+        <div class="team home">Belgium</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m38h" name="m38h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m38a" name="m38a" required>
+        </div>
+        <div class="team away">Iran</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 39</span><span>Sun 21 Jun · 23:00 UK · Group H</span></div>
+      <div class="teams">
+        <div class="team home">Uruguay</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m39h" name="m39h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m39a" name="m39a" required>
+        </div>
+        <div class="team away">Cape Verde</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 40</span><span>Mon 22 Jun · 02:00 UK · Group G</span></div>
+      <div class="teams">
+        <div class="team home">New Zealand</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m40h" name="m40h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m40a" name="m40a" required>
+        </div>
+        <div class="team away">Egypt</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 41</span><span>Mon 22 Jun · 18:00 UK · Group J</span></div>
+      <div class="teams">
+        <div class="team home">Argentina</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m41h" name="m41h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m41a" name="m41a" required>
+        </div>
+        <div class="team away">Austria</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 42</span><span>Mon 22 Jun · 22:00 UK · Group I</span></div>
+      <div class="teams">
+        <div class="team home">France</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m42h" name="m42h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m42a" name="m42a" required>
+        </div>
+        <div class="team away">Iraq</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 43</span><span>Tue 23 Jun · 01:00 UK · Group I</span></div>
+      <div class="teams">
+        <div class="team home">Norway</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m43h" name="m43h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m43a" name="m43a" required>
+        </div>
+        <div class="team away">Senegal</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 44</span><span>Tue 23 Jun · 04:00 UK · Group J</span></div>
+      <div class="teams">
+        <div class="team home">Jordan</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m44h" name="m44h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m44a" name="m44a" required>
+        </div>
+        <div class="team away">Algeria</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 45</span><span>Tue 23 Jun · 18:00 UK · Group K</span></div>
+      <div class="teams">
+        <div class="team home">Portugal</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m45h" name="m45h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m45a" name="m45a" required>
+        </div>
+        <div class="team away">Uzbekistan</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 46</span><span>Tue 23 Jun · 21:00 UK · Group L</span></div>
+      <div class="teams">
+        <div class="team home">England</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m46h" name="m46h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m46a" name="m46a" required>
+        </div>
+        <div class="team away">Ghana</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 47</span><span>Wed 24 Jun · 00:00 UK · Group L</span></div>
+      <div class="teams">
+        <div class="team home">Panama</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m47h" name="m47h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m47a" name="m47a" required>
+        </div>
+        <div class="team away">Croatia</div>
+      </div>
+    </div>
+
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 48</span><span>Wed 24 Jun · 03:00 UK · Group K</span></div>
+      <div class="teams">
+        <div class="team home">Colombia</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m48h" name="m48h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m48a" name="m48a" required>
+        </div>
+        <div class="team away">Congo DR</div>
+      </div>
+    </div>
+
+
+    <button type="submit" class="submit-btn">Send my predictions</button>
+    <p class="note">This opens an email to Kirk with your picks pre-filled.<br>Kick-off times shown in UK time.</p>
+  </form>
+
+  <footer>World Cup 2026 · Prediction League</footer>
+</div>
+
+<script>
+  document.getElementById('predictionForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const name = document.getElementById('playerName').value.trim();
+    const matches = [
+      { label: "Czechia vs South Africa", h: 'm25h', a: 'm25a' },
+      { label: "Switzerland vs Bosnia & Herzegovina", h: 'm26h', a: 'm26a' },
+      { label: "Canada vs Qatar", h: 'm27h', a: 'm27a' },
+      { label: "Mexico vs South Korea", h: 'm28h', a: 'm28a' },
+      { label: "USA vs Australia", h: 'm29h', a: 'm29a' },
+      { label: "Scotland vs Morocco", h: 'm30h', a: 'm30a' },
+      { label: "Brazil vs Haiti", h: 'm31h', a: 'm31a' },
+      { label: "Turkey vs Paraguay", h: 'm32h', a: 'm32a' },
+      { label: "Netherlands vs Sweden", h: 'm33h', a: 'm33a' },
+      { label: "Germany vs Ivory Coast", h: 'm34h', a: 'm34a' },
+      { label: "Ecuador vs Curacao", h: 'm35h', a: 'm35a' },
+      { label: "Tunisia vs Japan", h: 'm36h', a: 'm36a' },
+      { label: "Spain vs Saudi Arabia", h: 'm37h', a: 'm37a' },
+      { label: "Belgium vs Iran", h: 'm38h', a: 'm38a' },
+      { label: "Uruguay vs Cape Verde", h: 'm39h', a: 'm39a' },
+      { label: "New Zealand vs Egypt", h: 'm40h', a: 'm40a' },
+      { label: "Argentina vs Austria", h: 'm41h', a: 'm41a' },
+      { label: "France vs Iraq", h: 'm42h', a: 'm42a' },
+      { label: "Norway vs Senegal", h: 'm43h', a: 'm43a' },
+      { label: "Jordan vs Algeria", h: 'm44h', a: 'm44a' },
+      { label: "Portugal vs Uzbekistan", h: 'm45h', a: 'm45a' },
+      { label: "England vs Ghana", h: 'm46h', a: 'm46a' },
+      { label: "Panama vs Croatia", h: 'm47h', a: 'm47a' },
+      { label: "Colombia vs Congo DR", h: 'm48h', a: 'm48a' }
+    ];
+
+    let bodyLines = [`Predictions from: ${name}`, ``];
+    matches.forEach(m => {
+      const h = document.getElementById(m.h).value;
+      const a = document.getElementById(m.a).value;
+      bodyLines.push(`${m.label}: ${h} - ${a}`);
+    });
+
+    const subject = encodeURIComponent(`World Cup Predictions Round 4 - ${name}`);
+    const body = encodeURIComponent(bodyLines.join('\n'));
+
+    window.location.href = `mailto:mrgashead@hotmail.com?subject=${subject}&body=${body}`;
+  });
+</script>
+</body>
+</html>
