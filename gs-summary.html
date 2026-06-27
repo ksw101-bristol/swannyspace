@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — Rounds 1–3 Summary</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --grass: #1f4d2c;
+    --grass-dark: #163a20;
+    --chalk: #f4f1e8;
+    --gold: #e0a526;
+    --line: rgba(244,241,232,0.18);
+    --green: #3fa34d;
+    --orange: #e07b26;
+    --yellow: #c9aa1e;
+  }
+
+  *{box-sizing:border-box;}
+  html{background:var(--grass);color-scheme:dark;}
+  body{
+    margin:0;font-family:'Inter',sans-serif;
+    background:var(--grass)!important;
+    background-image:repeating-linear-gradient(0deg,rgba(255,255,255,0.025) 0px,rgba(255,255,255,0.025) 40px,transparent 40px,transparent 80px);
+    color:var(--chalk)!important;min-height:100vh;padding:32px 16px 64px;
+  }
+
+  .wrap{max-width:100%;margin:0 auto;}
+
+  .back-link{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(244,241,232,0.5);text-decoration:none;margin-bottom:28px;}
+  .back-link:hover{color:var(--gold);}
+
+  header{margin-bottom:28px;}
+  .kicker{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;}
+  h1{font-family:'Archivo Black',sans-serif;font-size:clamp(1.8rem,6vw,2.8rem);line-height:1.05;margin:0 0 12px;text-transform:uppercase;letter-spacing:-0.01em;}
+  header p{font-size:14px;line-height:1.6;color:rgba(244,241,232,0.78);margin:0;}
+
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(244,241,232,0.6);margin:20px 0 24px;}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .legend i{display:inline-block;width:20px;height:20px;border-radius:3px;line-height:20px;text-align:center;font-style:normal;font-weight:700;font-size:11px;color:var(--grass-dark);}
+
+  .table-wrap{overflow-x:auto;border-radius:4px;border:1px solid var(--line);}
+
+  table{
+    border-collapse:collapse;
+    font-family:'Space Mono',monospace;
+    font-size:12px;
+    white-space:nowrap;
+    width:100%;
+  }
+
+  /* Sticky first column */
+  th:first-child, td:first-child{
+    position:sticky;left:0;z-index:2;
+    background:var(--grass-dark);
+    min-width:160px;max-width:200px;
+    white-space:normal;word-break:break-word;
+    border-right:2px solid var(--gold);
+  }
+  th:first-child{z-index:3;}
+
+  thead th{
+    background:var(--grass-dark);
+    color:var(--gold);
+    font-family:'Inter',sans-serif;
+    font-size:11px;font-weight:600;
+    text-transform:uppercase;letter-spacing:0.06em;
+    padding:10px 10px;
+    border-bottom:2px solid var(--line);
+    text-align:center;
+  }
+  thead th:first-child{text-align:left;padding-left:14px;}
+
+  tbody tr:nth-child(even){background:rgba(244,241,232,0.03);}
+  tbody tr:hover{background:rgba(244,241,232,0.07);}
+
+  td{
+    padding:8px 8px;
+    border-bottom:1px solid rgba(244,241,232,0.08);
+    text-align:center;
+    vertical-align:middle;
+  }
+  td:first-child{text-align:left;padding-left:14px;}
+
+  .game-label{
+    font-family:'Inter',sans-serif;font-size:12px;font-weight:600;
+    color:var(--chalk);line-height:1.3;
+  }
+  .game-result{
+    font-family:'Space Mono',monospace;font-size:10px;
+    color:var(--gold);display:block;margin-top:1px;
+  }
+  .game-num{
+    font-family:'Space Mono',monospace;font-size:10px;
+    color:rgba(244,241,232,0.35);display:block;
+  }
+
+  .pts{
+    display:inline-block;width:26px;height:26px;line-height:26px;
+    border-radius:4px;font-weight:700;font-size:13px;text-align:center;
+  }
+  .pts-5{background:var(--green);color:var(--grass-dark);}
+  .pts-2{background:var(--orange);color:var(--grass-dark);}
+  .pts-1{background:var(--yellow);color:var(--grass-dark);}
+  .pts-0{background:rgba(244,241,232,0.08);color:rgba(244,241,232,0.35);}
+
+  /* Round dividers */
+  tr.round-header td{
+    background:rgba(224,165,38,0.1);
+    color:var(--gold);font-family:'Space Mono',monospace;
+    font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+    padding:5px 14px;border-top:1px solid rgba(224,165,38,0.3);
+    font-weight:700;
+  }
+
+  /* Totals row */
+  tr.totals-row td{
+    background:rgba(244,241,232,0.06);
+    border-top:2px solid var(--gold);
+    font-weight:700;font-size:13px;
+    padding:10px 8px;
+  }
+  tr.totals-row td:first-child{
+    color:var(--gold);font-family:'Inter',sans-serif;
+  }
+
+  footer{margin-top:40px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(244,241,232,0.35);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="gs-index.html">← Back to home</a>
+
+  <header>
+    <p class="kicker">Group Stage · Rounds 1–4 · Score Summary</p>
+    <h1>The Scoreboard</h1>
+    <p>Points scored by each player for every group stage game across Rounds 1–4. Actual result shown alongside each fixture.</p>
+  </header>
+
+  <div class="legend">
+    <span><i class="pts pts-5">5</i> Exact score</span>
+    <span><i class="pts pts-2">2</i> Correct result + goal diff</span>
+    <span><i class="pts pts-1">1</i> Correct result</span>
+    <span><i class="pts pts-0">0</i> Wrong</span>
+  </div>
+
+  <div class="table-wrap">
+    <table id="scoreTable"></table>
+  </div>
+
+  <footer>Swanny's World Cup 2026 · Prediction League</footer>
+</div>
+
+<script>
+const players = ["Kirk Walsh","Lee May","Mike Budd","Richard Boyce","Jordy Chalmers","Steve Kenna","Cameron Walsh","James Boyce","Cathy & Oliver","Lee Grainger","Jason (2-1) Parsons","Georgia & Harry May","Dave Budd","Elliot Walsh","Chris Hunt"];
+
+const rounds = [
+  { label: "Round 1 — Games 1–4", games: [
+    { num:"01", fixture:"Mexico v South Africa",     result:"2–0", scores:[5,2,1,0,1,1,2,1,5,1,1,2,2,2,5] },
+    { num:"02", fixture:"South Korea v Czechia",     result:"2–1", scores:[5,5,0,0,0,2,0,0,5,0,5,0,0,0,0] },
+    { num:"03", fixture:"Canada v Bosnia & Herz.",   result:"1–1", scores:[0,0,0,0,0,5,0,0,0,5,0,0,5,0,0] },
+    { num:"04", fixture:"USA v Paraguay",            result:"4–1", scores:[0,1,0,1,0,1,1,0,1,1,1,1,0,1,1] },
+  ]},
+  { label: "Round 2 — Games 5–12", games: [
+    { num:"05", fixture:"Qatar v Switzerland",       result:"1–1", scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+    { num:"06", fixture:"Brazil v Morocco",          result:"1–1", scores:[0,0,0,0,0,0,2,0,0,0,0,0,0,0,0] },
+    { num:"07", fixture:"Haiti v Scotland",          result:"0–1", scores:[1,5,1,1,1,1,5,5,2,1,1,0,1,1,1] },
+    { num:"08", fixture:"Australia v Turkey",        result:"2–0", scores:[0,0,0,5,1,0,0,0,0,0,0,1,0,0,0] },
+    { num:"09", fixture:"Germany v Curaçao",         result:"7–1", scores:[1,1,1,1,1,1,1,1,1,1,1,1,2,1,1] },
+    { num:"10", fixture:"Netherlands v Japan",       result:"2–2", scores:[0,0,2,0,5,0,0,0,0,0,0,0,0,0,5] },
+    { num:"11", fixture:"Ivory Coast v Ecuador",     result:"1–0", scores:[0,0,0,0,2,2,0,0,0,2,0,0,0,0,2] },
+    { num:"12", fixture:"Sweden v Tunisia",          result:"5–1", scores:[1,1,1,1,1,1,1,1,1,1,1,0,1,1,1] },
+  ]},
+  { label: "Round 3 — Games 13–24", games: [
+    { num:"13", fixture:"Spain v Cape Verde",        result:"0–0", scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+    { num:"14", fixture:"Belgium v Egypt",           result:"1–1", scores:[0,0,0,0,0,0,0,0,0,0,0,5,0,0,2] },
+    { num:"15", fixture:"Saudi Arabia v Uruguay",    result:"1–1", scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+    { num:"16", fixture:"Iran v New Zealand",        result:"2–2", scores:[0,0,2,5,0,0,0,0,0,0,0,0,2,5,0] },
+    { num:"17", fixture:"France v Senegal",          result:"3–1", scores:[2,2,5,5,5,5,1,2,1,5,5,1,2,1,1] },
+    { num:"18", fixture:"Iraq v Norway",             result:"1–4", scores:[2,1,2,1,1,2,1,1,2,1,1,2,2,1,2] },
+    { num:"19", fixture:"Argentina v Algeria",       result:"3–0", scores:[1,1,0,0,1,1,1,1,5,1,1,1,1,1,1] },
+    { num:"20", fixture:"Austria v Jordan",          result:"3–1", scores:[2,2,2,1,1,2,1,1,0,2,1,2,2,2,2] },
+    { num:"21", fixture:"Portugal v Congo DR",       result:"1–1", scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+    { num:"22", fixture:"England v Croatia",         result:"4–2", scores:[0,1,2,0,2,1,1,1,1,2,1,1,1,0,2] },
+    { num:"23", fixture:"Ghana v Panama",            result:"1–0", scores:[0,5,1,2,2,1,2,1,2,1,2,5,5,1,1] },
+    { num:"24", fixture:"Uzbekistan v Colombia",     result:"1–3", scores:[1,2,1,2,1,1,0,1,2,2,1,1,2,5,1] },
+  ]},
+  { label: "Round 4 — Games 25–48", games: [
+    { num:"25", fixture:"Czechia v South Africa",      result:"1–1", scores:[0,0,0,0,0,0,0,0,0,5,0,0,0,0,0] },
+    { num:"26", fixture:"Switzerland v Bosnia & Herz.",result:"4–1", scores:[0,0,1,0,0,0,0,1,0,1,1,1,1,1,0] },
+    { num:"27", fixture:"Canada v Qatar",              result:"6–0", scores:[1,1,1,1,1,1,1,1,1,0,1,1,1,1,0] },
+    { num:"28", fixture:"Mexico v South Korea",        result:"1–0", scores:[0,0,0,0,2,2,2,2,2,2,0,0,0,0,0] },
+    { num:"29", fixture:"USA v Australia",             result:"2–0", scores:[5,2,2,0,2,2,0,1,1,1,2,5,2,1,2] },
+    { num:"30", fixture:"Scotland v Morocco",          result:"0–1", scores:[1,5,0,1,1,1,2,1,2,5,1,1,1,2,1] },
+    { num:"31", fixture:"Brazil v Haiti",              result:"3–0", scores:[1,1,2,5,1,1,5,1,1,5,5,5,5,1,1] },
+    { num:"32", fixture:"Turkey v Paraguay",           result:"0–1", scores:[0,2,0,0,0,0,0,0,2,0,0,0,0,0,1] },
+    { num:"33", fixture:"Netherlands v Sweden",        result:"5–1", scores:[1,0,0,0,0,0,0,1,0,1,1,1,1,1,0] },
+    { num:"34", fixture:"Germany v Ivory Coast",       result:"2–1", scores:[2,5,0,1,5,1,5,1,1,1,5,1,1,1,5] },
+    { num:"35", fixture:"Ecuador v Curaçao",           result:"0–0", scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+    { num:"36", fixture:"Tunisia v Japan",             result:"0–4", scores:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] },
+    { num:"37", fixture:"Spain v Saudi Arabia",        result:"4–0", scores:[1,1,1,1,1,1,1,1,2,1,1,1,5,1,1] },
+    { num:"38", fixture:"Belgium v Iran",              result:"0–0", scores:[0,0,2,0,0,0,0,0,0,0,0,0,0,0,0] },
+    { num:"39", fixture:"Uruguay v Cape Verde",        result:"2–2", scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+    { num:"40", fixture:"New Zealand v Egypt",         result:"1–3", scores:[2,0,1,1,1,0,0,2,1,0,1,0,2,1,1] },
+    { num:"41", fixture:"Argentina v Austria",         result:"2–0", scores:[1,5,0,5,1,1,2,2,1,1,2,5,1,1,1] },
+    { num:"42", fixture:"France v Iraq",               result:"3–0", scores:[1,5,1,1,2,5,2,5,1,1,1,5,1,1,1] },
+    { num:"43", fixture:"Norway v Senegal",            result:"3–2", scores:[0,0,0,2,0,2,2,2,0,2,2,2,2,0,0] },
+    { num:"44", fixture:"Jordan v Algeria",            result:"1–2", scores:[1,2,0,0,1,0,5,1,5,2,5,2,0,1,1] },
+    { num:"45", fixture:"Portugal v Uzbekistan",       result:"5–0", scores:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,5] },
+    { num:"46", fixture:"England v Ghana",             result:"0–0", scores:[0,0,0,2,0,0,0,0,0,0,0,0,0,0,0] },
+    { num:"47", fixture:"Panama v Croatia",            result:"0–1", scores:[1,1,1,1,1,1,0,1,1,1,1,1,5,1,1] },
+    { num:"48", fixture:"Colombia v Congo DR",         result:"1–0", scores:[1,1,1,0,1,1,1,5,2,1,1,1,1,2,1] },
+  ]},
+];
+
+const totals = new Array(players.length).fill(0);
+rounds.forEach(r => r.games.forEach(g => g.scores.forEach((s,i) => totals[i] += s)));
+
+const table = document.getElementById('scoreTable');
+
+// Header
+const thead = document.createElement('thead');
+const hrow = document.createElement('tr');
+const th0 = document.createElement('th');
+th0.textContent = 'Fixture';
+hrow.appendChild(th0);
+players.forEach(p => {
+  const th = document.createElement('th');
+  // Abbreviate long names
+  const short = p.replace(' & ', '/').replace('Jason (2-1) ', 'Jason ').replace(' May', ' M.').replace(' Walsh',' W.').replace(' Boyce',' B.').replace(' Budd',' Bu.').replace(' Kenna',' K.').replace(' Hunt',' H.').replace(' Grainger',' G.').replace(' Chalmers',' C.').replace('Cameron ','Cam.').replace('Georgia/Harry ','G&H ');
+  th.textContent = short;
+  th.title = p;
+  hrow.appendChild(th);
+});
+thead.appendChild(hrow);
+table.appendChild(thead);
+
+// Body
+const tbody = document.createElement('tbody');
+
+rounds.forEach(r => {
+  // Round header row
+  const rrow = document.createElement('tr');
+  rrow.className = 'round-header';
+  const rtd = document.createElement('td');
+  rtd.colSpan = players.length + 1;
+  rtd.textContent = r.label;
+  rrow.appendChild(rtd);
+  tbody.appendChild(rrow);
+
+  r.games.forEach(g => {
+    const row = document.createElement('tr');
+    const label = document.createElement('td');
+    label.innerHTML = `<span class="game-num">Match ${g.num}</span><span class="game-label">${g.fixture}</span><span class="game-result">${g.result}</span>`;
+    row.appendChild(label);
+    g.scores.forEach(s => {
+      const td = document.createElement('td');
+      td.innerHTML = `<span class="pts pts-${s}">${s}</span>`;
+      row.appendChild(td);
+    });
+    tbody.appendChild(row);
+  });
+});
+
+// Totals row
+const trow = document.createElement('tr');
+trow.className = 'totals-row';
+const ttd = document.createElement('td');
+ttd.textContent = 'Total';
+trow.appendChild(ttd);
+totals.forEach(t => {
+  const td = document.createElement('td');
+  td.textContent = t;
+  trow.appendChild(td);
+});
+tbody.appendChild(trow);
+
+table.appendChild(tbody);
+</script>
+</body>
+</html>

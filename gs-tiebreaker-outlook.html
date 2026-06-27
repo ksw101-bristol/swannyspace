@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — Tiebreaker Outlook</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --grass: #1f4d2c;
+    --grass-dark: #163a20;
+    --chalk: #f4f1e8;
+    --gold: #e0a526;
+    --line: rgba(244,241,232,0.18);
+    --green: #3fa34d;
+  }
+
+  *{box-sizing:border-box;}
+  html{ background: var(--grass); color-scheme: dark; }
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background: var(--grass) !important;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 40px, transparent 40px, transparent 80px);
+    color: var(--chalk) !important;
+    min-height:100vh;
+    padding: 32px 16px 64px;
+  }
+
+  .wrap{ max-width: 640px; margin: 0 auto; }
+
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.5);
+    text-decoration:none;
+    margin-bottom: 28px;
+  }
+  .back-link:hover{ color: var(--gold); }
+
+  header{ margin-bottom: 28px; }
+  .kicker{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+  h1{
+    font-family:'Archivo Black', sans-serif;
+    font-size: clamp(2rem, 7vw, 3rem);
+    line-height: 1.05;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+  header p{
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(244,241,232,0.78);
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  .projection-card{
+    background: rgba(244,241,232,0.06);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px;
+    text-align:center;
+    margin-bottom: 28px;
+  }
+  .projection-card .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .projection-card .num{
+    font-family:'Archivo Black', sans-serif;
+    font-size: clamp(3rem, 14vw, 4.5rem);
+    line-height: 1;
+    color: var(--chalk);
+  }
+  .projection-card .sub{
+    font-family:'Space Mono', monospace;
+    font-size: 12px;
+    color: rgba(244,241,232,0.5);
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  table{
+    width:100%;
+    border-collapse: collapse;
+    font-family:'Space Mono', monospace;
+    font-size: 13px;
+    background: rgba(244,241,232,0.06);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow:hidden;
+  }
+  th{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    text-align:left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  th:not(:first-child){ text-align:center; }
+  td{
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(244,241,232,0.08);
+  }
+  tr:last-child td{ border-bottom:none; }
+  td:not(:first-child){ text-align:center; }
+  td.name{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+  }
+  td.guess{
+    font-weight:700;
+    font-size: 15px;
+  }
+  td.pending{
+    color: rgba(244,241,232,0.35);
+    font-style: italic;
+    font-weight:400;
+    font-size: 13px;
+  }
+
+  tr.closest{
+    background: rgba(224,165,38,0.12);
+  }
+  tr.closest td.guess{ color: var(--gold); }
+  tr.closest td.name{ color: var(--gold); }
+  .closest-arrow{
+    display:inline-block;
+    margin-left: 8px;
+    color: var(--gold);
+    font-size: 14px;
+  }
+  .closest-badge{
+    display:inline-block;
+    font-family:'Space Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--grass-dark);
+    background: var(--gold);
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .note{
+    font-family:'Space Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: rgba(244,241,232,0.5);
+    text-align:center;
+    margin-top: 32px;
+  }
+
+  footer{
+    margin-top: 40px;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(244,241,232,0.35);
+  }
+
+  @media (max-width: 480px){
+    table{ font-size: 12px; }
+    th{ font-size: 10px; padding: 8px 6px; }
+    td{ padding: 10px 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back-link" href="gs-index.html">← Back to home</a>
+
+  <header>
+    <p class="kicker">Tiebreaker · Group Stage</p>
+    <h1>The Big Number</h1>
+    <p>Everyone's guess for total goals across all 72 group stage games, ranked highest to lowest. The projected total updates as group stage games are played.</p>
+  </header>
+
+  <div class="projection-card">
+    <div class="eyebrow">Projected Group Stage Total</div>
+    <div class="num" id="projectedTotal">–</div>
+    <div class="sub" id="projectionSub">based on goals/game after 66 games</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Player</th><th>Guess</th><th>Predicted Goals</th></tr>
+    </thead>
+    <tbody id="guessBody"></tbody>
+  </table>
+
+  <p class="note">Highlighted entry is currently closest to the projected total. Final result is based on actual goals scored — this is just a live-running estimate.</p>
+
+  <footer>Swanny's World Cup 2026 · Prediction League</footer>
+</div>
+
+<script>
+const projectedTotal = 214;
+
+const guesses = [
+  { name: "Kirk Walsh", guess: 209, predictedGoals: 199 },
+  { name: "Lee May", guess: 185, predictedGoals: 164 },
+  { name: "Mike Budd", guess: 178, predictedGoals: 213 },
+  { name: "Richard Boyce", guess: 167, predictedGoals: 196 },
+  { name: "Jordy Chalmers", guess: 146, predictedGoals: 210 },
+  { name: "Steve Kenna", guess: 172, predictedGoals: 183 },
+  { name: "Cameron Walsh", guess: 222, predictedGoals: 199 },
+  { name: "James Boyce", guess: 203, predictedGoals: 176 },
+  { name: "Cathy & Oliver", guess: 204, predictedGoals: 192 },
+  { name: "Lee Grainger", guess: 210, predictedGoals: 168 },
+  { name: "Jason (2-1) Parsons", guess: 221, predictedGoals: 230 },
+  { name: "Georgia & Harry May", guess: 180, predictedGoals: 140 },
+  { name: "Dave Budd", guess: 227, predictedGoals: 198 },
+  { name: "Elliot Walsh", guess: 217, predictedGoals: 251 },
+  { name: "Chris Hunt", guess: 201, predictedGoals: 227 }
+];
+
+document.getElementById('projectedTotal').textContent = projectedTotal;
+
+// Sort: entries with guesses first (highest to lowest), pending entries last
+const withGuess = guesses.filter(g => g.guess !== null).sort((a,b) => b.guess - a.guess);
+const pending = guesses.filter(g => g.guess === null);
+
+// Find closest to projection
+let closestName = null, closestDiff = Infinity;
+withGuess.forEach(g => {
+  const diff = Math.abs(g.guess - projectedTotal);
+  if (diff < closestDiff){
+    closestDiff = diff;
+    closestName = g.name;
+  }
+});
+
+const tbody = document.getElementById('guessBody');
+
+withGuess.forEach(g => {
+  const tr = document.createElement('tr');
+  const isClosest = g.name === closestName;
+  if (isClosest) tr.className = 'closest';
+  const badge = isClosest ? '<span class="closest-badge">Closest</span>' : '';
+  const predGoals = g.predictedGoals !== null
+    ? `<span style="font-weight:600">${g.predictedGoals}</span>`
+    : `<span class="tb-pending">TBC</span>`;
+  tr.innerHTML = `<td class="name">${g.name}${badge}</td><td class="guess">${g.guess}</td><td>${predGoals}</td>`;
+  tbody.appendChild(tr);
+});
+
+pending.forEach(g => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td class="name">${g.name}</td><td class="pending">Not submitted</td><td class="pending">TBC</td>`;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>
