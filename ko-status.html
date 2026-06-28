@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — KO Stage · Submission Status</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+  :root{--navy:#0d1b3e;--navy-dark:#081229;--gold:#e0a526;--chalk:#f4f1e8;--line:rgba(224,165,38,0.2);--green:#3fa34d;--red:#c4554d;}
+  *{box-sizing:border-box;}
+  html{background:var(--navy);color-scheme:dark;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--navy)!important;background-image:repeating-linear-gradient(0deg,rgba(224,165,38,0.03) 0px,rgba(224,165,38,0.03) 40px,transparent 40px,transparent 80px);color:var(--chalk)!important;min-height:100vh;padding:32px 16px 64px;}
+  .wrap{max-width:640px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(224,165,38,0.6);text-decoration:none;margin-bottom:28px;}
+  .back-link:hover{color:var(--gold);}
+  header{margin-bottom:28px;}
+  .kicker{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;}
+  h1{font-family:'Archivo Black',sans-serif;font-size:clamp(1.8rem,6vw,2.8rem);line-height:1.05;margin:0 0 10px;text-transform:uppercase;}
+  header p{font-size:14px;line-height:1.6;color:rgba(244,241,232,0.65);margin:0;}
+  .summary-row{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;}
+  .summary-card{background:rgba(224,165,38,0.08);border:1px solid var(--line);border-radius:4px;padding:14px 20px;text-align:center;flex:1;min-width:120px;}
+  .summary-card .num{font-family:'Archivo Black',sans-serif;font-size:2rem;color:var(--gold);}
+  .summary-card .label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(244,241,232,0.5);margin-top:4px;}
+  table{width:100%;border-collapse:collapse;font-family:'Space Mono',monospace;font-size:13px;}
+  thead th{background:var(--navy-dark);color:var(--gold);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:10px 12px;text-align:center;border-bottom:2px solid var(--line);}
+  thead th:first-child{text-align:left;}
+  tbody tr:nth-child(even){background:rgba(244,241,232,0.02);}
+  tbody tr:hover{background:rgba(244,241,232,0.05);}
+  td{padding:10px 12px;border-bottom:1px solid rgba(244,241,232,0.06);text-align:center;vertical-align:middle;}
+  td.name{text-align:left;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;}
+  .status-icon{display:inline-block;width:28px;height:28px;line-height:28px;border-radius:4px;font-weight:700;font-size:14px;}
+  .status-yes{background:var(--green);color:#fff;}
+  .status-no{background:rgba(244,241,232,0.08);color:rgba(244,241,232,0.3);}
+  footer{margin-top:40px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(224,165,38,0.3);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="ko-index.html">← Back to home</a>
+  <header>
+    <p class="kicker">Knockout Stage · Submission Status</p>
+    <h1>Who's In?</h1>
+    <p>Tracking predictions submitted for each round of the knockout stage.</p>
+  </header>
+
+  <div class="summary-row">
+    <div class="summary-card"><div class="num" id="p1Count">–</div><div class="label">Part 1 In</div></div>
+    <div class="summary-card"><div class="num" id="p2Count">–</div><div class="label">Part 2 In</div></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Player</th><th>R32 Part 1</th><th>R32 Part 2</th></tr></thead>
+    <tbody id="statusBody"></tbody>
+  </table>
+
+  <footer>World Cup 2026 · Knockout Stage · Prediction League</footer>
+</div>
+<script>
+const entrants = [
+  { name: "Kirk Walsh",          p1: true,  p2: false },
+  { name: "Lee May",             p1: false, p2: false },
+  { name: "Mike Budd",           p1: true,  p2: false },
+  { name: "Richard Boyce",       p1: true,  p2: false },
+  { name: "Jordy Chalmers",      p1: true,  p2: false },
+  { name: "Steve Kenna",         p1: true,  p2: false },
+  { name: "Cameron Walsh",       p1: false, p2: false },
+  { name: "James Boyce",         p1: false, p2: false },
+  { name: "Cathy & Oliver",      p1: false, p2: false },
+  { name: "Lee Grainger",        p1: false, p2: false },
+  { name: "Jason Parsons",       p1: true,  p2: false },
+  { name: "Georgia & Harry",     p1: false, p2: false },
+  { name: "Dave Budd",           p1: true,  p2: false },
+  { name: "Elliot Walsh",        p1: false, p2: false },
+  { name: "Chris Hunt",          p1: true,  p2: false },
+];
+
+const tbody = document.getElementById('statusBody');
+let p1Count = 0, p2Count = 0;
+
+function icon(val){
+  return val
+    ? `<span class="status-icon status-yes">✓</span>`
+    : `<span class="status-icon status-no">✕</span>`;
+}
+
+entrants.forEach(e => {
+  if(e.p1) p1Count++;
+  if(e.p2) p2Count++;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td class="name">${e.name}</td><td>${icon(e.p1)}</td><td>${icon(e.p2)}</td>`;
+  tbody.appendChild(tr);
+});
+
+document.getElementById('p1Count').textContent = `${p1Count}/${entrants.length}`;
+document.getElementById('p2Count').textContent = `${p2Count}/${entrants.length}`;
+</script>
+</body>
+</html>
