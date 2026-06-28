@@ -55,18 +55,28 @@
   .progresses-bar{border-top:1px solid var(--line);padding-top:8px;margin-bottom:10px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;text-align:center;color:rgba(244,241,232,0.35);}
   .prog-winner{color:var(--gold);font-weight:700;}
 
-  /* Predictions grid */
-  .preds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:4px;}
-  .pred-row{display:flex;justify-content:space-between;align-items:center;background:rgba(244,241,232,0.04);border-radius:3px;padding:4px 7px;font-size:11px;}
-  .pred-name{font-family:'Inter',sans-serif;font-weight:500;color:rgba(244,241,232,0.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72px;}
-  .pred-score{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;}
-  .pred-prog{font-size:9px;color:rgba(244,241,232,0.3);margin-left:2px;}
-  .pts-badge{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:1px 5px;border-radius:2px;margin-left:4px;}
+  .preds-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px;}
+  .preds-table th{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(244,241,232,0.35);padding:4px 6px;text-align:left;border-bottom:1px solid rgba(244,241,232,0.08);}
+  .preds-table th.right{text-align:right;}
+  .preds-table th.center{text-align:center;}
+  .preds-table td{padding:5px 6px;border-bottom:1px solid rgba(244,241,232,0.05);vertical-align:middle;}
+  .preds-table tr:last-child td{border-bottom:none;}
+  .pred-name{font-family:'Inter',sans-serif;font-weight:500;font-size:12px;color:rgba(244,241,232,0.75);}
+  .pred-score{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;text-align:center;}
+  .pred-prog-cell{font-family:'Space Mono',monospace;font-size:10px;color:rgba(244,241,232,0.45);text-align:center;}
+  .pred-prog-correct{color:var(--gold);font-weight:700;}
+  .pts-total{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;text-align:right;}
+  .pts-badge{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:1px 5px;border-radius:2px;}
   .pts-5{background:#2d7a3a;color:#fff;}
   .pts-2{background:#b86a1a;color:#fff;}
   .pts-1{background:#8a7614;color:#fff;}
   .pts-0{background:rgba(244,241,232,0.06);color:rgba(244,241,232,0.25);}
   .pts-prog{background:rgba(224,165,38,0.25);color:var(--gold);}
+
+  /* Scoring key */
+  .scoring-key{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;padding:12px 14px;background:rgba(224,165,38,0.06);border:1px solid var(--line);border-radius:4px;}
+  .scoring-key .sk-item{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.04em;display:flex;align-items:center;gap:5px;color:rgba(244,241,232,0.55);}
+  .sk-badge{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:1px 6px;border-radius:2px;}
 
   footer{margin-top:40px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(224,165,38,0.25);}
 </style>
@@ -78,6 +88,14 @@
     <p class="kicker">Knockout Stage · Round of 32 · Part 1 · Live</p>
     <h1>Live Predictions Tracker</h1>
     <p>Everyone's picks for Round of 32 Part 1 (games 1–6), scored live as goals go in. Page checks for live scores automatically every 60 seconds.</p>
+
+  <div class="scoring-key">
+    <div class="sk-item"><span class="sk-badge pts-5">5</span> Exact 90-min score</div>
+    <div class="sk-item"><span class="sk-badge pts-2">2</span> Correct result + goal diff</div>
+    <div class="sk-item"><span class="sk-badge pts-1">1</span> Correct result</div>
+    <div class="sk-item"><span class="sk-badge pts-0">0</span> Wrong</div>
+    <div class="sk-item"><span class="sk-badge pts-prog">+2</span> Correct team to progress</div>
+  </div>
   </header>
 
   <div class="refresh-bar" id="refreshBar">Checking for live scores…</div>
@@ -315,23 +333,43 @@ function renderMatches(liveData) {
       progHtml = `<div class="progresses-bar">Progresses: TBD</div>`;
     }
 
-    // Predictions
-    let predsHtml = '<div class="preds-grid">';
+    // Predictions table
+    let predsHtml = `<table class="preds-table">
+      <thead><tr>
+        <th>Player</th>
+        <th class="center">Score</th>
+        <th class="center">Progresses</th>
+        <th class="right">Pts</th>
+      </tr></thead><tbody>`;
+
     m.predictions.forEach(p => {
       const s = calcScorePts(p.h, p.a, r.homeScore, r.awayScore);
       const pb = r.prog && p.prog === r.prog ? 2 : 0;
-      let badge = '';
-      if (r.homeScore !== null) {
-        badge += s !== null ? `<span class="pts-badge pts-${s}">${s}</span>` : '';
-        if (pb > 0) badge += `<span class="pts-badge pts-prog">+${pb}</span>`;
-      }
-      const progIcon = p.prog ? ` <span class="pred-prog">(${p.prog === m.home ? '🏠' : '✈️'})</span>` : '';
-      predsHtml += `<div class="pred-row">
-        <span class="pred-name">${p.name}</span>
-        <span class="pred-score">${p.h}–${p.a}${badge}</span>
-      </div>`;
+      const hasResult = r.homeScore !== null;
+
+      // Score pts badge
+      let scoreBadge = hasResult && s !== null ? `<span class="pts-badge pts-${s}">${s}</span>` : '';
+
+      // Progress cell
+      const progCorrect = r.prog && p.prog === r.prog;
+      const progClass = progCorrect ? 'pred-prog-correct' : 'pred-prog-cell';
+      const progDisplay = p.prog || '–';
+
+      // Total pts
+      const totalPts = hasResult ? (s || 0) + pb : '';
+      const progBadge = pb > 0 ? `<span class="pts-badge pts-prog">+2</span>` : '';
+      const totalDisplay = hasResult
+        ? `<span style="font-weight:700">${totalPts}</span>${progBadge}`
+        : '';
+
+      predsHtml += `<tr>
+        <td class="pred-name">${p.name}</td>
+        <td class="pred-score">${p.h}–${p.a} ${scoreBadge}</td>
+        <td class="pred-prog-cell ${progCorrect ? 'pred-prog-correct' : ''}">${progDisplay}</td>
+        <td class="pts-total">${totalDisplay}</td>
+      </tr>`;
     });
-    predsHtml += '</div>';
+    predsHtml += '</tbody></table>';
 
     card.innerHTML = `
       <div class="mc-meta">
