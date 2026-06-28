@@ -197,6 +197,34 @@
   .legend .i1{ background: var(--yellow); }
   .legend .i0{ background: rgba(244,241,232,0.15); }
 
+  #congratsBanner {
+    background: linear-gradient(135deg, #e0a526 0%, #f0bc45 50%, #e0a526 100%);
+    color: #0d1b3e;
+    border-radius: 6px;
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    animation: bannerIn 0.6s ease;
+  }
+  @keyframes bannerIn {
+    from { opacity:0; transform:translateY(-12px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  #congratsBanner .banner-kicker {
+    font-family:'Space Mono',monospace;
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    margin-bottom:8px;opacity:0.7;
+  }
+  #congratsBanner .banner-title {
+    font-family:'Archivo Black',sans-serif;
+    font-size:clamp(1.4rem,5vw,2.2rem);
+    text-transform:uppercase;letter-spacing:-0.01em;
+    line-height:1.1;margin-bottom:6px;
+  }
+  #congratsBanner .banner-sub {
+    font-family:'Space Mono',monospace;
+    font-size:12px;letter-spacing:0.08em;opacity:0.65;
+  }
   .leaderboard{ margin-top: 12px; margin-bottom: 32px; }
   .leaderboard h2{
     font-family:'Archivo Black', sans-serif;
@@ -315,6 +343,8 @@
   </div>
 
   <div class="refresh-bar" id="refreshBar">Checking for live scores…</div>
+
+  <div id="congratsBanner" style="display:none"></div>
 
   <div class="leaderboard">
     <h2>Running Total</h2>
@@ -1075,6 +1105,29 @@ function renderLeaderboard(liveData){
     tr.innerHTML = `<td class="name">${name}</td><td>${prev}</td><td>${cur}</td><td class="total">${total}</td>`;
     tbody.appendChild(tr);
   });
+
+  // Check if all matches are complete and show congrats banner
+  const totalMatches = matchesData.length;
+  const completedMatches = matchesData.filter((m, idx) => {
+    const result = getMatchResult(m, liveData, idx);
+    return result.homeScore !== null && result.awayScore !== null;
+  }).length;
+
+  const banner = document.getElementById('congratsBanner');
+  if (completedMatches === totalMatches && totalMatches > 0 && topScore > 0) {
+    const winners = combined.filter(p => p.total === topScore).map(p => p.name);
+    const winnerText = winners.length === 1
+      ? winners[0]
+      : winners.slice(0,-1).join(', ') + ' & ' + winners[winners.length-1];
+    const isTie = winners.length > 1;
+    banner.innerHTML = `
+      <div class="banner-kicker">🏆 Group Stage Complete</div>
+      <div class="banner-title">${isTie ? 'Joint Winners!' : 'Congratulations!'}<br>${winnerText}</div>
+      <div class="banner-sub">${topScore} points · ${isTie ? 'Tiebreaker to decide' : 'Group Stage Champion'}</div>`;
+    banner.style.display = 'block';
+  } else {
+    banner.style.display = 'none';
+  }
 }
 
 function renderMatches(liveData){
