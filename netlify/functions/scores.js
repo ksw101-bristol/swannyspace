@@ -3,7 +3,7 @@ exports.handler = async function(event) {
   
   try {
     const response = await fetch(
-      'https://v3.football.api-sports.io/fixtures?league=1&season=2026&from=2026-06-11&to=2026-06-29',
+      'https://v3.football.api-sports.io/fixtures?league=1&season=2026&from=2026-06-11&to=2026-07-30',
       {
         headers: {
           'x-rapidapi-host': 'v3.football.api-sports.io',
