@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — Round of 32 · Part 2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+  :root{--navy:#0d1b3e;--navy-dark:#081229;--navy-mid:#152456;--gold:#e0a526;--gold-light:#f0bc45;--chalk:#f4f1e8;--line:rgba(224,165,38,0.2);}
+  *{box-sizing:border-box;}
+  html{background:var(--navy);color-scheme:dark;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--navy)!important;background-image:repeating-linear-gradient(0deg,rgba(224,165,38,0.03) 0px,rgba(224,165,38,0.03) 40px,transparent 40px,transparent 80px);color:var(--chalk)!important;min-height:100vh;padding:32px 16px 64px;}
+  .wrap{max-width:600px;margin:0 auto;width:100%;}
+  .back-link{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(224,165,38,0.6);text-decoration:none;margin-bottom:28px;}
+  .back-link:hover{color:var(--gold);}
+  header{margin-bottom:32px;}
+  .kicker{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;}
+  h1{font-family:'Archivo Black',sans-serif;font-size:clamp(1.8rem,7vw,3rem);line-height:1.05;margin:0 0 14px;text-transform:uppercase;letter-spacing:-0.01em;}
+  header p{font-size:15px;line-height:1.6;color:rgba(244,241,232,0.78);margin:0;max-width:50ch;}
+  form{display:flex;flex-direction:column;gap:16px;}
+  .name-field{background:rgba(224,165,38,0.06);border:1px solid var(--line);border-radius:4px;padding:18px;}
+  .name-field label{display:block;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  .name-field input{width:100%;background:var(--navy-dark);border:1px solid var(--line);border-radius:3px;color:var(--chalk);font-family:'Inter',sans-serif;font-size:16px;padding:10px 12px;}
+  .name-field input:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .tiebreaker-card{background:rgba(224,165,38,0.1);border:2px solid var(--gold);border-radius:4px;padding:24px 18px;text-align:center;}
+  .tb-kicker{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+  .tb-title{font-family:'Archivo Black',sans-serif;font-size:1.1rem;text-transform:uppercase;margin-bottom:16px;letter-spacing:-0.01em;}
+  .tiebreaker-input-wrap{display:flex;align-items:center;justify-content:center;gap:10px;}
+  .tiebreaker-card input[type="number"]{width:110px;height:68px;text-align:center;font-family:'Archivo Black',sans-serif;font-size:36px;background:var(--navy-dark);border:1px solid var(--line);border-radius:4px;color:var(--chalk);-moz-appearance:textfield;}
+  .tiebreaker-card input[type="number"]::-webkit-outer-spin-button,.tiebreaker-card input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+  .tiebreaker-card input[type="number"]:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .tiebreaker-unit{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(244,241,232,0.5);}
+  .tb-hint{font-family:'Space Mono',monospace;font-size:10.5px;color:rgba(244,241,232,0.4);margin-top:12px;letter-spacing:0.04em;}
+  .deadline-bar{background:rgba(224,165,38,0.08);border:1px solid var(--line);border-radius:4px;padding:12px 16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);text-align:center;}
+  .deadline-bar span{color:rgba(244,241,232,0.7);}
+  .match{background:rgba(224,165,38,0.05);border:1px solid var(--line);border-radius:4px;padding:18px;}
+  .match-meta{display:flex;justify-content:space-between;align-items:baseline;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(244,241,232,0.45);margin-bottom:14px;flex-wrap:wrap;gap:4px;}
+  .match-meta .num{color:var(--gold);font-weight:700;}
+  .teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-bottom:14px;}
+  .team{font-family:'Archivo Black',sans-serif;font-size:clamp(0.85rem,3.5vw,1.15rem);text-transform:uppercase;line-height:1.15;}
+  .team.home{text-align:right;}
+  .team.away{text-align:left;}
+  .score-input{display:flex;align-items:center;gap:8px;justify-content:center;}
+  .score-input input{width:52px;height:52px;text-align:center;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;background:var(--navy-dark);border:1px solid var(--line);border-radius:4px;color:var(--chalk);-moz-appearance:textfield;}
+  .score-input input::-webkit-outer-spin-button,.score-input input::-webkit-inner-spin-button{-webkit-appearance:none;}
+  .score-input input:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .score-sep{font-family:'Archivo Black',sans-serif;font-size:22px;color:rgba(244,241,232,0.3);}
+  .progress-row{border-top:1px solid var(--line);padding-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+  .progress-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);flex-shrink:0;margin-right:4px;}
+  .progress-options{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+  .progress-opt{position:relative;}
+  .progress-opt input[type="radio"]{position:absolute;opacity:0;width:0;height:0;}
+  .progress-opt label{display:inline-block;font-family:'Archivo Black',sans-serif;font-size:clamp(0.65rem,2.5vw,0.82rem);text-transform:uppercase;letter-spacing:0.02em;padding:7px 12px;border-radius:3px;border:1px solid rgba(224,165,38,0.35);color:rgba(244,241,232,0.55);cursor:pointer;transition:all 0.15s ease;white-space:nowrap;}
+  .progress-opt input[type="radio"]:checked + label{background:var(--gold);color:var(--navy-dark);border-color:var(--gold);font-weight:700;}
+  .progress-opt label:hover{border-color:var(--gold);color:var(--chalk);}
+  .submit-btn{margin-top:8px;background:var(--gold);color:var(--navy-dark);border:none;border-radius:4px;padding:18px;font-family:'Archivo Black',sans-serif;font-size:1.05rem;text-transform:uppercase;letter-spacing:0.04em;cursor:pointer;transition:transform 0.12s ease,background 0.12s ease;width:100%;}
+  .submit-btn:hover{background:var(--gold-light);transform:translateY(-1px);}
+  .note{font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;color:rgba(244,241,232,0.4);text-align:center;margin-top:4px;}
+  footer{margin-top:40px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(224,165,38,0.3);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="ko-index.html">← Back to home</a>
+  <header>
+    <p class="kicker">Knockout Stage · Round of 32 · Part 2 · Games 7–16</p>
+    <h1>Part 2</h1>
+    <p>Predict the 90-minute score and pick who progresses. Correct team to progress earns a +2pt bonus on top of your score points.</p>
+  </header>
+  <form id="koform">
+    <div class="name-field">
+      <label for="playerName">Your name</label>
+      <input type="text" id="playerName" placeholder="e.g. Kirk" required>
+    </div>
+    <div class="deadline-bar">⏰ Deadline — <span>2pm Tuesday 30th June</span></div>
+    
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 07</span><span>Wed 1 Jul · 02:00 UK</span></div>
+      <div class="teams">
+        <div class="team home">Mexico</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m1h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m1a" required>
+        </div>
+        <div class="team away">Ecuador</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p1" id="p1h" value="Mexico" required><label for="p1h">Mexico</label></div>
+          <div class="progress-opt"><input type="radio" name="p1" id="p1a" value="Ecuador"><label for="p1a">Ecuador</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 08</span><span>Wed 1 Jul · 17:00 UK</span></div>
+      <div class="teams">
+        <div class="team home">England</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m2h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m2a" required>
+        </div>
+        <div class="team away">Congo DR</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p2" id="p2h" value="England" required><label for="p2h">England</label></div>
+          <div class="progress-opt"><input type="radio" name="p2" id="p2a" value="Congo DR"><label for="p2a">Congo DR</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 09</span><span>Wed 1 Jul · 21:00 UK</span></div>
+      <div class="teams">
+        <div class="team home">Belgium</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m3h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m3a" required>
+        </div>
+        <div class="team away">Senegal</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p3" id="p3h" value="Belgium" required><label for="p3h">Belgium</label></div>
+          <div class="progress-opt"><input type="radio" name="p3" id="p3a" value="Senegal"><label for="p3a">Senegal</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 10</span><span>Thu 2 Jul · 01:00 UK</span></div>
+      <div class="teams">
+        <div class="team home">United States</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m4h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m4a" required>
+        </div>
+        <div class="team away">Bosnia</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p4" id="p4h" value="United States" required><label for="p4h">United States</label></div>
+          <div class="progress-opt"><input type="radio" name="p4" id="p4a" value="Bosnia"><label for="p4a">Bosnia</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 11</span><span>Thu 2 Jul · 20:00 UK</span></div>
+      <div class="teams">
+        <div class="team home">Spain</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m5h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m5a" required>
+        </div>
+        <div class="team away">Austria</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p5" id="p5h" value="Spain" required><label for="p5h">Spain</label></div>
+          <div class="progress-opt"><input type="radio" name="p5" id="p5a" value="Austria"><label for="p5a">Austria</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 12</span><span>Fri 3 Jul · 00:00 UK</span></div>
+      <div class="teams">
+        <div class="team home">Portugal</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m6h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m6a" required>
+        </div>
+        <div class="team away">Croatia</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p6" id="p6h" value="Portugal" required><label for="p6h">Portugal</label></div>
+          <div class="progress-opt"><input type="radio" name="p6" id="p6a" value="Croatia"><label for="p6a">Croatia</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 13</span><span>Fri 3 Jul · 04:00 UK</span></div>
+      <div class="teams">
+        <div class="team home">Switzerland</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m7h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m7a" required>
+        </div>
+        <div class="team away">Algeria</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p7" id="p7h" value="Switzerland" required><label for="p7h">Switzerland</label></div>
+          <div class="progress-opt"><input type="radio" name="p7" id="p7a" value="Algeria"><label for="p7a">Algeria</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 14</span><span>Fri 3 Jul · 19:00 UK</span></div>
+      <div class="teams">
+        <div class="team home">Australia</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m8h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m8a" required>
+        </div>
+        <div class="team away">Egypt</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p8" id="p8h" value="Australia" required><label for="p8h">Australia</label></div>
+          <div class="progress-opt"><input type="radio" name="p8" id="p8a" value="Egypt"><label for="p8a">Egypt</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 15</span><span>Fri 3 Jul · 23:00 UK</span></div>
+      <div class="teams">
+        <div class="team home">Argentina</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m9h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m9a" required>
+        </div>
+        <div class="team away">Cape Verde</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p9" id="p9h" value="Argentina" required><label for="p9h">Argentina</label></div>
+          <div class="progress-opt"><input type="radio" name="p9" id="p9a" value="Cape Verde"><label for="p9a">Cape Verde</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="match">
+      <div class="match-meta"><span class="num">Match 16</span><span>Sat 4 Jul · 02:30 UK</span></div>
+      <div class="teams">
+        <div class="team home">Colombia</div>
+        <div class="score-input">
+          <input type="number" min="0" max="20" inputmode="numeric" id="m10h" required>
+          <span class="score-sep">–</span>
+          <input type="number" min="0" max="20" inputmode="numeric" id="m10a" required>
+        </div>
+        <div class="team away">Ghana</div>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Progresses →</span>
+        <div class="progress-options">
+          <div class="progress-opt"><input type="radio" name="p10" id="p10h" value="Colombia" required><label for="p10h">Colombia</label></div>
+          <div class="progress-opt"><input type="radio" name="p10" id="p10a" value="Ghana"><label for="p10a">Ghana</label></div>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="submit-btn">Send my predictions</button>
+    <p class="note">Opens your email app · All times UK (BST)<br>5pts exact · 2pts result+GD · 1pt result · +2pts bonus correct team to progress</p>
+  </form>
+  <footer>World Cup 2026 · Knockout Stage · Prediction League</footer>
+</div>
+<script>
+const matches = [
+  { i:1, num:7, home:"Mexico", away:"Ecuador" },
+  { i:2, num:8, home:"England", away:"Congo DR" },
+  { i:3, num:9, home:"Belgium", away:"Senegal" },
+  { i:4, num:10, home:"United States", away:"Bosnia" },
+  { i:5, num:11, home:"Spain", away:"Austria" },
+  { i:6, num:12, home:"Portugal", away:"Croatia" },
+  { i:7, num:13, home:"Switzerland", away:"Algeria" },
+  { i:8, num:14, home:"Australia", away:"Egypt" },
+  { i:9, num:15, home:"Argentina", away:"Cape Verde" },
+  { i:10, num:16, home:"Colombia", away:"Ghana" },
+];
+document.getElementById('koform').addEventListener('submit', function(e){
+  e.preventDefault();
+  const name = document.getElementById('playerName').value.trim();
+  let lines = ['KO Round of 32 (Part 2) — ' + name, ''];
+  matches.forEach(m => {
+    const h = document.getElementById('m'+m.i+'h').value;
+    const a = document.getElementById('m'+m.i+'a').value;
+    const prog = document.querySelector('input[name="p'+m.i+'"]:checked');
+    const progTeam = prog ? prog.value : 'Not selected';
+    lines.push('Match ' + String(m.num).padStart(2,'0') + ': ' + m.home + ' ' + h + '–' + a + ' ' + m.away + ' | Progresses: ' + progTeam);
+  });
+  const subject = encodeURIComponent('KO R32 Part 2 - ' + name);
+  const body = encodeURIComponent(lines.join('\n'));
+  window.location.href = 'mailto:mrgashead@hotmail.com?subject=' + subject + '&body=' + body;
+});
+</script>
+</body>
+</html>
