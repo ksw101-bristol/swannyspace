@@ -221,9 +221,39 @@
     text-transform:uppercase;letter-spacing:-0.01em;
     line-height:1.1;margin-bottom:6px;
   }
-  #congratsBanner .banner-sub {
-    font-family:'Space Mono',monospace;
-    font-size:12px;letter-spacing:0.08em;opacity:0.65;
+  #congratsBanner .banner-prizes {
+    display: flex; flex-direction: column; gap: 10px; margin-top: 16px;
+  }
+  #congratsBanner .prize-row {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(13,27,62,0.12); border-radius: 4px;
+    padding: 10px 14px; text-align: left;
+  }
+  #congratsBanner .prize-medal { font-size: 1.4rem; flex-shrink:0; }
+  #congratsBanner .prize-name {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    text-transform: uppercase; flex: 1;
+  }
+  #congratsBanner .prize-amount {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.1rem; flex-shrink:0;
+    background: rgba(13,27,62,0.2);
+    padding: 3px 10px; border-radius: 3px;
+  }
+  #congratsBanner .prize-pts {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.06em;
+    opacity: 0.65; flex-shrink:0; white-space: nowrap;
+  }
+  @media(max-width:480px){
+    #congratsBanner .prize-pts { display: none; }
+  }
+  #congratsBanner .banner-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    text-transform: uppercase; letter-spacing: -0.01em;
+    line-height: 1.1; margin-bottom: 6px;
   }
   .leaderboard{ margin-top: 12px; margin-bottom: 32px; }
   .leaderboard h2{
@@ -991,8 +1021,8 @@ const matchesData = [
     away: "Argentina",
     searchHome: "Jordan",
     searchAway: "Argentina",
-    actualHome: null,
-    actualAway: null,
+    actualHome: 1,
+    actualAway: 3,
     predictions: [
       { name: "Kirk Walsh", h: 0, a: 4 },
       { name: "Lee May", h: 0, a: 3 },
@@ -1018,8 +1048,8 @@ const matchesData = [
     away: "Austria",
     searchHome: "Algeria",
     searchAway: "Austria",
-    actualHome: null,
-    actualAway: null,
+    actualHome: 3,
+    actualAway: 3,
     predictions: [
       { name: "Kirk Walsh", h: 0, a: 2 },
       { name: "Lee May", h: 1, a: 1 },
@@ -1106,28 +1136,38 @@ function renderLeaderboard(liveData){
     tbody.appendChild(tr);
   });
 
-  // Check if all matches are complete and show congrats banner
-  const totalMatches = matchesData.length;
-  const completedMatches = matchesData.filter((m, idx) => {
-    const result = getMatchResult(m, liveData, idx);
-    return result.homeScore !== null && result.awayScore !== null;
-  }).length;
-
+  // All matches complete — show final results banner
   const banner = document.getElementById('congratsBanner');
-  if (completedMatches === totalMatches && totalMatches > 0 && topScore > 0) {
-    const winners = combined.filter(p => p.total === topScore).map(p => p.name);
-    const winnerText = winners.length === 1
-      ? winners[0]
-      : winners.slice(0,-1).join(', ') + ' & ' + winners[winners.length-1];
-    const isTie = winners.length > 1;
-    banner.innerHTML = `
-      <div class="banner-kicker">🏆 Group Stage Complete</div>
-      <div class="banner-title">${isTie ? 'Joint Winners!' : 'Congratulations!'}<br>${winnerText}</div>
-      <div class="banner-sub">${topScore} points · ${isTie ? 'Tiebreaker to decide' : 'Group Stage Champion'}</div>`;
-    banner.style.display = 'block';
-  } else {
-    banner.style.display = 'none';
-  }
+  banner.innerHTML = `
+    <div class="banner-kicker">🏆 Group Stage Complete · Final Results</div>
+    <div class="banner-title">Congratulations to our winners!</div>
+    <div class="banner-prizes">
+      <div class="prize-row gold">
+        <span class="prize-medal">🥇</span>
+        <span class="prize-name">Cathy &amp; Oliver</span>
+        <span class="prize-amount">£100</span>
+        <span class="prize-pts">94 pts</span>
+      </div>
+      <div class="prize-row silver">
+        <span class="prize-medal">🥈</span>
+        <span class="prize-name">Georgia &amp; Harry May</span>
+        <span class="prize-amount">£30</span>
+        <span class="prize-pts">89 pts</span>
+      </div>
+      <div class="prize-row bronze">
+        <span class="prize-medal">🥉</span>
+        <span class="prize-name">Dave Budd</span>
+        <span class="prize-amount">£10</span>
+        <span class="prize-pts">88 pts</span>
+      </div>
+      <div class="prize-row tiebreaker">
+        <span class="prize-medal">🎯</span>
+        <span class="prize-name">Elliot Walsh</span>
+        <span class="prize-amount">£10</span>
+        <span class="prize-pts">Tiebreaker — guessed 217, actual 215</span>
+      </div>
+    </div>`;
+  banner.style.display = 'block';
 }
 
 function renderMatches(liveData){

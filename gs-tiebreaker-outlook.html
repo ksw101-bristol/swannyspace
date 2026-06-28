@@ -208,40 +208,40 @@
   <div class="projection-card">
     <div class="eyebrow">Projected Group Stage Total</div>
     <div class="num" id="projectedTotal">–</div>
-    <div class="sub" id="projectionSub">based on goals/game after 70 games</div>
+    <div class="sub" id="projectionSub">Final total after 72 games</div>
   </div>
 
   <table>
     <thead>
-      <tr><th>Player</th><th>Guess</th><th>Predicted Goals</th></tr>
+      <tr><th>Player</th><th>Guess</th></tr>
     </thead>
     <tbody id="guessBody"></tbody>
   </table>
 
-  <p class="note">Highlighted entry is currently closest to the projected total. Final result is based on actual goals scored — this is just a live-running estimate.</p>
+  <p class="note">Group Stage complete — 215 total goals scored across 72 games. Highlighted entry is the tiebreaker winner. Congratulations Elliot Walsh (guessed 217, diff 2)!</p>
 
   <footer>Swanny's World Cup 2026 · Prediction League</footer>
 </div>
 
 <script>
-const projectedTotal = 211;
+const projectedTotal = 215;
 
 const guesses = [
-  { name: "Kirk Walsh", guess: 209, predictedGoals: 199 },
-  { name: "Lee May", guess: 185, predictedGoals: 164 },
-  { name: "Mike Budd", guess: 178, predictedGoals: 213 },
-  { name: "Richard Boyce", guess: 167, predictedGoals: 196 },
-  { name: "Jordy Chalmers", guess: 146, predictedGoals: 210 },
-  { name: "Steve Kenna", guess: 172, predictedGoals: 183 },
-  { name: "Cameron Walsh", guess: 222, predictedGoals: 199 },
-  { name: "James Boyce", guess: 203, predictedGoals: 176 },
-  { name: "Cathy & Oliver", guess: 204, predictedGoals: 192 },
-  { name: "Lee Grainger", guess: 210, predictedGoals: 168 },
-  { name: "Jason (2-1) Parsons", guess: 221, predictedGoals: 230 },
-  { name: "Georgia & Harry May", guess: 180, predictedGoals: 140 },
-  { name: "Dave Budd", guess: 227, predictedGoals: 198 },
-  { name: "Elliot Walsh", guess: 217, predictedGoals: 251 },
-  { name: "Chris Hunt", guess: 201, predictedGoals: 227 }
+  { name: "Kirk Walsh", guess: 209 },
+  { name: "Lee May", guess: 185 },
+  { name: "Mike Budd", guess: 178 },
+  { name: "Richard Boyce", guess: 167 },
+  { name: "Jordy Chalmers", guess: 146 },
+  { name: "Steve Kenna", guess: 172 },
+  { name: "Cameron Walsh", guess: 222 },
+  { name: "James Boyce", guess: 203 },
+  { name: "Cathy & Oliver", guess: 204 },
+  { name: "Lee Grainger", guess: 210 },
+  { name: "Jason (2-1) Parsons", guess: 221 },
+  { name: "Georgia & Harry May", guess: 180 },
+  { name: "Dave Budd", guess: 227 },
+  { name: "Elliot Walsh", guess: 217 },
+  { name: "Chris Hunt", guess: 201 }
 ];
 
 document.getElementById('projectedTotal').textContent = projectedTotal;
@@ -267,16 +267,13 @@ withGuess.forEach(g => {
   const isClosest = g.name === closestName;
   if (isClosest) tr.className = 'closest';
   const badge = isClosest ? '<span class="closest-badge">Closest</span>' : '';
-  const predGoals = g.predictedGoals !== null
-    ? `<span style="font-weight:600">${g.predictedGoals}</span>`
-    : `<span class="tb-pending">TBC</span>`;
-  tr.innerHTML = `<td class="name">${g.name}${badge}</td><td class="guess">${g.guess}</td><td>${predGoals}</td>`;
+  tr.innerHTML = `<td class="name">${g.name}${badge}</td><td class="guess">${g.guess}</td>`;
   tbody.appendChild(tr);
 });
 
 pending.forEach(g => {
   const tr = document.createElement('tr');
-  tr.innerHTML = `<td class="name">${g.name}</td><td class="pending">Not submitted</td><td class="pending">TBC</td>`;
+  tr.innerHTML = `<td class="name">${g.name}</td><td class="pending">Not submitted</td>`;
   tbody.appendChild(tr);
 });
 </script>
