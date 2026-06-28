@@ -31,6 +31,8 @@
   .status-icon{display:inline-block;width:28px;height:28px;line-height:28px;border-radius:4px;font-weight:700;font-size:14px;}
   .status-yes{background:var(--green);color:#fff;}
   .status-no{background:rgba(244,241,232,0.08);color:rgba(244,241,232,0.3);}
+  .status-placeholder{background:rgba(224,165,38,0.2);color:var(--gold);}
+  .placeholder-note{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);margin-left:4px;vertical-align:middle;}
   footer{margin-top:40px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(224,165,38,0.3);}
 </style>
 </head>
@@ -58,36 +60,37 @@
 <script>
 const entrants = [
   { name: "Kirk Walsh",          p1: true,  p2: false },
-  { name: "Lee May",             p1: false, p2: false },
+  { name: "Lee May",             p1: true,  p1placeholder: true,  p2: false },
   { name: "Mike Budd",           p1: true,  p2: false },
   { name: "Richard Boyce",       p1: true,  p2: false },
   { name: "Jordy Chalmers",      p1: true,  p2: false },
   { name: "Steve Kenna",         p1: true,  p2: false },
-  { name: "Cameron Walsh",       p1: false, p2: false },
-  { name: "James Boyce",         p1: false, p2: false },
-  { name: "Cathy & Oliver",      p1: false, p2: false },
-  { name: "Lee Grainger",        p1: false, p2: false },
+  { name: "Cameron Walsh",       p1: true,  p2: false },
+  { name: "James Boyce",         p1: true,  p2: true  },
+  { name: "Cathy & Oliver",      p1: true,  p2: false },
+  { name: "Lee Grainger",        p1: true,  p2: false },
   { name: "Jason Parsons",       p1: true,  p2: false },
-  { name: "Georgia & Harry",     p1: false, p2: false },
+  { name: "Georgia & Harry",     p1: true,  p1placeholder: true,  p2: false },
   { name: "Dave Budd",           p1: true,  p2: false },
-  { name: "Elliot Walsh",        p1: false, p2: false },
+  { name: "Elliot Walsh",        p1: true,  p2: false },
   { name: "Chris Hunt",          p1: true,  p2: false },
 ];
 
 const tbody = document.getElementById('statusBody');
 let p1Count = 0, p2Count = 0;
 
-function icon(val){
+function icon(val, placeholder) {
+  if (placeholder) return `<span class="status-icon status-placeholder">~</span><span class="placeholder-note">placeholder</span>`;
   return val
     ? `<span class="status-icon status-yes">✓</span>`
     : `<span class="status-icon status-no">✕</span>`;
 }
 
 entrants.forEach(e => {
-  if(e.p1) p1Count++;
+  if(e.p1 && !e.p1placeholder) p1Count++;
   if(e.p2) p2Count++;
   const tr = document.createElement('tr');
-  tr.innerHTML = `<td class="name">${e.name}</td><td>${icon(e.p1)}</td><td>${icon(e.p2)}</td>`;
+  tr.innerHTML = `<td class="name">${e.name}</td><td>${icon(e.p1, e.p1placeholder)}</td><td>${icon(e.p2, e.p2placeholder)}</td>`;
   tbody.appendChild(tr);
 });
 
