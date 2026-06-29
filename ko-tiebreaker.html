@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — KO Stage · Tiebreaker Outlook</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+  :root{--navy:#0d1b3e;--navy-dark:#081229;--gold:#e0a526;--chalk:#f4f1e8;--line:rgba(224,165,38,0.2);}
+  *{box-sizing:border-box;}
+  html{background:var(--navy);color-scheme:dark;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--navy)!important;background-image:repeating-linear-gradient(0deg,rgba(224,165,38,0.03) 0px,rgba(224,165,38,0.03) 40px,transparent 40px,transparent 80px);color:var(--chalk)!important;min-height:100vh;padding:32px 16px 64px;}
+  .wrap{max-width:580px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(224,165,38,0.6);text-decoration:none;margin-bottom:28px;}
+  .back-link:hover{color:var(--gold);}
+  header{margin-bottom:28px;}
+  .kicker{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;}
+  h1{font-family:'Archivo Black',sans-serif;font-size:clamp(1.8rem,6vw,2.8rem);line-height:1.05;margin:0 0 10px;text-transform:uppercase;}
+  header p{font-size:14px;line-height:1.6;color:rgba(244,241,232,0.65);margin:0;}
+  .projection-box{
+    background:rgba(224,165,38,0.08);border:2px solid var(--gold);
+    border-radius:4px;padding:24px;text-align:center;margin-bottom:28px;
+  }
+  .proj-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  .proj-num{font-family:'Archivo Black',sans-serif;font-size:clamp(3rem,10vw,5rem);line-height:1;color:var(--chalk);}
+  .proj-sub{font-family:'Space Mono',monospace;font-size:11px;color:rgba(244,241,232,0.45);margin-top:8px;letter-spacing:0.06em;}
+  table{width:100%;border-collapse:collapse;font-family:'Space Mono',monospace;font-size:13px;}
+  thead th{background:var(--navy-dark);color:var(--gold);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:10px 12px;text-align:center;border-bottom:2px solid var(--line);}
+  thead th:first-child{text-align:left;}
+  tbody tr:nth-child(even){background:rgba(244,241,232,0.02);}
+  tbody tr.closest{background:rgba(224,165,38,0.1);}
+  td{padding:10px 12px;border-bottom:1px solid rgba(244,241,232,0.06);text-align:center;vertical-align:middle;}
+  td.name{text-align:left;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;}
+  td.guess{font-weight:700;font-size:15px;}
+  td.pending{color:rgba(244,241,232,0.3);font-style:italic;}
+  .closest-badge{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;background:var(--gold);color:var(--navy-dark);padding:2px 7px;border-radius:2px;margin-left:6px;vertical-align:middle;}
+  footer{margin-top:40px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(224,165,38,0.3);}
+  p.note{font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;color:rgba(244,241,232,0.35);text-align:center;margin-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="ko-index.html">← Back to home</a>
+  <header>
+    <p class="kicker">Knockout Stage · Tiebreaker</p>
+    <h1>Total Goals Outlook</h1>
+    <p>Everyone's guess for the total number of goals in the knockout stage (including extra time, excluding penalties). Closest to the final total wins.</p>
+  </header>
+
+  <div class="projection-box">
+    <div class="proj-label">Current Projection</div>
+    <div class="proj-num" id="projNum">–</div>
+    <div class="proj-sub" id="projSub">No games played yet</div>
+  </div>
+
+  <table>
+    <thead><tr><th>Player</th><th>Guess</th></tr></thead>
+    <tbody id="guessBody"></tbody>
+  </table>
+
+  <p class="note">All 15 players have submitted their guess. Highlighted entry is currently closest to the projection. Final result based on actual goals scored including extra time.</p>
+
+  <footer>World Cup 2026 · Knockout Stage · Prediction League</footer>
+</div>
+<script>
+const projectedTotal = 32; // from workbook G42
+const gamesPlayed = 1;
+const totalGames = 32;
+
+const guesses = [
+  { name: "The Mays",         guess: 46  },
+  { name: "Chris Hunt",       guess: 50  },
+  { name: "Steve Kenna",      guess: 75  },
+  { name: "Cameron Walsh",    guess: 80  },
+  { name: "Elliot Walsh",     guess: 83  },
+  { name: "Cathy & Oliver",   guess: 87  },
+  { name: "Kirk Walsh",       guess: 88  },
+  { name: "Jordy Chalmers",   guess: 90  },
+  { name: "Jason Parsons",    guess: 91  },
+  { name: "Dave Budd",        guess: 92  },
+  { name: "Vicki Walsh",      guess: 94  },
+  { name: "Mike Budd",        guess: 96  },
+  { name: "Richard Boyce",    guess: 97  },
+  { name: "Lee Grainger",     guess: 107 },
+  { name: "James Boyce",      guess: 117 },
+];
+
+const withGuess = [...guesses].sort((a, b) => a.guess - b.guess);
+
+// Projection display
+if (gamesPlayed === 0) {
+  document.getElementById('projNum').textContent = '–';
+  document.getElementById('projSub').textContent = 'No games played yet';
+} else {
+  document.getElementById('projNum').textContent = projectedTotal;
+  document.getElementById('projSub').textContent = `based on ${gamesPlayed} game${gamesPlayed > 1 ? 's' : ''} played · ${totalGames - gamesPlayed} remaining`;
+}
+
+// Find closest
+let closestName = null, closestDiff = Infinity;
+if (projectedTotal > 0) {
+  withGuess.forEach(g => {
+    const diff = Math.abs(g.guess - projectedTotal);
+    if (diff < closestDiff){ closestDiff = diff; closestName = g.name; }
+  });
+}
+
+const tbody = document.getElementById('guessBody');
+
+withGuess.forEach(g => {
+  const tr = document.createElement('tr');
+  const isClosest = g.name === closestName;
+  if (isClosest) tr.className = 'closest';
+  const badge = isClosest ? '<span class="closest-badge">Closest</span>' : '';
+  tr.innerHTML = `<td class="name">${g.name}${badge}</td><td class="guess">${g.guess}</td>`;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>
