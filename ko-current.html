@@ -103,7 +103,7 @@
   <div class="leaderboard">
     <h2>Running Total</h2>
     <table class="lb-table">
-      <thead><tr><th>Player</th><th>This Round</th><th>Score Pts</th><th>Prog Pts</th><th>Total</th></tr></thead>
+      <thead><tr><th>Player</th><th>Score Pts</th><th>Prog Pts</th><th>Total</th></tr></thead>
       <tbody id="leaderboardBody"></tbody>
     </table>
   </div>
@@ -299,7 +299,7 @@ function renderLeaderboard(liveData) {
   rows.forEach(r => {
     const tr = document.createElement('tr');
     if (r.total === top && top > 0) tr.className = 'leader';
-    tr.innerHTML = `<td class="name">${r.name}</td><td>${r.score + r.prog}</td><td>${r.score}</td><td>${r.prog > 0 ? '+'+r.prog : r.prog}</td><td class="total">${r.total}</td>`;
+    tr.innerHTML = `<td class="name">${r.name}</td><td>${r.score}</td><td>${r.prog > 0 ? '+'+r.prog : r.prog}</td><td class="total">${r.total}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -328,7 +328,7 @@ function renderMatches(liveData) {
 
     let progHtml = '';
     if (r.prog) {
-      progHtml = `<div class="progresses-bar">Progresses: <span class="prog-winner">${r.prog}</span></div>`;
+      progHtml = `<div class="progresses-bar">Progresses: <span class="prog-winner">${r.prog} <span class="pts-badge pts-prog">+2</span></span></div>`;
     } else {
       progHtml = `<div class="progresses-bar">Progresses: TBD</div>`;
     }
@@ -352,20 +352,17 @@ function renderMatches(liveData) {
 
       // Progress cell
       const progCorrect = r.prog && p.prog === r.prog;
-      const progClass = progCorrect ? 'pred-prog-correct' : 'pred-prog-cell';
       const progDisplay = p.prog || '–';
+      const progBadge = (hasResult && progCorrect) ? ` <span class="pts-badge pts-prog">+2</span>` : '';
 
       // Total pts
       const totalPts = hasResult ? (s || 0) + pb : '';
-      const progBadge = pb > 0 ? `<span class="pts-badge pts-prog">+2</span>` : '';
-      const totalDisplay = hasResult
-        ? `<span style="font-weight:700">${totalPts}</span>${progBadge}`
-        : '';
+      const totalDisplay = hasResult ? `<span style="font-weight:700">${totalPts}</span>` : '';
 
       predsHtml += `<tr>
         <td class="pred-name">${p.name}</td>
         <td class="pred-score">${p.h}–${p.a} ${scoreBadge}</td>
-        <td class="pred-prog-cell ${progCorrect ? 'pred-prog-correct' : ''}">${progDisplay}</td>
+        <td class="pred-prog-cell ${progCorrect ? 'pred-prog-correct' : ''}">${progDisplay}${progBadge}</td>
         <td class="pts-total">${totalDisplay}</td>
       </tr>`;
     });
