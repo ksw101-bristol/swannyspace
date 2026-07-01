@@ -48,10 +48,11 @@
   <div class="summary-row">
     <div class="summary-card"><div class="num" id="p1Count">–</div><div class="label">Part 1 In</div></div>
     <div class="summary-card"><div class="num" id="p2Count">–</div><div class="label">Part 2 In</div></div>
+    <div class="summary-card"><div class="num" id="r16p1Count">–</div><div class="label">R16 Part 1 In</div></div>
   </div>
 
   <table>
-    <thead><tr><th>Player</th><th>R32 Part 1</th><th>R32 Part 2</th></tr></thead>
+    <thead><tr><th>Player</th><th>R32 Part 1</th><th>R32 Part 2</th><th>R16 Part 1</th></tr></thead>
     <tbody id="statusBody"></tbody>
   </table>
 
@@ -59,25 +60,25 @@
 </div>
 <script>
 const entrants = [
-  { name: "Kirk Walsh", p1: true, p2: true },
-  { name: "The Mays", p1: true, p2: true },
-  { name: "Mike Budd", p1: true, p2: true },
-  { name: "Richard Boyce", p1: true, p2: false },
-  { name: "Jordy Chalmers", p1: true, p2: true },
-  { name: "Steve Kenna", p1: true, p2: false },
-  { name: "Cameron Walsh", p1: true, p2: true },
-  { name: "James Boyce", p1: true, p2: true },
-  { name: "Cathy & Oliver", p1: true, p2: true },
-  { name: "Lee Grainger", p1: true, p2: false },
-  { name: "Jason Parsons", p1: true, p2: true },
-  { name: "Vicki Walsh", p1: true, p2: true },
-  { name: "Dave Budd", p1: true, p2: false },
-  { name: "Elliot Walsh", p1: true, p2: false },
-  { name: "Chris Hunt", p1: true, p2: true },
+  { name: "Kirk Walsh",       p1: true,  p2: true,  r16p1: false },
+  { name: "The Mays",         p1: true,  p2: true,  r16p1: false },
+  { name: "Mike Budd",        p1: true,  p2: true,  r16p1: false },
+  { name: "Richard Boyce",    p1: true,  p2: true,  r16p1: false },
+  { name: "Jordy Chalmers",   p1: true,  p2: true,  r16p1: false },
+  { name: "Steve Kenna",      p1: true,  p2: true,  r16p1: false },
+  { name: "Cameron Walsh",    p1: true,  p2: true,  r16p1: false },
+  { name: "James Boyce",      p1: true,  p2: true,  r16p1: false },
+  { name: "Cathy & Oliver",   p1: true,  p2: true,  r16p1: false },
+  { name: "Lee Grainger",     p1: true,  p2: true,  r16p1: false },
+  { name: "Jason Parsons",    p1: true,  p2: true,  r16p1: false },
+  { name: "Vicki Walsh",      p1: true,  p2: true,  r16p1: false },
+  { name: "Dave Budd",        p1: true,  p2: true,  r16p1: false },
+  { name: "Elliot Walsh",     p1: true,  p2: true,  r16p1: false },
+  { name: "Chris Hunt",       p1: true,  p2: true,  r16p1: false },
 ];
 
 const tbody = document.getElementById('statusBody');
-let p1Count = 0, p2Count = 0;
+let p1Count = 0, p2Count = 0, r16p1Count = 0;
 
 function icon(val, placeholder) {
   if (placeholder) return `<span class="status-icon status-placeholder">~</span><span class="placeholder-note">placeholder</span>`;
@@ -89,13 +90,15 @@ function icon(val, placeholder) {
 entrants.forEach(e => {
   if(e.p1 && !e.p1placeholder) p1Count++;
   if(e.p2) p2Count++;
+  if(e.r16p1) r16p1Count++;
   const tr = document.createElement('tr');
-  tr.innerHTML = `<td class="name">${e.name}</td><td>${icon(e.p1, e.p1placeholder)}</td><td>${icon(e.p2, e.p2placeholder)}</td>`;
+  tr.innerHTML = `<td class="name">${e.name}</td><td>${icon(e.p1, e.p1placeholder)}</td><td>${icon(e.p2, e.p2placeholder)}</td><td>${icon(e.r16p1)}</td>`;
   tbody.appendChild(tr);
 });
 
 document.getElementById('p1Count').textContent = `${p1Count}/${entrants.length}`;
 document.getElementById('p2Count').textContent = `${p2Count}/${entrants.length}`;
+document.getElementById('r16p1Count').textContent = `${r16p1Count}/${entrants.length}`;
 </script>
 </body>
 </html>

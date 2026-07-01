@@ -85,9 +85,9 @@
 <div class="wrap">
   <a class="back-link" href="ko-index.html">← Back to home</a>
   <header>
-    <p class="kicker">Knockout Stage · Round of 32 · Part 1 · Live</p>
-    <h1>Live Predictions Tracker</h1>
-    <p>Everyone's picks for Round of 32 Part 1 (games 1–6), scored live as goals go in. Page checks for live scores automatically every 60 seconds.</p>
+    <p class="kicker">Knockout Stage · Round of 32 · Live</p>
+    <h1>Round of 32</h1>
+    <p>Everyone's picks for all 16 Round of 32 games, scored live as goals go in. Page checks for live scores automatically every 60 seconds.</p>
 
   <div class="scoring-key">
     <div class="sk-item"><span class="sk-badge pts-5">5</span> Exact 90-min score</div>
@@ -211,8 +211,8 @@ const matchesData = [
     num: "05", meta: "Tue 30 Jun · 18:00 UK · R32",
     home: "Ivory Coast", away: "Norway",
     searchHome: "Ivory Coast", searchAway: "Norway",
-    altHomeTokens: ["côte d'ivoire","cote d'ivoire","ivory"],
-    actualHome: null, actualAway: null, actualProg: null,
+    altHomeTokens: ["côte d'ivoire", "cote d'ivoire", 'ivory'],
+    actualHome: 1, actualAway: 2, actualProg: "Norway",
     predictions: [
       { name: "Kirk Walsh", h:1, a:1, prog:"Norway" },
       { name: "The Mays", h:1, a:1, prog:"Norway" },
@@ -235,7 +235,7 @@ const matchesData = [
     num: "06", meta: "Tue 30 Jun · 22:00 UK · R32",
     home: "France", away: "Sweden",
     searchHome: "France", searchAway: "Sweden",
-    actualHome: null, actualAway: null, actualProg: null,
+    actualHome: 3, actualAway: 0, actualProg: "France",
     predictions: [
       { name: "Kirk Walsh", h:3, a:0, prog:"France" },
       { name: "The Mays", h:2, a:0, prog:"France" },
@@ -252,6 +252,238 @@ const matchesData = [
       { name: "Dave Budd", h:3, a:0, prog:"France" },
       { name: "Elliot Walsh", h:4, a:1, prog:"France" },
       { name: "Chris Hunt", h:3, a:0, prog:"France" }
+    ]
+  },
+  {
+    num: "07", meta: "Wed 01 Jul · 02:00 UK · R32",
+    home: "Mexico", away: "Ecuador",
+    searchHome: "Mexico", searchAway: "Ecuador",
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:2, a:1, prog:"Mexico" },
+      { name: "The Mays", h:2, a:1, prog:"Mexico" },
+      { name: "Mike Budd", h:2, a:1, prog:"Mexico" },
+      { name: "Richard Boyce", h:2, a:0, prog:"Mexico" },
+      { name: "Jordy Chalmers", h:2, a:0, prog:"Mexico" },
+      { name: "Steve Kenna", h:1, a:0, prog:"Mexico" },
+      { name: "Cameron Walsh", h:2, a:0, prog:"Mexico" },
+      { name: "James Boyce", h:1, a:0, prog:"Mexico" },
+      { name: "Cathy & Oliver", h:1, a:0, prog:"Mexico" },
+      { name: "Lee Grainger", h:2, a:1, prog:"Mexico" },
+      { name: "Jason Parsons", h:2, a:1, prog:"Mexico" },
+      { name: "Vicki Walsh", h:1, a:1, prog:"Mexico" },
+      { name: "Dave Budd", h:2, a:1, prog:"Mexico" },
+      { name: "Elliot Walsh", h:1, a:2, prog:"Ecuador" },
+      { name: "Chris Hunt", h:2, a:1, prog:"Mexico" }
+    ]
+  },
+  {
+    num: "08", meta: "Wed 01 Jul · 17:00 UK · R32",
+    home: "England", away: "Congo DR",
+    searchHome: "England", searchAway: "Congo DR",
+    altAwayTokens: ['congo dr', 'dr congo', 'democratic republic'],
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:2, a:0, prog:"England" },
+      { name: "The Mays", h:3, a:0, prog:"England" },
+      { name: "Mike Budd", h:3, a:1, prog:"England" },
+      { name: "Richard Boyce", h:2, a:2, prog:"Congo DR" },
+      { name: "Jordy Chalmers", h:2, a:0, prog:"England" },
+      { name: "Steve Kenna", h:2, a:0, prog:"England" },
+      { name: "Cameron Walsh", h:2, a:0, prog:"England" },
+      { name: "James Boyce", h:2, a:0, prog:"England" },
+      { name: "Cathy & Oliver", h:2, a:0, prog:"England" },
+      { name: "Lee Grainger", h:2, a:0, prog:"England" },
+      { name: "Jason Parsons", h:2, a:1, prog:"England" },
+      { name: "Vicki Walsh", h:2, a:1, prog:"England" },
+      { name: "Dave Budd", h:3, a:0, prog:"England" },
+      { name: "Elliot Walsh", h:3, a:1, prog:"England" },
+      { name: "Chris Hunt", h:3, a:2, prog:"England" }
+    ]
+  },
+  {
+    num: "09", meta: "Wed 01 Jul · 21:00 UK · R32",
+    home: "Belgium", away: "Senegal",
+    searchHome: "Belgium", searchAway: "Senegal",
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:1, a:1, prog:"Senegal" },
+      { name: "The Mays", h:1, a:2, prog:"Senegal" },
+      { name: "Mike Budd", h:1, a:2, prog:"Senegal" },
+      { name: "Richard Boyce", h:1, a:3, prog:"Senegal" },
+      { name: "Jordy Chalmers", h:2, a:1, prog:"Belgium" },
+      { name: "Steve Kenna", h:1, a:1, prog:"Belgium" },
+      { name: "Cameron Walsh", h:2, a:1, prog:"Belgium" },
+      { name: "James Boyce", h:2, a:1, prog:"Belgium" },
+      { name: "Cathy & Oliver", h:1, a:1, prog:"Belgium" },
+      { name: "Lee Grainger", h:1, a:0, prog:"Belgium" },
+      { name: "Jason Parsons", h:2, a:1, prog:"Senegal" },
+      { name: "Vicki Walsh", h:1, a:0, prog:"Belgium" },
+      { name: "Dave Budd", h:1, a:0, prog:"Belgium" },
+      { name: "Elliot Walsh", h:1, a:1, prog:"Belgium" },
+      { name: "Chris Hunt", h:2, a:2, prog:"Belgium" }
+    ]
+  },
+  {
+    num: "10", meta: "Thu 02 Jul · 01:00 UK · R32",
+    home: "United States", away: "Bosnia",
+    searchHome: "United States", searchAway: "Bosnia",
+    altAwayTokens: ['bosnia'],
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:2, a:0, prog:"United States" },
+      { name: "The Mays", h:2, a:1, prog:"United States" },
+      { name: "Mike Budd", h:2, a:0, prog:"United States" },
+      { name: "Richard Boyce", h:3, a:0, prog:"United States" },
+      { name: "Jordy Chalmers", h:3, a:1, prog:"United States" },
+      { name: "Steve Kenna", h:1, a:0, prog:"United States" },
+      { name: "Cameron Walsh", h:2, a:0, prog:"United States" },
+      { name: "James Boyce", h:1, a:0, prog:"United States" },
+      { name: "Cathy & Oliver", h:2, a:0, prog:"United States" },
+      { name: "Lee Grainger", h:2, a:1, prog:"United States" },
+      { name: "Jason Parsons", h:2, a:1, prog:"United States" },
+      { name: "Vicki Walsh", h:3, a:0, prog:"United States" },
+      { name: "Dave Budd", h:2, a:0, prog:"United States" },
+      { name: "Elliot Walsh", h:3, a:0, prog:"United States" },
+      { name: "Chris Hunt", h:2, a:1, prog:"United States" }
+    ]
+  },
+  {
+    num: "11", meta: "Thu 02 Jul · 20:00 UK · R32",
+    home: "Spain", away: "Austria",
+    searchHome: "Spain", searchAway: "Austria",
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:3, a:0, prog:"Spain" },
+      { name: "The Mays", h:1, a:0, prog:"Spain" },
+      { name: "Mike Budd", h:3, a:1, prog:"Spain" },
+      { name: "Richard Boyce", h:0, a:1, prog:"Austria" },
+      { name: "Jordy Chalmers", h:2, a:0, prog:"Spain" },
+      { name: "Steve Kenna", h:2, a:0, prog:"Spain" },
+      { name: "Cameron Walsh", h:3, a:1, prog:"Spain" },
+      { name: "James Boyce", h:3, a:0, prog:"Spain" },
+      { name: "Cathy & Oliver", h:2, a:0, prog:"Spain" },
+      { name: "Lee Grainger", h:2, a:0, prog:"Spain" },
+      { name: "Jason Parsons", h:2, a:1, prog:"Spain" },
+      { name: "Vicki Walsh", h:2, a:1, prog:"Spain" },
+      { name: "Dave Budd", h:3, a:1, prog:"Spain" },
+      { name: "Elliot Walsh", h:3, a:0, prog:"Spain" },
+      { name: "Chris Hunt", h:3, a:0, prog:"Spain" }
+    ]
+  },
+  {
+    num: "12", meta: "Fri 03 Jul · 00:00 UK · R32",
+    home: "Portugal", away: "Croatia",
+    searchHome: "Portugal", searchAway: "Croatia",
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:2, a:0, prog:"Portugal" },
+      { name: "The Mays", h:2, a:2, prog:"Portugal" },
+      { name: "Mike Budd", h:1, a:2, prog:"Croatia" },
+      { name: "Richard Boyce", h:2, a:1, prog:"Portugal" },
+      { name: "Jordy Chalmers", h:2, a:1, prog:"Portugal" },
+      { name: "Steve Kenna", h:1, a:0, prog:"Portugal" },
+      { name: "Cameron Walsh", h:1, a:1, prog:"Croatia" },
+      { name: "James Boyce", h:1, a:0, prog:"Portugal" },
+      { name: "Cathy & Oliver", h:1, a:1, prog:"Portugal" },
+      { name: "Lee Grainger", h:1, a:1, prog:"Portugal" },
+      { name: "Jason Parsons", h:2, a:1, prog:"Portugal" },
+      { name: "Vicki Walsh", h:1, a:1, prog:"Croatia" },
+      { name: "Dave Budd", h:2, a:1, prog:"Portugal" },
+      { name: "Elliot Walsh", h:2, a:1, prog:"Portugal" },
+      { name: "Chris Hunt", h:2, a:2, prog:"Portugal" }
+    ]
+  },
+  {
+    num: "13", meta: "Fri 03 Jul · 04:00 UK · R32",
+    home: "Switzerland", away: "Algeria",
+    searchHome: "Switzerland", searchAway: "Algeria",
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:0, a:1, prog:"Algeria" },
+      { name: "The Mays", h:1, a:1, prog:"Switzerland" },
+      { name: "Mike Budd", h:2, a:1, prog:"Switzerland" },
+      { name: "Richard Boyce", h:1, a:2, prog:"Algeria" },
+      { name: "Jordy Chalmers", h:2, a:0, prog:"Switzerland" },
+      { name: "Steve Kenna", h:1, a:0, prog:"Switzerland" },
+      { name: "Cameron Walsh", h:2, a:0, prog:"Switzerland" },
+      { name: "James Boyce", h:1, a:0, prog:"Switzerland" },
+      { name: "Cathy & Oliver", h:1, a:1, prog:"Switzerland" },
+      { name: "Lee Grainger", h:1, a:1, prog:"Switzerland" },
+      { name: "Jason Parsons", h:2, a:1, prog:"Switzerland" },
+      { name: "Vicki Walsh", h:2, a:1, prog:"Switzerland" },
+      { name: "Dave Budd", h:1, a:1, prog:"Switzerland" },
+      { name: "Elliot Walsh", h:2, a:1, prog:"Switzerland" },
+      { name: "Chris Hunt", h:1, a:1, prog:"Switzerland" }
+    ]
+  },
+  {
+    num: "14", meta: "Fri 03 Jul · 19:00 UK · R32",
+    home: "Australia", away: "Egypt",
+    searchHome: "Australia", searchAway: "Egypt",
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:1, a:3, prog:"Egypt" },
+      { name: "The Mays", h:1, a:1, prog:"Australia" },
+      { name: "Mike Budd", h:1, a:1, prog:"Egypt" },
+      { name: "Richard Boyce", h:0, a:2, prog:"Egypt" },
+      { name: "Jordy Chalmers", h:1, a:1, prog:"Egypt" },
+      { name: "Steve Kenna", h:1, a:1, prog:"Egypt" },
+      { name: "Cameron Walsh", h:1, a:1, prog:"Egypt" },
+      { name: "James Boyce", h:1, a:2, prog:"Egypt" },
+      { name: "Cathy & Oliver", h:1, a:1, prog:"Egypt" },
+      { name: "Lee Grainger", h:1, a:2, prog:"Egypt" },
+      { name: "Jason Parsons", h:1, a:2, prog:"Egypt" },
+      { name: "Vicki Walsh", h:0, a:1, prog:"Egypt" },
+      { name: "Dave Budd", h:0, a:2, prog:"Egypt" },
+      { name: "Elliot Walsh", h:0, a:2, prog:"Egypt" },
+      { name: "Chris Hunt", h:1, a:2, prog:"Egypt" }
+    ]
+  },
+  {
+    num: "15", meta: "Fri 03 Jul · 23:00 UK · R32",
+    home: "Argentina", away: "Cape Verde",
+    searchHome: "Argentina", searchAway: "Cape Verde",
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:4, a:0, prog:"Argentina" },
+      { name: "The Mays", h:2, a:0, prog:"Argentina" },
+      { name: "Mike Budd", h:3, a:1, prog:"Argentina" },
+      { name: "Richard Boyce", h:4, a:0, prog:"Argentina" },
+      { name: "Jordy Chalmers", h:3, a:0, prog:"Argentina" },
+      { name: "Steve Kenna", h:3, a:0, prog:"Argentina" },
+      { name: "Cameron Walsh", h:2, a:0, prog:"Argentina" },
+      { name: "James Boyce", h:2, a:0, prog:"Argentina" },
+      { name: "Cathy & Oliver", h:2, a:0, prog:"Argentina" },
+      { name: "Lee Grainger", h:4, a:0, prog:"Argentina" },
+      { name: "Jason Parsons", h:3, a:0, prog:"Argentina" },
+      { name: "Vicki Walsh", h:3, a:1, prog:"Argentina" },
+      { name: "Dave Budd", h:5, a:0, prog:"Argentina" },
+      { name: "Elliot Walsh", h:1, a:1, prog:"Cape Verde" },
+      { name: "Chris Hunt", h:3, a:0, prog:"Argentina" }
+    ]
+  },
+  {
+    num: "16", meta: "Sat 04 Jul · 02:30 UK · R32",
+    home: "Colombia", away: "Ghana",
+    searchHome: "Colombia", searchAway: "Ghana",
+    actualHome: null, actualAway: null, actualProg: null,
+    predictions: [
+      { name: "Kirk Walsh", h:3, a:1, prog:"Colombia" },
+      { name: "The Mays", h:1, a:1, prog:"Colombia" },
+      { name: "Mike Budd", h:1, a:0, prog:"Colombia" },
+      { name: "Richard Boyce", h:1, a:1, prog:"Colombia" },
+      { name: "Jordy Chalmers", h:1, a:0, prog:"Colombia" },
+      { name: "Steve Kenna", h:2, a:0, prog:"Colombia" },
+      { name: "Cameron Walsh", h:1, a:1, prog:"Colombia" },
+      { name: "James Boyce", h:2, a:1, prog:"Colombia" },
+      { name: "Cathy & Oliver", h:1, a:0, prog:"Colombia" },
+      { name: "Lee Grainger", h:2, a:1, prog:"Colombia" },
+      { name: "Jason Parsons", h:2, a:1, prog:"Colombia" },
+      { name: "Vicki Walsh", h:1, a:1, prog:"Colombia" },
+      { name: "Dave Budd", h:2, a:1, prog:"Colombia" },
+      { name: "Elliot Walsh", h:2, a:0, prog:"Colombia" },
+      { name: "Chris Hunt", h:2, a:1, prog:"Colombia" }
     ]
   }
 ];
