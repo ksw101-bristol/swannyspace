@@ -645,8 +645,8 @@ async function fetchLiveScores() {
     matchesData.forEach((m, idx) => {
       const fix = findMatch(fixtures, m);
       if (fix) {
-        const homeScore = fix.goals?.home !== null ? fix.goals.home : null;
-        const awayScore = fix.goals?.away !== null ? fix.goals.away : null;
+        const homeScore = fix.score?.fulltime?.home !== null ? fix.score.fulltime.home : (fix.goals?.home !== null ? fix.goals.home : null);
+        const awayScore = fix.score?.fulltime?.away !== null ? fix.score.fulltime.away : (fix.goals?.away !== null ? fix.goals.away : null);
         const statusShort = fix.fixture?.status?.short || '';
         let status = 'ns';
         if (['FT','AET','PEN'].includes(statusShort)) status = 'ft';
