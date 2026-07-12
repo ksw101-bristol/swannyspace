@@ -65,7 +65,7 @@
   <header>
     <p class="kicker">Knockout Stage · Semi-Finals · Games 29–30</p>
     <h1>Semi-Finals</h1>
-    <p>Teams TBC — placeholders shown based on QF matchups. Predict the 90-minute score and pick who progresses. Correct team to progress earns a +2pt bonus.</p>
+    <p>Predict the 90-minute score and pick who progresses. Correct team to progress earns a +2pt bonus.</p>
   </header>
   <form id="koform">
     <div class="name-field">
@@ -77,38 +77,38 @@
     <div class="match">
       <div class="match-meta"><span class="num">Match 29</span><span>Tue 14 Jul · 20:00 UK</span></div>
       <div class="teams">
-        <div class="team home">Fra/Mor</div>
+        <div class="team home">France</div>
         <div class="score-input">
           <input type="number" min="0" max="20" inputmode="numeric" id="m1h" required>
           <span class="score-sep">–</span>
           <input type="number" min="0" max="20" inputmode="numeric" id="m1a" required>
         </div>
-        <div class="team away">Esp/Belg</div>
+        <div class="team away">Spain</div>
       </div>
       <div class="progress-row">
         <span class="progress-label">Progresses →</span>
         <div class="progress-options">
-          <div class="progress-opt"><input type="radio" name="p1" id="p1h" value="Fra/Mor" required><label for="p1h">Fra/Mor</label></div>
-          <div class="progress-opt"><input type="radio" name="p1" id="p1a" value="Esp/Belg"><label for="p1a">Esp/Belg</label></div>
+          <div class="progress-opt"><input type="radio" name="p1" id="p1h" value="France" required><label for="p1h">France</label></div>
+          <div class="progress-opt"><input type="radio" name="p1" id="p1a" value="Spain"><label for="p1a">Spain</label></div>
         </div>
       </div>
     </div>
     <div class="match">
       <div class="match-meta"><span class="num">Match 30</span><span>Wed 15 Jul · 20:00 UK</span></div>
       <div class="teams">
-        <div class="team home">Nor/Eng</div>
+        <div class="team home">England</div>
         <div class="score-input">
           <input type="number" min="0" max="20" inputmode="numeric" id="m2h" required>
           <span class="score-sep">–</span>
           <input type="number" min="0" max="20" inputmode="numeric" id="m2a" required>
         </div>
-        <div class="team away">Arg/Swtz</div>
+        <div class="team away">Argentina</div>
       </div>
       <div class="progress-row">
         <span class="progress-label">Progresses →</span>
         <div class="progress-options">
-          <div class="progress-opt"><input type="radio" name="p2" id="p2h" value="Nor/Eng" required><label for="p2h">Nor/Eng</label></div>
-          <div class="progress-opt"><input type="radio" name="p2" id="p2a" value="Arg/Swtz"><label for="p2a">Arg/Swtz</label></div>
+          <div class="progress-opt"><input type="radio" name="p2" id="p2h" value="England" required><label for="p2h">England</label></div>
+          <div class="progress-opt"><input type="radio" name="p2" id="p2a" value="Argentina"><label for="p2a">Argentina</label></div>
         </div>
       </div>
     </div>
@@ -119,8 +119,8 @@
 </div>
 <script>
 const matches = [
-  { i:1, num:29, home:"Fra/Mor", away:"Esp/Belg" },
-  { i:2, num:30, home:"Nor/Eng", away:"Arg/Swtz" },
+  { i:1, num:29, home:"France", away:"Spain" },
+  { i:2, num:30, home:"England", away:"Argentina" },
 ];
 document.getElementById('koform').addEventListener('submit', function(e){
   e.preventDefault();
