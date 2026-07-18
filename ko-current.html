@@ -85,9 +85,9 @@
 <div class="wrap">
   <a class="back-link" href="ko-index.html">← Back to home</a>
   <header>
-    <p class="kicker">Knockout Stage · Semi-Finals · Live</p>
-    <h1>Semi-Finals</h1>
-    <p>Quarter-Finals complete. Now showing Semi-Final live predictions (games 29–30). Page refreshes every 60 seconds.</p>
+    <p class="kicker">Knockout Stage · The Finals · Live</p>
+    <h1>The Finals</h1>
+    <p>3rd Place Play-off & World Cup Final — live scoring. Page refreshes every 60 seconds.</p>
 
   <div class="scoring-key">
     <div class="sk-item"><span class="sk-badge pts-5">5</span> Exact 90-min score</div>
@@ -103,7 +103,7 @@
   <div class="leaderboard">
     <h2>Running Total</h2>
     <table class="lb-table">
-      <thead><tr><th>Player</th><th>Previous</th><th>SF Score</th><th>SF Prog</th><th>Total</th></tr></thead>
+      <thead><tr><th>Player</th><th>Previous</th><th>Finals Score</th><th>Finals Prog</th><th>Total</th></tr></thead>
       <tbody id="leaderboardBody"></tbody>
     </table>
   </div>
@@ -116,49 +116,49 @@
 <script>
 const matchesData = [
   {
-    num: "29", meta: "Tue 14 Jul · 20:00 UK · SF",
-    home: "France", away: "Spain",
-    searchHome: "France", searchAway: "Spain",
+    num: "31", meta: "Sat 18 Jul · 22:00 UK · 3rd Place",
+    home: "France", away: "England",
+    searchHome: "France", searchAway: "England",
     actualHome: null, actualAway: null, actualProg: null,
     predictions: [
       { name: "Kirk Walsh",      h:3, a:1, prog:"France" },
-      { name: "The Mays",        h:2, a:0, prog:"France" },
+      { name: "The Mays",        h:2, a:2, prog:"France" },
       { name: "Mike Budd",       h:3, a:1, prog:"France" },
-      { name: "Richard Boyce",   h:1, a:1, prog:"Spain" },
-      { name: "Jordy Chalmers",  h:2, a:1, prog:"France" },
-      { name: "Steve Kenna",     h:1, a:0, prog:"France" },
-      { name: "Cameron Walsh",   h:2, a:1, prog:"France" },
-      { name: "James Boyce",     h:1, a:2, prog:"Spain" },
-      { name: "Cathy & Oliver",  h:1, a:1, prog:"France" },
-      { name: "Lee Grainger",    h:1, a:1, prog:"Spain" },
+      { name: "Richard Boyce",   h:1, a:5, prog:"England" },
+      { name: "Jordy Chalmers",  h:3, a:1, prog:"France" },
+      { name: "Steve Kenna",     h:3, a:1, prog:"France" },
+      { name: "Cameron Walsh",   h:1, a:2, prog:"England" },
+      { name: "James Boyce",     h:1, a:2, prog:"England" },
+      { name: "Cathy & Oliver",  h:2, a:1, prog:"France" },
+      { name: "Lee Grainger",    h:2, a:0, prog:"France" },
       { name: "Jason Parsons",   h:2, a:1, prog:"France" },
-      { name: "Vicki Walsh",     h:3, a:2, prog:"France" },
-      { name: "Dave Budd",       h:1, a:0, prog:"France" },
+      { name: "Vicki Walsh",     h:2, a:1, prog:"France" },
+      { name: "Dave Budd",       h:3, a:1, prog:"France" },
       { name: "Elliot Walsh",    h:2, a:1, prog:"France" },
-      { name: "Chris Hunt",      h:3, a:1, prog:"France" }
+      { name: "Chris Hunt",      h:3, a:2, prog:"France" }
     ]
   },
   {
-    num: "30", meta: "Wed 15 Jul · 20:00 UK · SF",
-    home: "England", away: "Argentina",
-    searchHome: "England", searchAway: "Argentina",
+    num: "32", meta: "Sun 19 Jul · 20:00 UK · World Cup Final",
+    home: "Spain", away: "Argentina",
+    searchHome: "Spain", searchAway: "Argentina",
     actualHome: null, actualAway: null, actualProg: null,
     predictions: [
-      { name: "Kirk Walsh",      h:4, a:2, prog:"England" },
-      { name: "The Mays",        h:3, a:1, prog:"England" },
-      { name: "Mike Budd",       h:2, a:1, prog:"England" },
-      { name: "Richard Boyce",   h:3, a:0, prog:"England" },
-      { name: "Jordy Chalmers",  h:3, a:2, prog:"England" },
-      { name: "Steve Kenna",     h:3, a:1, prog:"England" },
-      { name: "Cameron Walsh",   h:3, a:2, prog:"Argentina" },
-      { name: "James Boyce",     h:2, a:0, prog:"England" },
-      { name: "Cathy & Oliver",  h:1, a:1, prog:"England" },
-      { name: "Lee Grainger",    h:2, a:1, prog:"England" },
-      { name: "Jason Parsons",   h:2, a:1, prog:"England" },
-      { name: "Vicki Walsh",     h:1, a:3, prog:"Argentina" },
-      { name: "Dave Budd",       h:2, a:1, prog:"England" },
-      { name: "Elliot Walsh",    h:2, a:2, prog:"England" },
-      { name: "Chris Hunt",      h:3, a:2, prog:"England" }
+      { name: "Kirk Walsh",      h:2, a:2, prog:"Spain" },
+      { name: "The Mays",        h:2, a:1, prog:"Spain" },
+      { name: "Mike Budd",       h:2, a:0, prog:"Spain" },
+      { name: "Richard Boyce",   h:4, a:0, prog:"Spain" },
+      { name: "Jordy Chalmers",  h:2, a:1, prog:"Spain" },
+      { name: "Steve Kenna",     h:3, a:1, prog:"Spain" },
+      { name: "Cameron Walsh",   h:1, a:1, prog:"Argentina" },
+      { name: "James Boyce",     h:2, a:1, prog:"Spain" },
+      { name: "Cathy & Oliver",  h:1, a:1, prog:"Spain" },
+      { name: "Lee Grainger",    h:1, a:1, prog:"Spain" },
+      { name: "Jason Parsons",   h:2, a:1, prog:"Spain" },
+      { name: "Vicki Walsh",     h:1, a:2, prog:"Argentina" },
+      { name: "Dave Budd",       h:1, a:1, prog:"Argentina" },
+      { name: "Elliot Walsh",    h:1, a:0, prog:"Spain" },
+      { name: "Chris Hunt",      h:2, a:3, prog:"Argentina" }
     ]
   }
 ];
@@ -184,15 +184,15 @@ const prevTotals = {
   "Kirk Walsh": 75,
   "The Mays": 63,
   "Mike Budd": 90,
-  "Richard Boyce": 62,
+  "Richard Boyce": 64,
   "Jordy Chalmers": 94,
   "Steve Kenna": 92,
-  "Cameron Walsh": 90,
-  "James Boyce": 77,
+  "Cameron Walsh": 92,
+  "James Boyce": 80,
   "Cathy & Oliver": 101,
-  "Lee Grainger": 78,
+  "Lee Grainger": 80,
   "Jason Parsons": 87,
-  "Vicki Walsh": 64,
+  "Vicki Walsh": 67,
   "Dave Budd": 99,
   "Elliot Walsh": 90,
   "Chris Hunt": 79
