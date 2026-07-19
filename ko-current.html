@@ -79,6 +79,54 @@
   .sk-badge{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:1px 6px;border-radius:2px;}
 
   footer{margin-top:40px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(224,165,38,0.25);}
+
+  #congratsBanner {
+    background: linear-gradient(135deg, #e0a526 0%, #f0bc45 50%, #e0a526 100%);
+    color: #0d1b3e;
+    border-radius: 6px;
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    animation: bannerIn 0.6s ease;
+  }
+  @keyframes bannerIn {
+    from { opacity:0; transform:translateY(-12px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  #congratsBanner .banner-kicker {
+    font-family:'Space Mono',monospace;
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    margin-bottom:8px;opacity:0.7;
+  }
+  #congratsBanner .banner-title {
+    font-family:'Archivo Black',sans-serif;
+    font-size:clamp(1.4rem,5vw,2.2rem);
+    text-transform:uppercase;letter-spacing:-0.01em;
+    line-height:1.1;margin-bottom:16px;
+  }
+  #congratsBanner .prize-row {
+    display:flex;align-items:center;gap:10px;
+    background:rgba(13,27,62,0.12);border-radius:4px;
+    padding:10px 14px;text-align:left;margin-bottom:8px;
+  }
+  #congratsBanner .prize-medal { font-size:1.4rem;flex-shrink:0; }
+  #congratsBanner .prize-name {
+    font-family:'Archivo Black',sans-serif;
+    font-size:clamp(0.9rem,3vw,1.1rem);
+    text-transform:uppercase;flex:1;
+  }
+  #congratsBanner .prize-amount {
+    font-family:'Archivo Black',sans-serif;
+    font-size:1.1rem;flex-shrink:0;
+    background:rgba(13,27,62,0.2);
+    padding:3px 10px;border-radius:3px;
+  }
+  #congratsBanner .prize-pts {
+    font-family:'Space Mono',monospace;
+    font-size:10px;letter-spacing:0.06em;
+    opacity:0.65;flex-shrink:0;white-space:nowrap;
+  }
+  @media(max-width:480px){ #congratsBanner .prize-pts { display:none; } }
 </style>
 </head>
 <body>
@@ -97,6 +145,36 @@
     <div class="sk-item"><span class="sk-badge pts-prog">+2</span> Correct team to progress</div>
   </div>
   </header>
+
+  
+  <div id="congratsBanner">
+    <div class="banner-kicker">🏆 Knockout Stage Complete · Final Results</div>
+    <div class="banner-title">Congratulations to our winners!</div>
+    <div class="prize-row">
+      <span class="prize-medal">🥇</span>
+      <span class="prize-name">Cathy &amp; Oliver</span>
+      <span class="prize-amount">£100</span>
+      <span class="prize-pts">105 pts</span>
+    </div>
+    <div class="prize-row">
+      <span class="prize-medal">🥈</span>
+      <span class="prize-name">Dave Budd</span>
+      <span class="prize-amount">£30</span>
+      <span class="prize-pts">101 pts</span>
+    </div>
+    <div class="prize-row">
+      <span class="prize-medal">🥉</span>
+      <span class="prize-name">Cameron Walsh</span>
+      <span class="prize-amount">£10</span>
+      <span class="prize-pts">97 pts</span>
+    </div>
+    <div class="prize-row">
+      <span class="prize-medal">🎯</span>
+      <span class="prize-name">The Mays</span>
+      <span class="prize-amount">£10</span>
+      <span class="prize-pts">Tiebreaker — guessed 93, actual 93</span>
+    </div>
+  </div>
 
   <div class="refresh-bar" id="refreshBar">Checking for live scores…</div>
 
@@ -119,7 +197,7 @@ const matchesData = [
     num: "31", meta: "Sat 18 Jul · 22:00 UK · 3rd Place",
     home: "France", away: "England",
     searchHome: "France", searchAway: "England",
-    actualHome: null, actualAway: null, actualProg: null,
+    actualHome: 4, actualAway: 6, actualProg: "England",
     predictions: [
       { name: "Kirk Walsh",      h:3, a:1, prog:"France" },
       { name: "The Mays",        h:2, a:2, prog:"France" },
@@ -142,7 +220,7 @@ const matchesData = [
     num: "32", meta: "Sun 19 Jul · 20:00 UK · World Cup Final",
     home: "Spain", away: "Argentina",
     searchHome: "Spain", searchAway: "Argentina",
-    actualHome: null, actualAway: null, actualProg: null,
+    actualHome: 0, actualAway: 0, actualProg: "Spain",
     predictions: [
       { name: "Kirk Walsh",      h:2, a:2, prog:"Spain" },
       { name: "The Mays",        h:2, a:1, prog:"Spain" },

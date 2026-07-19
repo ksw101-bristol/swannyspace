@@ -58,13 +58,13 @@
     <tbody id="guessBody"></tbody>
   </table>
 
-  <p class="note">All 15 players have submitted their guess. Highlighted entry is currently closest to the projection. Final result based on actual goals scored including extra time.</p>
+  <p class="note">Knockout Stage complete — 93 total goals scored across 32 games. 🎯 The Mays guessed exactly 93 — a perfect score to win the tiebreaker!</p>
 
   <footer>World Cup 2026 · Knockout Stage · Prediction League</footer>
 </div>
 <script>
-const projectedTotal = 87; // from workbook G42
-const gamesPlayed = 30;
+const projectedTotal = 93; // from workbook G42
+const gamesPlayed = 32;
 const totalGames = 32;
 
 const guesses = [
@@ -93,7 +93,7 @@ if (gamesPlayed === 0) {
   document.getElementById('projSub').textContent = 'No games played yet';
 } else {
   document.getElementById('projNum').textContent = projectedTotal;
-  document.getElementById('projSub').textContent = `based on ${gamesPlayed} game${gamesPlayed > 1 ? 's' : ''} played · ${totalGames - gamesPlayed} remaining`;
+  document.getElementById('projSub').textContent = `Final total after 32 games`;
 }
 
 // Find closest
