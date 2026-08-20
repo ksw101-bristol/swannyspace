@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>August · The 92 Club · Swanny's Prediction League</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b3e;
+    --gold: #e0a526;
+    --chalk: #f4f1e8;
+    --navy-light: #16295c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--navy);
+    color: var(--chalk);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+  header {
+    text-align: center;
+    padding: 44px 24px 32px;
+    border-bottom: 3px solid var(--gold);
+    background: linear-gradient(180deg, var(--navy-light) 0%, var(--navy) 100%);
+  }
+  .back-link {
+    display: inline-block;
+    color: var(--gold);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    text-decoration: none;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+  h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(28px, 5vw, 44px);
+  }
+  h1 span { color: var(--gold); }
+  .subtitle {
+    font-family: 'Space Mono', monospace;
+    color: var(--gold);
+    font-size: 13px;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  .name-field {
+    background: var(--navy-light);
+    border: 1px solid rgba(224,165,38,0.25);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .name-field label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .name-field input {
+    width: 100%;
+    background: var(--navy);
+    border: 1px solid rgba(244,241,232,0.2);
+    border-radius: 6px;
+    color: var(--chalk);
+    padding: 10px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+  }
+  .fixture {
+    background: var(--navy-light);
+    border: 1px solid rgba(224,165,38,0.15);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .fixture .div-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .fixture .teams {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .fixture .kickoff {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: #9fa5bd;
+    margin-top: 4px;
+  }
+  .score-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .score-inputs input {
+    width: 42px;
+    text-align: center;
+    background: var(--navy);
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    color: var(--chalk);
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    padding: 8px 0;
+  }
+  .score-inputs span {
+    color: var(--gold);
+    font-family: 'Space Mono', monospace;
+  }
+  .submit-row {
+    text-align: center;
+    margin-top: 28px;
+  }
+  .submit-row button {
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 13px;
+    padding: 14px 28px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+  .scoring-key {
+    margin-top: 40px;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: #9fa5bd;
+    line-height: 1.8;
+  }
+  .scoring-key strong { color: var(--gold); }
+  footer {
+    text-align: center;
+    padding: 30px 24px 50px;
+    color: #6b7291;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+  }
+  .tiebreaker-field {
+    background: var(--navy-light);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .tiebreaker-field label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .tiebreaker-field .tb-question {
+    font-size: 14px;
+    color: #c9cddd;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .tiebreaker-field input {
+    width: 100%;
+    background: var(--navy);
+    border: 1px solid rgba(244,241,232,0.2);
+    border-radius: 6px;
+    color: var(--chalk);
+    padding: 10px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="back-link">← Back to The 92 Club</a>
+  <h1>August <span>Round</span></h1>
+  <div class="subtitle">10 games · Premier League · Championship · League One · League Two</div>
+</header>
+
+<main>
+  <div class="name-field">
+    <label for="playerName">Your name</label>
+    <input type="text" id="playerName" placeholder="e.g. Kirk Walsh">
+  </div>
+
+  <div class="tiebreaker-field">
+    <label for="tiebreaker">Season tiebreaker · one-time only</label>
+    <div class="tb-question">Total number of goals scored across the top 4 divisions this season (Premier League, Championship, League One, League Two combined).</div>
+    <input type="number" min="0" id="tiebreaker" placeholder="e.g. 4200">
+  </div>
+
+  <!--
+    EDIT THIS SECTION EACH MONTH:
+    Duplicate a .fixture block per game. Update div-tag, teams, kickoff, and the
+    data-game attribute (used to build the submission email body).
+  -->
+
+  <div class="fixture" data-game="1">
+    <div>
+      <span class="div-tag">Premier League</span>
+      <div class="teams">Crystal Palace v Manchester City</div>
+      <div class="kickoff">Fri 28 Aug, 20:00</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g1h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g1a">
+    </div>
+  </div>
+
+  <div class="fixture" data-game="2">
+    <div>
+      <span class="div-tag">Championship</span>
+      <div class="teams">Wrexham v Birmingham City</div>
+      <div class="kickoff">Fri 28 Aug, 20:00</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g2h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g2a">
+    </div>
+  </div>
+
+  <div class="fixture" data-game="3">
+    <div>
+      <span class="div-tag">Premier League</span>
+      <div class="teams">Liverpool v Nottingham Forest</div>
+      <div class="kickoff">Sat 29 Aug, 12:30</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g3h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g3a">
+    </div>
+  </div>
+
+  <div class="fixture" data-game="4">
+    <div>
+      <span class="div-tag">Championship</span>
+      <div class="teams">Bristol City v Portsmouth</div>
+      <div class="kickoff">Sat 29 Aug, 15:00</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g4h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g4a">
+    </div>
+  </div>
+
+  <div class="fixture" data-game="5">
+    <div>
+      <span class="div-tag">League One</span>
+      <div class="teams">Plymouth Argyle v Bradford City</div>
+      <div class="kickoff">Sat 29 Aug, 15:00</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g5h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g5a">
+    </div>
+  </div>
+
+  <div class="fixture" data-game="6">
+    <div>
+      <span class="div-tag">League One</span>
+      <div class="teams">Notts County v Burton Albion</div>
+      <div class="kickoff">Sat 29 Aug, 15:00</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g6h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g6a">
+    </div>
+  </div>
+
+  <div class="fixture" data-game="7">
+    <div>
+      <span class="div-tag">League Two</span>
+      <div class="teams">Crawley Town v Bristol Rovers</div>
+      <div class="kickoff">Sat 29 Aug, 15:00</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g7h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g7a">
+    </div>
+  </div>
+
+  <div class="fixture" data-game="8">
+    <div>
+      <span class="div-tag">League Two</span>
+      <div class="teams">York City v Exeter City</div>
+      <div class="kickoff">Sat 29 Aug, 15:00</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g8h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g8a">
+    </div>
+  </div>
+
+  <div class="fixture" data-game="9">
+    <div>
+      <span class="div-tag">Premier League</span>
+      <div class="teams">Chelsea v Brighton & Hove Albion</div>
+      <div class="kickoff">Sun 30 Aug, 14:00</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g9h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g9a">
+    </div>
+  </div>
+
+  <div class="fixture" data-game="10">
+    <div>
+      <span class="div-tag">Premier League</span>
+      <div class="teams">Manchester United v Ipswich Town</div>
+      <div class="kickoff">Sun 30 Aug, 16:30</div>
+    </div>
+    <div class="score-inputs">
+      <input type="number" min="0" max="20" class="home-score" id="g10h">
+      <span>–</span>
+      <input type="number" min="0" max="20" class="away-score" id="g10a">
+    </div>
+  </div>
+
+  <div class="submit-row">
+    <button onclick="submitPredictions()">Submit Predictions →</button>
+  </div>
+
+  <div class="scoring-key">
+    <strong>5 pts</strong> exact scoreline &nbsp;·&nbsp; <strong>2 pts</strong> correct result + goal difference &nbsp;·&nbsp; <strong>1 pt</strong> correct result
+  </div>
+</main>
+
+<footer>The 92 Club · August Round · Swanny's Prediction League</footer>
+
+<script>
+function submitPredictions() {
+  const name = document.getElementById('playerName').value.trim();
+  if (!name) {
+    alert('Enter your name before submitting.');
+    return;
+  }
+
+  const fixtures = document.querySelectorAll('.fixture');
+  let missing = false;
+  let bodyLines = [];
+
+  fixtures.forEach(fx => {
+    const gameNum = fx.getAttribute('data-game');
+    const teams = fx.querySelector('.teams').textContent.trim();
+    const home = fx.querySelector('.home-score').value;
+    const away = fx.querySelector('.away-score').value;
+    if (home === '' || away === '') missing = true;
+    bodyLines.push(`${gameNum}. ${teams}: ${home || '?'} - ${away || '?'}`);
+  });
+
+  if (missing) {
+    if (!confirm('One or more scores are blank. Submit anyway?')) return;
+  }
+
+  const tiebreaker = document.getElementById('tiebreaker').value;
+  const tiebreakerLine = tiebreaker
+    ? `Season tiebreaker (total goals, top 4 divisions): ${tiebreaker}\n\n`
+    : '';
+
+  const subject = encodeURIComponent(`92 Club - August Predictions - ${name}`);
+  const body = encodeURIComponent(`Name: ${name}\n\n${tiebreakerLine}August Round Predictions:\n\n${bodyLines.join('\n')}`);
+  window.location.href = `mailto:mrgashead@hotmail.com?subject=${subject}&body=${body}`;
+}
+</script>
+
+</body>
+</html>

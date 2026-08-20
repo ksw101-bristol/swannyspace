@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>August · Live Scores · 92 Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b3e;
+    --navy-dark: #081229;
+    --gold: #e0a526;
+    --chalk: #f4f1e8;
+    --line: rgba(224,165,38,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--navy-dark);
+    color: var(--chalk);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+  header {
+    text-align: center;
+    padding: 40px 20px 28px;
+    border-bottom: 3px solid var(--gold);
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%);
+  }
+  .back-link {
+    display: inline-block;
+    color: var(--gold);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    text-decoration: none;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(26px, 5vw, 40px); }
+  h1 span { color: var(--gold); }
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #4caf50;
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  #lastUpdated { font-family: 'Space Mono', monospace; font-size: 11px; color: #6b7291; margin-top: 6px; }
+
+  main { max-width: 900px; margin: 0 auto; padding: 36px 18px 80px; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+
+  /* Leaderboard */
+  .leaderboard {
+    background: var(--navy);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 44px;
+  }
+  .lb-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 60px;
+    align-items: center;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row.top { background: rgba(224,165,38,0.08); }
+  .lb-rank { font-family: 'Space Mono', monospace; color: var(--gold); font-weight: 700; }
+  .lb-name { font-weight: 600; }
+  .lb-pts { font-family: 'Space Mono', monospace; text-align: right; color: var(--gold); font-weight: 700; }
+
+  /* Match cards */
+  .match-card {
+    background: var(--navy);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+  }
+  .match-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .match-league {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .match-status {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .status-ns { color: #9fa5bd; background: rgba(159,165,189,0.1); }
+  .status-live { color: #4caf50; background: rgba(76,175,80,0.12); }
+  .status-ft { color: var(--gold); background: rgba(224,165,38,0.1); }
+  .match-teams {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .match-teams .score {
+    font-family: 'Space Mono', monospace;
+    color: var(--gold);
+    font-size: 22px;
+    min-width: 60px;
+  }
+  .preds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 6px;
+  }
+  .pred-chip {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(244,241,232,0.04);
+    display: flex;
+    justify-content: space-between;
+    border-left: 3px solid transparent;
+  }
+  .pred-exact { border-left-color: #4caf50; }
+  .pred-gd { border-left-color: var(--gold); }
+  .pred-result { border-left-color: #6b8cae; }
+  .pred-wrong { border-left-color: rgba(244,241,232,0.15); opacity: 0.6; }
+  .pred-chip .pname { color: #c9cddd; }
+  .pred-chip .pscore { color: var(--chalk); font-weight: 700; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: #9fa5bd;
+    margin-top: 30px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  footer {
+    text-align: center;
+    padding: 30px 24px 50px;
+    color: #6b7291;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="back-link">← Back to 92 Club</a>
+  <h1>August <span>Live Scores</span></h1>
+  <div class="subtitle" style="font-family:'Space Mono',monospace;color:var(--gold);font-size:12px;margin-top:6px;">Fri 28 – Sun 30 Aug 2026</div>
+  <div class="live-pill"><span class="live-dot"></span> Updating every 60s</div>
+  <div id="lastUpdated">Last updated: —</div>
+</header>
+
+<main>
+  <div class="section-label">Leaderboard</div>
+  <div class="leaderboard" id="leaderboard"></div>
+
+  <div class="section-label">Fixtures &amp; Predictions</div>
+  <div id="matchList"></div>
+
+  <div class="legend">
+    <span><i style="background:#4caf50"></i> 5 pts — exact score</span>
+    <span><i style="background:var(--gold)"></i> 2 pts — result + goal difference</span>
+    <span><i style="background:#6b8cae"></i> 1 pt — correct result</span>
+    <span><i style="background:rgba(244,241,232,0.2)"></i> 0 pts</span>
+  </div>
+</main>
+
+<footer>The 92 Club · August Round · Swanny's Prediction League</footer>
+
+<script>
+/* ============================================================
+   FIXTURES — edit this list each month to match the 10 games
+   actually picked. searchHome/searchAway are used to match
+   against the API response team names. If api-football uses a
+   different name for a team, add altHomeTokens/altAwayTokens,
+   e.g. altHomeTokens: ["USA"] for "United States".
+   ============================================================ */
+const FIXTURES = [
+  { id: 1, league: 39, leagueName: "Premier League", home: "Crystal Palace", away: "Manchester City", searchHome: "Crystal Palace", searchAway: "Manchester City" },
+  { id: 2, league: 40, leagueName: "Championship", home: "Wrexham", away: "Birmingham City", searchHome: "Wrexham", searchAway: "Birmingham City", altAwayTokens: ["Birmingham"] },
+  { id: 3, league: 39, leagueName: "Premier League", home: "Liverpool", away: "Nottingham Forest", searchHome: "Liverpool", searchAway: "Nottingham Forest", altAwayTokens: ["Nott'm Forest", "Forest"] },
+  { id: 4, league: 40, leagueName: "Championship", home: "Bristol City", away: "Portsmouth", searchHome: "Bristol City", searchAway: "Portsmouth" },
+  { id: 5, league: 41, leagueName: "League One", home: "Plymouth Argyle", away: "Bradford City", searchHome: "Plymouth Argyle", searchAway: "Bradford City", altHomeTokens: ["Plymouth"], altAwayTokens: ["Bradford"] },
+  { id: 6, league: 41, leagueName: "League One", home: "Notts County", away: "Burton Albion", searchHome: "Notts County", searchAway: "Burton Albion", altAwayTokens: ["Burton"] },
+  { id: 7, league: 42, leagueName: "League Two", home: "Crawley Town", away: "Bristol Rovers", searchHome: "Crawley Town", searchAway: "Bristol Rovers", altHomeTokens: ["Crawley"] },
+  { id: 8, league: 42, leagueName: "League Two", home: "York City", away: "Exeter City", searchHome: "York City", searchAway: "Exeter City", altHomeTokens: ["York"], altAwayTokens: ["Exeter"] },
+  { id: 9, league: 39, leagueName: "Premier League", home: "Chelsea", away: "Brighton & Hove Albion", searchHome: "Chelsea", searchAway: "Brighton & Hove Albion", altAwayTokens: ["Brighton"] },
+  { id: 10, league: 39, leagueName: "Premier League", home: "Manchester United", away: "Ipswich Town", searchHome: "Manchester United", searchAway: "Ipswich Town", altAwayTokens: ["Ipswich"] },
+];
+
+/* ============================================================
+   PREDICTIONS — transcribe each player's submitted email here
+   once predictions are in. Key = fixture id, value = { player: "H-A" }
+   Empty until submissions come in for this round.
+   ============================================================ */
+const PREDICTIONS = {
+  // 1: { "Kirk Walsh": "2-1", "The Mays": "1-1" },
+};
+
+const ROUND_FROM = "2026-08-28";
+const ROUND_TO = "2026-08-30";
+const POLL_INTERVAL_MS = 60000;
+
+function findMatch(fixture, apiMatches) {
+  const homeTokens = [fixture.searchHome, ...(fixture.altHomeTokens || [])];
+  const awayTokens = [fixture.searchAway, ...(fixture.altAwayTokens || [])];
+  return apiMatches.find(m =>
+    homeTokens.some(t => m.home.includes(t) || t.includes(m.home)) &&
+    awayTokens.some(t => m.away.includes(t) || t.includes(m.away))
+  );
+}
+
+function pointsFor(predHome, predAway, actualHome, actualAway) {
+  if (actualHome === null || actualHome === undefined || actualAway === null || actualAway === undefined) return null;
+  if (predHome === actualHome && predAway === actualAway) return 5;
+  const predGD = predHome - predAway;
+  const actualGD = actualHome - actualAway;
+  if (predGD === actualGD) return 2;
+  const sign = n => (n > 0 ? 1 : n < 0 ? -1 : 0);
+  if (sign(predGD) === sign(actualGD)) return 1;
+  return 0;
+}
+
+function statusLabel(status) {
+  if (status === 'NS') return { text: 'Not started', cls: 'status-ns' };
+  if (status === 'FT') return { text: 'Full time', cls: 'status-ft' };
+  if (['1H', '2H', 'HT', 'ET'].includes(status)) return { text: 'Live', cls: 'status-live' };
+  return { text: status, cls: 'status-ns' };
+}
+
+async function loadScores() {
+  let apiMatches = [];
+  try {
+    const res = await fetch(`/.netlify/functions/scores?from=${ROUND_FROM}&to=${ROUND_TO}`);
+    const data = await res.json();
+    apiMatches = data.matches || [];
+  } catch (err) {
+    console.error('Failed to fetch live scores', err);
+  }
+
+  const playerTotals = {};
+  const matchListEl = document.getElementById('matchList');
+  matchListEl.innerHTML = '';
+
+  FIXTURES.forEach(fixture => {
+    const live = findMatch(fixture, apiMatches);
+    const homeScore = live ? (live.liveHomeScore ?? live.homeScore) : null;
+    const awayScore = live ? (live.liveAwayScore ?? live.awayScore) : null;
+    const status = live ? statusLabel(live.status) : statusLabel('NS');
+
+    const preds = PREDICTIONS[fixture.id] || {};
+    const chips = Object.entries(preds).map(([player, pred]) => {
+      const [ph, pa] = pred.split('-').map(Number);
+      const pts = pointsFor(ph, pa, homeScore, awayScore);
+      playerTotals[player] = (playerTotals[player] || 0) + (pts || 0);
+
+      let cls = 'pred-wrong';
+      if (pts === 5) cls = 'pred-exact';
+      else if (pts === 2) cls = 'pred-gd';
+      else if (pts === 1) cls = 'pred-result';
+
+      return `<div class="pred-chip ${cls}"><span class="pname">${player}</span><span class="pscore">${pred}${pts !== null ? ` (${pts})` : ''}</span></div>`;
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className = 'match-card';
+    card.innerHTML = `
+      <div class="match-top">
+        <span class="match-league">${fixture.leagueName}</span>
+        <span class="match-status ${status.cls}">${status.text}</span>
+      </div>
+      <div class="match-teams">
+        <span>${fixture.home}</span>
+        <span class="score">${homeScore ?? '–'} : ${awayScore ?? '–'}</span>
+        <span>${fixture.away}</span>
+      </div>
+      <div class="preds-grid">${chips || '<span style="color:#6b7291;font-family:\'Space Mono\',monospace;font-size:12px;">No predictions logged yet</span>'}</div>
+    `;
+    matchListEl.appendChild(card);
+  });
+
+  const lbEl = document.getElementById('leaderboard');
+  const sorted = Object.entries(playerTotals).sort((a, b) => b[1] - a[1]);
+  lbEl.innerHTML = sorted.length
+    ? sorted.map(([player, pts], i) => `
+        <div class="lb-row ${i === 0 ? 'top' : ''}">
+          <span class="lb-rank">${i + 1}</span>
+          <span class="lb-name">${player}</span>
+          <span class="lb-pts">${pts}</span>
+        </div>`).join('')
+    : '<div class="lb-row"><span class="lb-name">No predictions logged yet</span></div>';
+
+  document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString('en-GB');
+}
+
+loadScores();
+setInterval(loadScores, POLL_INTERVAL_MS);
+</script>
+
+</body>
+</html>
