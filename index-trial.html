@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Index Trial · The 92 Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16211c;
+    --ink-soft: #5b675f;
+    --paper: #ffffff;
+    --panel: #f5f7f5;
+    --line: #e2e6e2;
+    --green: #1f7a4d;
+    --green-deep: #145536;
+    --amber: #d98c1f;
+    --amber-soft: #fbeed9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    text-align: center;
+    padding: 48px 20px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--green);
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 7vw, 44px);
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+  h1 span { color: var(--green); }
+  .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    color: var(--amber);
+    font-size: 13px;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .tagline {
+    max-width: 480px;
+    margin: 16px auto 0;
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 18px 64px;
+  }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+  }
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .month-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .month-card:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(31,122,77,0.12);
+  }
+  .month-card:active {
+    transform: translateY(0);
+  }
+  .month-card.locked {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .month-name {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    margin-bottom: 5px;
+  }
+  .month-status {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .month-card.locked .month-status {
+    color: var(--ink-soft);
+  }
+  .month-meta {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  .arrow {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    color: var(--green);
+    font-size: 18px;
+  }
+  .info-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 36px;
+  }
+  .info-panel h2 {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--green-deep);
+    margin-bottom: 12px;
+  }
+  .info-panel p {
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .scoring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .score-item {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .score-item .pts {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 19px;
+    color: var(--green);
+    font-weight: 600;
+  }
+  .score-item .desc {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+  }
+  .prize-note {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .prize-note strong {
+    color: var(--amber);
+  }
+  .divisions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .div-pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--amber-soft);
+    border: 1px solid rgba(217,140,31,0.3);
+    color: var(--amber);
+    padding: 5px 12px;
+    border-radius: 20px;
+  }
+  .cta {
+    text-align: center;
+    margin-top: 4px;
+  }
+  .cta a {
+    display: inline-block;
+    background: var(--green);
+    color: #ffffff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 13px;
+    padding: 15px 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    min-width: 44px;
+    min-height: 44px;
+    line-height: 1.4;
+  }
+  .cta a:active {
+    background: var(--green-deep);
+  }
+  footer {
+    text-align: center;
+    padding: 28px 20px 44px;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+
+  @media (max-width: 420px) {
+    header { padding: 36px 16px 26px; }
+    main { padding: 24px 14px 48px; }
+    .info-panel { padding: 18px; }
+    .month-card { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">⚽</div>
+  <h1>92 <span>Club</span></h1>
+  <div class="subtitle">Swanny's Prediction League · 2026/27</div>
+  <p class="tagline">Ten games. Every month. Picked from the Premier League, Championship, League One and League Two. Same rules, new season.</p>
+</header>
+
+<main>
+  <div class="info-panel">
+    <h2>How it works</h2>
+    <p>
+      Each month, 10 fixtures are hand-picked across the top four English divisions. Submit your scoreline
+      prediction for every game before kick-off. Points are tallied at month's end and added to the season table.
+    </p>
+    <div class="divisions">
+      <span class="div-pill">Premier League</span>
+      <span class="div-pill">Championship</span>
+      <span class="div-pill">League One</span>
+      <span class="div-pill">League Two</span>
+    </div>
+    <div class="scoring-grid">
+      <div class="score-item"><div class="pts">5 pts</div><div class="desc">Exact scoreline</div></div>
+      <div class="score-item"><div class="pts">2 pts</div><div class="desc">Correct result + goal difference</div></div>
+      <div class="score-item"><div class="pts">1 pt</div><div class="desc">Correct result only</div></div>
+    </div>
+    <div class="prize-note">
+      <strong>Entry fee: £10</strong> — payable once, covers the whole season. Prize split between 1st, 2nd and 3rd will be confirmed once the final number of players is locked in.
+    </div>
+  </div>
+
+  <div class="section-label">Season 2026/27 · Monthly Rounds</div>
+  <div class="month-grid">
+    <!--
+      AUGUST CARD — toggle this between the two states below as the round progresses:
+
+      1) PREDICTIONS OPEN (until the deadline, Thu 27 Aug):
+         href="/92-club-august-round"
+         <div class="month-status">● Open</div>
+
+      2) GAMES LIVE / IN PROGRESS (once predictions have closed):
+         href="/92-club-august-live"
+         <div class="month-status">● Live</div>
+    -->
+    <a href="/92-club-august-round" class="month-card">
+      <div class="month-name">August</div>
+      <div class="month-status">● Open</div>
+      <div class="month-meta">10 games · predictions open</div>
+      <div class="arrow">→</div>
+    </a>
+    <a href="/92-club-september-round" class="month-card locked">
+      <div class="month-name">September</div>
+      <div class="month-status">Closed</div>
+      <div class="month-meta">Fixtures TBC</div>
+      <div class="arrow">→</div>
+    </a>
+    <a href="/92-club-october-round" class="month-card locked">
+      <div class="month-name">October</div>
+      <div class="month-status">Closed</div>
+      <div class="month-meta">Fixtures TBC</div>
+      <div class="arrow">→</div>
+    </a>
+    <a href="/92-club-november-round" class="month-card locked">
+      <div class="month-name">November</div>
+      <div class="month-status">Closed</div>
+      <div class="month-meta">Fixtures TBC</div>
+      <div class="arrow">→</div>
+    </a>
+    <a href="/92-club-december-round" class="month-card locked">
+      <div class="month-name">December</div>
+      <div class="month-status">Closed</div>
+      <div class="month-meta">Fixtures TBC</div>
+      <div class="arrow">→</div>
+    </a>
+    <a href="/92-club-january-round" class="month-card locked">
+      <div class="month-name">January</div>
+      <div class="month-status">Closed</div>
+      <div class="month-meta">Fixtures TBC</div>
+      <div class="arrow">→</div>
+    </a>
+    <a href="/92-club-february-round" class="month-card locked">
+      <div class="month-name">February</div>
+      <div class="month-status">Closed</div>
+      <div class="month-meta">Fixtures TBC</div>
+      <div class="arrow">→</div>
+    </a>
+    <a href="/92-club-march-round" class="month-card locked">
+      <div class="month-name">March</div>
+      <div class="month-status">Closed</div>
+      <div class="month-meta">Fixtures TBC</div>
+      <div class="arrow">→</div>
+    </a>
+    <a href="/92-club-april-round" class="month-card locked">
+      <div class="month-name">April</div>
+      <div class="month-status">Closed</div>
+      <div class="month-meta">Fixtures TBC</div>
+      <div class="arrow">→</div>
+    </a>
+    <a href="/92-club-may-round" class="month-card locked">
+      <div class="month-name">May</div>
+      <div class="month-status">Closed</div>
+      <div class="month-meta">Fixtures TBC</div>
+      <div class="arrow">→</div>
+    </a>
+  </div>
+
+  <div class="cta">
+    <a href="mailto:mrgashead@hotmail.com?subject=92%20Club%20-%20Sign%20Me%20Up&body=Name%3A%20%0A%0AI'm%20in%20for%20The%2092%20Club%20this%20season.">Join the League →</a>
+  </div>
+</main>
+
+<footer>The 92 Club · Swanny's Prediction League</footer>
+
+</body>
+</html>
