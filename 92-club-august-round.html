@@ -214,10 +214,17 @@
     font-size: 15px;
   }
 
-  @media (max-width: 420px) {
+  @media (max-width: 480px) {
     header { padding: 32px 16px 22px; }
     main { padding: 24px 14px 48px; }
-    .fixture { flex-wrap: wrap; }
+    .fixture {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+    .fixture .kickoff { margin-bottom: 2px; }
+    .score-inputs { justify-content: center; }
   }
 </style>
 </head>
