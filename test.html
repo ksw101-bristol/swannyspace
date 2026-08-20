@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>August · Live Scores · 92 Club</title>
+<title>TEST · API Pull Check · 92 Club</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -209,8 +209,8 @@
 
 <header>
   <a href="/" class="back-link">← Back to 92 Club</a>
-  <h1>August <span>Live Scores</span></h1>
-  <div class="subtitle" style="font-family:'IBM Plex Mono',monospace;color:var(--amber);font-size:12px;margin-top:6px;">Fri 28 – Sun 30 Aug 2026</div>
+  <h1>API <span>Pull Test</span></h1>
+  <div class="subtitle" style="font-family:'IBM Plex Mono',monospace;color:var(--amber);font-size:12px;margin-top:6px;">Real opening-week fixtures · 14–20 Aug 2026 · not the live August round</div>
   <div class="live-pill"><span class="live-dot"></span> Updating every 60s</div>
   <div id="lastUpdated">Last updated: —</div>
 </header>
@@ -230,40 +230,40 @@
   </div>
 </main>
 
-<footer>The 92 Club · August Round · Swanny's Prediction League</footer>
+<footer>The 92 Club · API Pull Test Page · Swanny's Prediction League</footer>
 
 <script>
 /* ============================================================
-   FIXTURES — edit this list each month to match the 10 games
-   actually picked. searchHome/searchAway are used to match
-   against the API response team names. If api-football uses a
-   different name for a team, add altHomeTokens/altAwayTokens,
-   e.g. altHomeTokens: ["USA"] for "United States".
+   FIXTURES — TEST SET. These are real fixtures from the season's
+   opening week (14–20 Aug 2026) that have already been played or
+   are in progress, used purely to confirm the Netlify function is
+   pulling live/finished scores correctly from api-football.
    ============================================================ */
 const FIXTURES = [
-  { id: 1, league: 39, leagueName: "Premier League", home: "Crystal Palace", away: "Manchester City", searchHome: "Crystal Palace", searchAway: "Manchester City" },
-  { id: 2, league: 40, leagueName: "Championship", home: "Wrexham", away: "Birmingham City", searchHome: "Wrexham", searchAway: "Birmingham City", altAwayTokens: ["Birmingham"] },
-  { id: 3, league: 39, leagueName: "Premier League", home: "Liverpool", away: "Nottingham Forest", searchHome: "Liverpool", searchAway: "Nottingham Forest", altAwayTokens: ["Nott'm Forest", "Forest"] },
-  { id: 4, league: 40, leagueName: "Championship", home: "Bristol City", away: "Portsmouth", searchHome: "Bristol City", searchAway: "Portsmouth" },
-  { id: 5, league: 41, leagueName: "League One", home: "Plymouth Argyle", away: "Bradford City", searchHome: "Plymouth Argyle", searchAway: "Bradford City", altHomeTokens: ["Plymouth"], altAwayTokens: ["Bradford"] },
-  { id: 6, league: 41, leagueName: "League One", home: "Notts County", away: "Burton Albion", searchHome: "Notts County", searchAway: "Burton Albion", altAwayTokens: ["Burton"] },
-  { id: 7, league: 42, leagueName: "League Two", home: "Crawley Town", away: "Bristol Rovers", searchHome: "Crawley Town", searchAway: "Bristol Rovers", altHomeTokens: ["Crawley"] },
-  { id: 8, league: 42, leagueName: "League Two", home: "York City", away: "Exeter City", searchHome: "York City", searchAway: "Exeter City", altHomeTokens: ["York"], altAwayTokens: ["Exeter"] },
-  { id: 9, league: 39, leagueName: "Premier League", home: "Chelsea", away: "Brighton & Hove Albion", searchHome: "Chelsea", searchAway: "Brighton & Hove Albion", altAwayTokens: ["Brighton"] },
-  { id: 10, league: 39, leagueName: "Premier League", home: "Manchester United", away: "Ipswich Town", searchHome: "Manchester United", searchAway: "Ipswich Town", altAwayTokens: ["Ipswich"] },
+  { id: 1, league: 40, leagueName: "Championship", home: "Wolverhampton Wanderers", away: "Blackburn Rovers", searchHome: "Wolverhampton Wanderers", searchAway: "Blackburn Rovers", altHomeTokens: ["Wolves"] },
+  { id: 2, league: 40, leagueName: "Championship", home: "Bristol City", away: "Millwall", searchHome: "Bristol City", searchAway: "Millwall" },
+  { id: 3, league: 41, leagueName: "League One", home: "Notts County", away: "Leicester City", searchHome: "Notts County", searchAway: "Leicester City" },
+  { id: 4, league: 41, leagueName: "League One", home: "Oxford United", away: "Milton Keynes Dons", searchHome: "Oxford United", searchAway: "Milton Keynes Dons", altAwayTokens: ["MK Dons"] },
+  { id: 5, league: 41, leagueName: "League One", home: "Reading", away: "Luton Town", searchHome: "Reading", searchAway: "Luton Town" },
+  { id: 6, league: 42, leagueName: "League Two", home: "Oldham Athletic", away: "Port Vale", searchHome: "Oldham Athletic", searchAway: "Port Vale" },
+  { id: 7, league: 42, leagueName: "League Two", home: "York City", away: "Bristol Rovers", searchHome: "York City", searchAway: "Bristol Rovers" },
+  { id: 8, league: 42, leagueName: "League Two", home: "Grimsby Town", away: "Exeter City", searchHome: "Grimsby Town", searchAway: "Exeter City" },
+  { id: 9, league: 40, leagueName: "Championship", home: "Cardiff City", away: "Wrexham", searchHome: "Cardiff City", searchAway: "Wrexham" },
+  { id: 10, league: 41, leagueName: "League One", home: "Sheffield Wednesday", away: "Bradford City", searchHome: "Sheffield Wednesday", searchAway: "Bradford City", altAwayTokens: ["Bradford"] },
 ];
 
 /* ============================================================
-   PREDICTIONS — transcribe each player's submitted email here
-   once predictions are in. Key = fixture id, value = { player: "H-A" }
-   Empty until submissions come in for this round.
+   PREDICTIONS — a few dummy entries so you can see the colour
+   coding (exact/GD/result/wrong) working once real scores come in.
    ============================================================ */
 const PREDICTIONS = {
-  // 1: { "Kirk Walsh": "2-1", "The Mays": "1-1" },
+  1: { "Kirk Walsh": "1-1", "The Mays": "2-0" },
+  2: { "Kirk Walsh": "2-1" },
+  9: { "Kirk Walsh": "1-0", "The Mays": "1-1" },
 };
 
-const ROUND_FROM = "2026-08-28";
-const ROUND_TO = "2026-08-30";
+const ROUND_FROM = "2026-08-14";
+const ROUND_TO = "2026-08-20";
 const POLL_INTERVAL_MS = 60000;
 
 function findMatch(fixture, apiMatches) {

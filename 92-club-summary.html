@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Season Summary · 92 Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16211c;
+    --ink-soft: #5b675f;
+    --paper: #ffffff;
+    --panel: #f5f7f5;
+    --line: #e2e6e2;
+    --green: #1f7a4d;
+    --green-deep: #145536;
+    --amber: #d98c1f;
+    --amber-soft: #fbeed9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    text-align: center;
+    padding: 36px 20px 26px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back-link {
+    display: inline-block;
+    color: var(--green);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 12px;
+    text-decoration: none;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  h1 { font-family: 'Sora', sans-serif; font-weight: 800; font-size: clamp(24px, 6vw, 36px); }
+  h1 span { color: var(--green); }
+  .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    color: var(--amber);
+    font-size: 12px;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 18px 64px; overflow-x: auto; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 820px;
+    font-size: 13px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 10px 12px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  thead th {
+    background: var(--panel);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    position: sticky;
+    top: 0;
+  }
+  tbody td.player-name {
+    text-align: left;
+    font-weight: 600;
+    background: var(--panel);
+    position: sticky;
+    left: 0;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  thead th.player-col {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+  }
+  td.total {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    color: var(--green);
+    background: var(--amber-soft);
+  }
+  tbody tr:nth-child(1) td.player-name { color: var(--green); }
+  td.score-cell {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  td.blank-cell {
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--paper);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 20px;
+    align-items: center;
+  }
+  .legend .swatch { width: 22px; height: 12px; border-radius: 2px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+
+  footer {
+    text-align: center;
+    padding: 28px 20px 44px;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+
+  @media (max-width: 420px) {
+    header { padding: 28px 16px 20px; }
+    main { padding: 22px 14px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="back-link">← Back to 92 Club</a>
+  <h1>Season <span>Summary</span></h1>
+  <div class="subtitle">2026/27 · Points by round</div>
+</header>
+
+<main>
+  <table id="summaryTable"></table>
+
+  <div class="legend" id="legend"></div>
+</main>
+
+<footer>The 92 Club · Season Summary · Swanny's Prediction League</footer>
+
+<script>
+/* ============================================================
+   ROUND DATA — after each month closes, fill in that month's
+   points for every player. Leave a month's values as null until
+   it's finished; it will render as a dash rather than 0.
+   ============================================================ */
+const MONTHS = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"];
+
+const PLAYERS = ["Kirk Walsh", "The Mays", "Mike Budd", "Richard Boyce", "Jordy Chalmers",
+  "Steve Kenna", "Cameron Walsh", "James Boyce", "Cathy & Oliver", "Lee Grainger",
+  "Jason Parsons", "Vicki Walsh", "Dave Budd", "Elliot Walsh", "Chris Hunt"];
+
+// points[player] = array of 10 values, one per month, null = not played yet
+const POINTS = {
+  "Kirk Walsh":      [null,null,null,null,null,null,null,null,null,null],
+  "The Mays":        [null,null,null,null,null,null,null,null,null,null],
+  "Mike Budd":       [null,null,null,null,null,null,null,null,null,null],
+  "Richard Boyce":   [null,null,null,null,null,null,null,null,null,null],
+  "Jordy Chalmers":  [null,null,null,null,null,null,null,null,null,null],
+  "Steve Kenna":     [null,null,null,null,null,null,null,null,null,null],
+  "Cameron Walsh":   [null,null,null,null,null,null,null,null,null,null],
+  "James Boyce":     [null,null,null,null,null,null,null,null,null,null],
+  "Cathy & Oliver":  [null,null,null,null,null,null,null,null,null,null],
+  "Lee Grainger":    [null,null,null,null,null,null,null,null,null,null],
+  "Jason Parsons":   [null,null,null,null,null,null,null,null,null,null],
+  "Vicki Walsh":     [null,null,null,null,null,null,null,null,null,null],
+  "Dave Budd":       [null,null,null,null,null,null,null,null,null,null],
+  "Elliot Walsh":    [null,null,null,null,null,null,null,null,null,null],
+  "Chris Hunt":      [null,null,null,null,null,null,null,null,null,null],
+};
+
+function heatColor(value, max) {
+  if (value === null || value === undefined) return null;
+  if (max <= 0) return '#f5f7f5';
+  const ratio = Math.max(0, Math.min(1, value / max));
+  // interpolate between pale panel green-grey (low) and full green (high)
+  const r = Math.round(245 + (31 - 245) * ratio);
+  const g = Math.round(247 + (122 - 247) * ratio);
+  const b = Math.round(245 + (77 - 245) * ratio);
+  return `rgb(${r},${g},${b})`;
+}
+
+function buildTable() {
+  const totals = PLAYERS.map(p => {
+    const vals = POINTS[p].filter(v => v !== null && v !== undefined);
+    return vals.reduce((a, b) => a + b, 0);
+  });
+
+  const rows = PLAYERS.map((p, i) => ({ player: p, values: POINTS[p], total: totals[i] }))
+    .sort((a, b) => b.total - a.total);
+
+  const allValues = rows.flatMap(r => r.values).filter(v => v !== null && v !== undefined);
+  const maxVal = allValues.length ? Math.max(...allValues) : 0;
+
+  let html = '<thead><tr><th class="player-col">Player</th>';
+  MONTHS.forEach(m => html += `<th>${m}</th>`);
+  html += '<th>Total</th></tr></thead><tbody>';
+
+  rows.forEach(row => {
+    html += `<tr><td class="player-name">${row.player}</td>`;
+    row.values.forEach(v => {
+      if (v === null || v === undefined) {
+        html += `<td class="blank-cell">–</td>`;
+      } else {
+        const bg = heatColor(v, maxVal);
+        const textColor = v / (maxVal || 1) > 0.55 ? '#ffffff' : '#16211c';
+        html += `<td class="score-cell" style="background:${bg}; color:${textColor};">${v}</td>`;
+      }
+    });
+    html += `<td class="total">${row.total}</td></tr>`;
+  });
+
+  html += '</tbody>';
+  document.getElementById('summaryTable').innerHTML = html;
+
+  document.getElementById('legend').innerHTML = `
+    <span><span class="swatch" style="background:rgb(245,247,245); border:1px solid var(--line);"></span>Low points</span>
+    <span><span class="swatch" style="background:rgb(31,122,77)"></span>High points</span>
+    <span><span class="swatch" style="background:#ffffff; border:1px solid var(--line);"></span>Round not played</span>
+  `;
+}
+
+buildTable();
+</script>
+
+</body>
+</html>

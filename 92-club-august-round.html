@@ -6,95 +6,105 @@
 <title>August · The 92 Club · Swanny's Prediction League</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy: #0d1b3e;
-    --gold: #e0a526;
-    --chalk: #f4f1e8;
-    --navy-light: #16295c;
+    --ink: #16211c;
+    --ink-soft: #5b675f;
+    --paper: #ffffff;
+    --panel: #f5f7f5;
+    --line: #e2e6e2;
+    --green: #1f7a4d;
+    --green-deep: #145536;
+    --amber: #d98c1f;
+    --amber-soft: #fbeed9;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--navy);
-    color: var(--chalk);
-    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
   }
   header {
     text-align: center;
-    padding: 44px 24px 32px;
-    border-bottom: 3px solid var(--gold);
-    background: linear-gradient(180deg, var(--navy-light) 0%, var(--navy) 100%);
+    padding: 40px 20px 28px;
+    border-bottom: 1px solid var(--line);
   }
   .back-link {
     display: inline-block;
-    color: var(--gold);
-    font-family: 'Space Mono', monospace;
+    color: var(--green);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
     font-size: 12px;
     text-decoration: none;
-    margin-bottom: 16px;
-    letter-spacing: 1px;
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
   }
   h1 {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: clamp(28px, 5vw, 44px);
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: clamp(26px, 6vw, 40px);
   }
-  h1 span { color: var(--gold); }
+  h1 span { color: var(--green); }
   .subtitle {
-    font-family: 'Space Mono', monospace;
-    color: var(--gold);
-    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    color: var(--amber);
+    font-size: 12px;
     margin-top: 8px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
   }
   main {
-    max-width: 760px;
+    max-width: 720px;
     margin: 0 auto;
-    padding: 40px 20px 80px;
+    padding: 32px 18px 64px;
   }
   .name-field {
-    background: var(--navy-light);
-    border: 1px solid rgba(224,165,38,0.25);
-    border-radius: 10px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
     padding: 20px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   .name-field label {
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    color: var(--gold);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 11px;
+    color: var(--green);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     display: block;
     margin-bottom: 8px;
   }
   .name-field input {
     width: 100%;
-    background: var(--navy);
-    border: 1px solid rgba(244,241,232,0.2);
-    border-radius: 6px;
-    color: var(--chalk);
-    padding: 10px 12px;
-    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+    padding: 12px 14px;
+    font-family: 'Work Sans', sans-serif;
     font-size: 15px;
   }
   .fixture {
-    background: var(--navy-light);
-    border: 1px solid rgba(224,165,38,0.15);
-    border-radius: 10px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
     padding: 16px 18px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
   }
   .fixture .div-tag {
-    font-family: 'Space Mono', monospace;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
     font-size: 10px;
-    color: var(--gold);
+    color: var(--amber);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     display: block;
@@ -103,11 +113,12 @@
   .fixture .teams {
     font-size: 15px;
     font-weight: 600;
+    color: var(--ink);
   }
   .fixture .kickoff {
-    font-family: 'Space Mono', monospace;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
-    color: #9fa5bd;
+    color: var(--ink-soft);
     margin-top: 4px;
   }
   .score-inputs {
@@ -117,84 +128,96 @@
     flex-shrink: 0;
   }
   .score-inputs input {
-    width: 42px;
+    width: 44px;
     text-align: center;
-    background: var(--navy);
-    border: 1px solid var(--gold);
-    border-radius: 6px;
-    color: var(--chalk);
-    font-family: 'Space Mono', monospace;
+    background: var(--paper);
+    border: 1.5px solid var(--green);
+    border-radius: 8px;
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
     font-size: 16px;
-    padding: 8px 0;
+    padding: 9px 0;
   }
   .score-inputs span {
-    color: var(--gold);
-    font-family: 'Space Mono', monospace;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
   }
   .submit-row {
     text-align: center;
-    margin-top: 28px;
+    margin-top: 24px;
   }
   .submit-row button {
-    background: var(--gold);
-    color: var(--navy);
-    font-family: 'Space Mono', monospace;
-    font-weight: 700;
+    background: var(--green);
+    color: #ffffff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     font-size: 13px;
-    padding: 14px 28px;
-    border-radius: 6px;
+    padding: 15px 30px;
+    border-radius: 10px;
     border: none;
     cursor: pointer;
+    min-height: 44px;
+  }
+  .submit-row button:active {
+    background: var(--green-deep);
   }
   .scoring-key {
-    margin-top: 40px;
+    margin-top: 32px;
     text-align: center;
-    font-family: 'Space Mono', monospace;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
-    color: #9fa5bd;
+    color: var(--ink-soft);
     line-height: 1.8;
   }
-  .scoring-key strong { color: var(--gold); }
+  .scoring-key strong { color: var(--green); }
   footer {
     text-align: center;
-    padding: 30px 24px 50px;
-    color: #6b7291;
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
+    padding: 28px 20px 44px;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
   }
   .tiebreaker-field {
-    background: var(--navy-light);
-    border: 1px solid var(--gold);
-    border-radius: 10px;
+    background: var(--amber-soft);
+    border: 1px solid rgba(217,140,31,0.3);
+    border-radius: 14px;
     padding: 20px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   .tiebreaker-field label {
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    color: var(--gold);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 11px;
+    color: var(--amber);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     display: block;
     margin-bottom: 6px;
   }
   .tiebreaker-field .tb-question {
-    font-size: 14px;
-    color: #c9cddd;
+    font-size: 13.5px;
+    color: var(--ink-soft);
     margin-bottom: 10px;
     line-height: 1.5;
   }
   .tiebreaker-field input {
     width: 100%;
-    background: var(--navy);
-    border: 1px solid rgba(244,241,232,0.2);
-    border-radius: 6px;
-    color: var(--chalk);
-    padding: 10px 12px;
-    font-family: 'Space Mono', monospace;
+    background: var(--paper);
+    border: 1px solid rgba(217,140,31,0.35);
+    border-radius: 8px;
+    color: var(--ink);
+    padding: 12px 14px;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 15px;
+  }
+
+  @media (max-width: 420px) {
+    header { padding: 32px 16px 22px; }
+    main { padding: 24px 14px 48px; }
+    .fixture { flex-wrap: wrap; }
   }
 </style>
 </head>
