@@ -136,6 +136,13 @@
   .status-ns { color: var(--ink-soft); background: var(--line); }
   .status-live { color: var(--live); background: rgba(31,157,85,0.12); }
   .status-ft { color: var(--amber); background: var(--amber-soft); }
+  .match-kickoff {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-bottom: 8px;
+  }
   .match-teams {
     display: flex;
     align-items: center;
@@ -239,18 +246,20 @@
    against the API response team names. If api-football uses a
    different name for a team, add altHomeTokens/altAwayTokens,
    e.g. altHomeTokens: ["USA"] for "United States".
+   kickoff is shown on the card and is just for display — it
+   doesn't affect the live lookup, which uses ROUND_FROM/ROUND_TO.
    ============================================================ */
 const FIXTURES = [
-  { id: 1, league: 39, leagueName: "Premier League", home: "Crystal Palace", away: "Manchester City", searchHome: "Crystal Palace", searchAway: "Manchester City" },
-  { id: 2, league: 40, leagueName: "Championship", home: "Wrexham", away: "Birmingham City", searchHome: "Wrexham", searchAway: "Birmingham City", altAwayTokens: ["Birmingham"] },
-  { id: 3, league: 39, leagueName: "Premier League", home: "Liverpool", away: "Nottingham Forest", searchHome: "Liverpool", searchAway: "Nottingham Forest", altAwayTokens: ["Nott'm Forest", "Forest"] },
-  { id: 4, league: 40, leagueName: "Championship", home: "Bristol City", away: "Portsmouth", searchHome: "Bristol City", searchAway: "Portsmouth" },
-  { id: 5, league: 41, leagueName: "League One", home: "Plymouth Argyle", away: "Bradford City", searchHome: "Plymouth Argyle", searchAway: "Bradford City", altHomeTokens: ["Plymouth"], altAwayTokens: ["Bradford"] },
-  { id: 6, league: 41, leagueName: "League One", home: "Notts County", away: "Burton Albion", searchHome: "Notts County", searchAway: "Burton Albion", altAwayTokens: ["Burton"] },
-  { id: 7, league: 42, leagueName: "League Two", home: "Crawley Town", away: "Bristol Rovers", searchHome: "Crawley Town", searchAway: "Bristol Rovers", altHomeTokens: ["Crawley"] },
-  { id: 8, league: 42, leagueName: "League Two", home: "York City", away: "Exeter City", searchHome: "York City", searchAway: "Exeter City", altHomeTokens: ["York"], altAwayTokens: ["Exeter"] },
-  { id: 9, league: 39, leagueName: "Premier League", home: "Chelsea", away: "Brighton & Hove Albion", searchHome: "Chelsea", searchAway: "Brighton & Hove Albion", altAwayTokens: ["Brighton"] },
-  { id: 10, league: 39, leagueName: "Premier League", home: "Manchester United", away: "Ipswich Town", searchHome: "Manchester United", searchAway: "Ipswich Town", altAwayTokens: ["Ipswich"] },
+  { id: 1, league: 39, leagueName: "Premier League", home: "Crystal Palace", away: "Manchester City", kickoff: "Fri 28 Aug, 20:00", searchHome: "Crystal Palace", searchAway: "Manchester City" },
+  { id: 2, league: 40, leagueName: "Championship", home: "Wrexham", away: "Birmingham City", kickoff: "Fri 28 Aug, 20:00", searchHome: "Wrexham", searchAway: "Birmingham City", altAwayTokens: ["Birmingham"] },
+  { id: 3, league: 39, leagueName: "Premier League", home: "Liverpool", away: "Nottingham Forest", kickoff: "Sat 29 Aug, 12:30", searchHome: "Liverpool", searchAway: "Nottingham Forest", altAwayTokens: ["Nott'm Forest", "Forest"] },
+  { id: 4, league: 40, leagueName: "Championship", home: "Bristol City", away: "Portsmouth", kickoff: "Sat 29 Aug, 15:00", searchHome: "Bristol City", searchAway: "Portsmouth" },
+  { id: 5, league: 41, leagueName: "League One", home: "Plymouth Argyle", away: "Bradford City", kickoff: "Sat 29 Aug, 15:00", searchHome: "Plymouth Argyle", searchAway: "Bradford City", altHomeTokens: ["Plymouth"], altAwayTokens: ["Bradford"] },
+  { id: 6, league: 41, leagueName: "League One", home: "Notts County", away: "Burton Albion", kickoff: "Sat 29 Aug, 15:00", searchHome: "Notts County", searchAway: "Burton Albion", altAwayTokens: ["Burton"] },
+  { id: 7, league: 42, leagueName: "League Two", home: "Crawley Town", away: "Bristol Rovers", kickoff: "Sat 29 Aug, 15:00", searchHome: "Crawley Town", searchAway: "Bristol Rovers", altHomeTokens: ["Crawley"] },
+  { id: 8, league: 42, leagueName: "League Two", home: "York City", away: "Exeter City", kickoff: "Sat 29 Aug, 15:00", searchHome: "York City", searchAway: "Exeter City", altHomeTokens: ["York"], altAwayTokens: ["Exeter"] },
+  { id: 9, league: 39, leagueName: "Premier League", home: "Chelsea", away: "Brighton & Hove Albion", kickoff: "Sun 30 Aug, 14:00", searchHome: "Chelsea", searchAway: "Brighton & Hove Albion", altAwayTokens: ["Brighton"] },
+  { id: 10, league: 39, leagueName: "Premier League", home: "Manchester United", away: "Ipswich Town", kickoff: "Sun 30 Aug, 16:30", searchHome: "Manchester United", searchAway: "Ipswich Town", altAwayTokens: ["Ipswich"] },
 ];
 
 /* ============================================================
@@ -344,6 +353,7 @@ async function loadScores() {
         <span class="match-league">${fixture.leagueName}</span>
         <span class="match-status ${status.cls}">${status.text}</span>
       </div>
+      <div class="match-kickoff">${fixture.kickoff || ''}</div>
       <div class="match-teams">
         <span>${fixture.home}</span>
         <span class="score">${homeScore ?? '–'} : ${awayScore ?? '–'}</span>
