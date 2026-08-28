@@ -212,6 +212,25 @@
     text-align: center;
     margin-top: 4px;
   }
+  .season-links {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .season-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 12.5px;
+    color: var(--green);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(31,122,77,0.3);
+    padding-bottom: 2px;
+  }
+  .season-link:hover {
+    border-color: var(--green);
+  }
   .cta a {
     display: inline-block;
     background: var(--green);
@@ -292,10 +311,10 @@
          href="/92-club-august-live"
          <div class="month-status">● Live</div>
     -->
-    <a href="/92-club-august-round" class="month-card">
+    <a href="/92-club-august-live" class="month-card">
       <div class="month-name">August</div>
-      <div class="month-status">● Open</div>
-      <div class="month-meta">10 games · predictions open</div>
+      <div class="month-status">● Live</div>
+      <div class="month-meta">10 games · live scores</div>
       <div class="arrow">→</div>
     </a>
     <a href="/92-club-september-round" class="month-card locked">
@@ -352,6 +371,12 @@
       <div class="month-meta">Fixtures TBC</div>
       <div class="arrow">→</div>
     </a>
+  </div>
+
+  <div class="section-label">Season Pages</div>
+  <div class="season-links">
+    <a href="/92-club-summary" class="season-link">Season Summary →</a>
+    <a href="/92-club-tiebreaker" class="season-link">Tiebreaker →</a>
   </div>
 
   <div class="cta">

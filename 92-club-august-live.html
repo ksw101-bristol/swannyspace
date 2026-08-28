@@ -254,12 +254,22 @@ const FIXTURES = [
 ];
 
 /* ============================================================
-   PREDICTIONS — transcribe each player's submitted email here
-   once predictions are in. Key = fixture id, value = { player: "H-A" }
-   Empty until submissions come in for this round.
+   PREDICTIONS — final entrant predictions for the August round.
+   Key = fixture id, value = { player: "H-A" }. 13 confirmed
+   entrants (Vicki Walsh and Chris Hunt did not enter this season;
+   "The Mays" entered as "Lee May").
    ============================================================ */
 const PREDICTIONS = {
-  // 1: { "Kirk Walsh": "2-1", "The Mays": "1-1" },
+  1: { "Kirk Walsh": "0-2", "Lee May": "1-2", "Mike Budd": "1-2", "Richard Boyce": "1-1", "Jordy Chalmers": "2-2", "Steve Kenna": "1-3", "Cameron Walsh": "1-2", "James Boyce": "0-3", "Cathy & Oliver": "1-2", "Lee Grainger": "1-1", "Jason Parsons": "1-2", "Dave Budd": "1-3", "Elliot Walsh": "0-2" },
+  2: { "Kirk Walsh": "1-1", "Lee May": "2-1", "Mike Budd": "1-1", "Richard Boyce": "3-0", "Jordy Chalmers": "1-2", "Steve Kenna": "2-1", "Cameron Walsh": "1-1", "James Boyce": "2-1", "Cathy & Oliver": "1-1", "Lee Grainger": "2-2", "Jason Parsons": "2-1", "Dave Budd": "1-1", "Elliot Walsh": "3-1" },
+  3: { "Kirk Walsh": "1-0", "Lee May": "2-0", "Mike Budd": "2-1", "Richard Boyce": "1-0", "Jordy Chalmers": "2-0", "Steve Kenna": "2-0", "Cameron Walsh": "3-1", "James Boyce": "2-0", "Cathy & Oliver": "2-1", "Lee Grainger": "3-1", "Jason Parsons": "2-1", "Dave Budd": "2-0", "Elliot Walsh": "3-0" },
+  4: { "Kirk Walsh": "1-1", "Lee May": "2-1", "Mike Budd": "2-0", "Richard Boyce": "3-1", "Jordy Chalmers": "2-1", "Steve Kenna": "3-0", "Cameron Walsh": "2-1", "James Boyce": "1-0", "Cathy & Oliver": "1-1", "Lee Grainger": "2-1", "Jason Parsons": "2-1", "Dave Budd": "1-0", "Elliot Walsh": "2-0" },
+  5: { "Kirk Walsh": "2-1", "Lee May": "2-0", "Mike Budd": "0-2", "Richard Boyce": "2-2", "Jordy Chalmers": "1-2", "Steve Kenna": "1-2", "Cameron Walsh": "2-1", "James Boyce": "2-0", "Cathy & Oliver": "1-1", "Lee Grainger": "2-1", "Jason Parsons": "2-1", "Dave Budd": "1-2", "Elliot Walsh": "1-1" },
+  6: { "Kirk Walsh": "2-1", "Lee May": "1-0", "Mike Budd": "3-1", "Richard Boyce": "2-1", "Jordy Chalmers": "1-1", "Steve Kenna": "2-1", "Cameron Walsh": "2-0", "James Boyce": "2-1", "Cathy & Oliver": "1-1", "Lee Grainger": "1-1", "Jason Parsons": "2-1", "Dave Budd": "1-0", "Elliot Walsh": "2-1" },
+  7: { "Kirk Walsh": "1-3", "Lee May": "2-0", "Mike Budd": "2-2", "Richard Boyce": "4-1", "Jordy Chalmers": "1-0", "Steve Kenna": "1-2", "Cameron Walsh": "1-2", "James Boyce": "0-2", "Cathy & Oliver": "1-1", "Lee Grainger": "1-2", "Jason Parsons": "1-2", "Dave Budd": "1-2", "Elliot Walsh": "3-0" },
+  8: { "Kirk Walsh": "2-0", "Lee May": "2-1", "Mike Budd": "2-1", "Richard Boyce": "3-1", "Jordy Chalmers": "2-0", "Steve Kenna": "2-0", "Cameron Walsh": "2-0", "James Boyce": "1-0", "Cathy & Oliver": "1-0", "Lee Grainger": "1-2", "Jason Parsons": "2-1", "Dave Budd": "1-1", "Elliot Walsh": "1-2" },
+  9: { "Kirk Walsh": "2-0", "Lee May": "2-1", "Mike Budd": "3-2", "Richard Boyce": "1-2", "Jordy Chalmers": "2-1", "Steve Kenna": "3-1", "Cameron Walsh": "3-1", "James Boyce": "2-0", "Cathy & Oliver": "1-1", "Lee Grainger": "2-1", "Jason Parsons": "2-1", "Dave Budd": "2-0", "Elliot Walsh": "2-0" },
+  10: { "Kirk Walsh": "3-1", "Lee May": "2-1", "Mike Budd": "2-0", "Richard Boyce": "3-0", "Jordy Chalmers": "3-1", "Steve Kenna": "3-0", "Cameron Walsh": "4-1", "James Boyce": "2-0", "Cathy & Oliver": "2-0", "Lee Grainger": "3-0", "Jason Parsons": "2-1", "Dave Budd": "3-0", "Elliot Walsh": "3-1" },
 };
 
 const ROUND_FROM = "2026-08-28";
