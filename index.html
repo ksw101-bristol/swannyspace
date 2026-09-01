@@ -18,6 +18,10 @@
     --green-deep: #145536;
     --amber: #d98c1f;
     --amber-soft: #fbeed9;
+    --blue: #2b6ca3;
+    --blue-soft: #e8f0f6;
+    --purple: #6b4fa0;
+    --purple-soft: #f1ecf7;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -81,64 +85,57 @@
     letter-spacing: 1.5px;
     margin-bottom: 14px;
   }
-  .month-grid {
+  .primary-actions {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px;
-    margin-bottom: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 36px;
   }
-  .month-card {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 18px 20px;
+  .action-btn {
+    display: block;
     text-decoration: none;
+    border-radius: 16px;
+    padding: 26px 18px;
+    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .action-btn:active { transform: translateY(1px); }
+  .action-live {
+    background: var(--green);
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(31,122,77,0.2);
+  }
+  .action-next {
+    background: var(--amber-soft);
+    border: 1px solid rgba(217,140,31,0.3);
     color: var(--ink);
-    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
-    position: relative;
-    overflow: hidden;
   }
-  .month-card:hover {
-    border-color: var(--green);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(31,122,77,0.12);
+  .action-tiebreaker {
+    background: var(--blue-soft);
+    border: 1px solid rgba(43,108,163,0.3);
+    color: var(--ink);
   }
-  .month-card:active {
-    transform: translateY(0);
+  .action-summary {
+    background: var(--purple-soft);
+    border: 1px solid rgba(107,79,160,0.3);
+    color: var(--ink);
   }
-  .month-card.locked {
-    opacity: 0.55;
-    pointer-events: none;
-  }
-  .month-name {
+  .action-label {
     font-family: 'Sora', sans-serif;
-    font-weight: 700;
-    font-size: 19px;
-    margin-bottom: 5px;
-  }
-  .month-status {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .month-card.locked .month-status {
-    color: var(--ink-soft);
-  }
-  .month-meta {
-    font-size: 12.5px;
-    color: var(--ink-soft);
-    margin-top: 6px;
-  }
-  .arrow {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-    color: var(--green);
+    font-weight: 800;
     font-size: 18px;
+    margin-bottom: 6px;
   }
+  .action-next .action-label { color: var(--amber); }
+  .action-tiebreaker .action-label { color: var(--blue); }
+  .action-summary .action-label { color: var(--purple); }
+  .action-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.3px;
+  }
+  .action-live .action-meta { color: rgba(255,255,255,0.85); }
+  .action-next .action-meta { color: var(--ink-soft); }
   .info-panel {
     background: var(--panel);
     border: 1px solid var(--line);
@@ -192,6 +189,29 @@
   .prize-note strong {
     color: var(--amber);
   }
+  .prize-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .prize-item {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .prize-item .amount {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 19px;
+    color: var(--amber);
+    font-weight: 600;
+  }
+  .prize-item .desc {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+  }
   .divisions {
     display: flex;
     flex-wrap: wrap;
@@ -208,48 +228,6 @@
     padding: 5px 12px;
     border-radius: 20px;
   }
-  .cta {
-    text-align: center;
-    margin-top: 4px;
-  }
-  .season-links {
-    display: flex;
-    justify-content: center;
-    gap: 18px;
-    flex-wrap: wrap;
-    margin-bottom: 36px;
-  }
-  .season-link {
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 500;
-    font-size: 12.5px;
-    color: var(--green);
-    text-decoration: none;
-    border-bottom: 1px solid rgba(31,122,77,0.3);
-    padding-bottom: 2px;
-  }
-  .season-link:hover {
-    border-color: var(--green);
-  }
-  .cta a {
-    display: inline-block;
-    background: var(--green);
-    color: #ffffff;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 13px;
-    padding: 15px 30px;
-    border-radius: 10px;
-    text-decoration: none;
-    min-width: 44px;
-    min-height: 44px;
-    line-height: 1.4;
-  }
-  .cta a:active {
-    background: var(--green-deep);
-  }
   footer {
     text-align: center;
     padding: 28px 20px 44px;
@@ -262,7 +240,7 @@
     header { padding: 36px 16px 26px; }
     main { padding: 24px 14px 48px; }
     .info-panel { padding: 18px; }
-    .month-card { padding: 16px; }
+    .primary-actions { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -276,6 +254,25 @@
 </header>
 
 <main>
+  <div class="primary-actions">
+    <a href="/92-club-august-live" class="action-btn action-live">
+      <div class="action-label">Live Scores</div>
+      <div class="action-meta">August round · final result</div>
+    </a>
+    <a href="/92-club-september-round" class="action-btn action-next">
+      <div class="action-label">Next Round →</div>
+      <div class="action-meta">September · predictions open</div>
+    </a>
+    <a href="/92-club-tiebreaker" class="action-btn action-tiebreaker">
+      <div class="action-label">Tiebreaker</div>
+      <div class="action-meta">Season goal projection</div>
+    </a>
+    <a href="/92-club-summary" class="action-btn action-summary">
+      <div class="action-label">Season Summary</div>
+      <div class="action-meta">Points by round</div>
+    </a>
+  </div>
+
   <div class="info-panel">
     <h2>How it works</h2>
     <p>
@@ -294,93 +291,14 @@
       <div class="score-item"><div class="pts">1 pt</div><div class="desc">Correct result only</div></div>
     </div>
     <div class="prize-note">
-      <strong>Entry fee: £10</strong> — payable once, covers the whole season. Prize split between 1st, 2nd and 3rd will be confirmed once the final number of players is locked in.
+      <strong>Entry fee: £10</strong> — payable once, covers the whole season.
+      <div class="prize-grid">
+        <div class="prize-item"><div class="amount">£80</div><div class="desc">Winner</div></div>
+        <div class="prize-item"><div class="amount">£30</div><div class="desc">Runner-up</div></div>
+        <div class="prize-item"><div class="amount">£10</div><div class="desc">Third place</div></div>
+        <div class="prize-item"><div class="amount">£10</div><div class="desc">Tiebreaker</div></div>
+      </div>
     </div>
-  </div>
-
-  <div class="section-label">Season 2026/27 · Monthly Rounds</div>
-  <div class="month-grid">
-    <!--
-      AUGUST CARD — toggle this between the two states below as the round progresses:
-
-      1) PREDICTIONS OPEN (until the deadline, Thu 27 Aug):
-         href="/92-club-august-round"
-         <div class="month-status">● Open</div>
-
-      2) GAMES LIVE / IN PROGRESS (once predictions have closed):
-         href="/92-club-august-live"
-         <div class="month-status">● Live</div>
-    -->
-    <a href="/92-club-august-live" class="month-card">
-      <div class="month-name">August</div>
-      <div class="month-status">● Live</div>
-      <div class="month-meta">10 games · live scores</div>
-      <div class="arrow">→</div>
-    </a>
-    <a href="/92-club-september-round" class="month-card locked">
-      <div class="month-name">September</div>
-      <div class="month-status">Closed</div>
-      <div class="month-meta">Fixtures TBC</div>
-      <div class="arrow">→</div>
-    </a>
-    <a href="/92-club-october-round" class="month-card locked">
-      <div class="month-name">October</div>
-      <div class="month-status">Closed</div>
-      <div class="month-meta">Fixtures TBC</div>
-      <div class="arrow">→</div>
-    </a>
-    <a href="/92-club-november-round" class="month-card locked">
-      <div class="month-name">November</div>
-      <div class="month-status">Closed</div>
-      <div class="month-meta">Fixtures TBC</div>
-      <div class="arrow">→</div>
-    </a>
-    <a href="/92-club-december-round" class="month-card locked">
-      <div class="month-name">December</div>
-      <div class="month-status">Closed</div>
-      <div class="month-meta">Fixtures TBC</div>
-      <div class="arrow">→</div>
-    </a>
-    <a href="/92-club-january-round" class="month-card locked">
-      <div class="month-name">January</div>
-      <div class="month-status">Closed</div>
-      <div class="month-meta">Fixtures TBC</div>
-      <div class="arrow">→</div>
-    </a>
-    <a href="/92-club-february-round" class="month-card locked">
-      <div class="month-name">February</div>
-      <div class="month-status">Closed</div>
-      <div class="month-meta">Fixtures TBC</div>
-      <div class="arrow">→</div>
-    </a>
-    <a href="/92-club-march-round" class="month-card locked">
-      <div class="month-name">March</div>
-      <div class="month-status">Closed</div>
-      <div class="month-meta">Fixtures TBC</div>
-      <div class="arrow">→</div>
-    </a>
-    <a href="/92-club-april-round" class="month-card locked">
-      <div class="month-name">April</div>
-      <div class="month-status">Closed</div>
-      <div class="month-meta">Fixtures TBC</div>
-      <div class="arrow">→</div>
-    </a>
-    <a href="/92-club-may-round" class="month-card locked">
-      <div class="month-name">May</div>
-      <div class="month-status">Closed</div>
-      <div class="month-meta">Fixtures TBC</div>
-      <div class="arrow">→</div>
-    </a>
-  </div>
-
-  <div class="section-label">Season Pages</div>
-  <div class="season-links">
-    <a href="/92-club-summary" class="season-link">Season Summary →</a>
-    <a href="/92-club-tiebreaker" class="season-link">Tiebreaker →</a>
-  </div>
-
-  <div class="cta">
-    <a href="mailto:mrgashead@hotmail.com?subject=92%20Club%20-%20Sign%20Me%20Up&body=Name%3A%20%0A%0AI'm%20in%20for%20The%2092%20Club%20this%20season.">Join the League →</a>
   </div>
 </main>
 

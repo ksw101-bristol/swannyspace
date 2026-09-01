@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiebreaker · 92 Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16211c;
+    --ink-soft: #5b675f;
+    --paper: #ffffff;
+    --panel: #f5f7f5;
+    --line: #e2e6e2;
+    --green: #1f7a4d;
+    --green-deep: #145536;
+    --amber: #d98c1f;
+    --amber-soft: #fbeed9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    text-align: center;
+    padding: 36px 20px 26px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back-link {
+    display: inline-block;
+    color: var(--green);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 12px;
+    text-decoration: none;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  h1 { font-family: 'Sora', sans-serif; font-weight: 800; font-size: clamp(24px, 6vw, 36px); }
+  h1 span { color: var(--green); }
+  .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    color: var(--amber);
+    font-size: 12px;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tagline {
+    max-width: 480px;
+    margin: 14px auto 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  main { max-width: 640px; margin: 0 auto; padding: 28px 18px 64px; }
+
+  .actual-panel {
+    background: var(--amber-soft);
+    border: 1px solid rgba(217,140,31,0.3);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .actual-panel .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 11px;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .actual-panel .value {
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: var(--ink);
+  }
+  .actual-panel .value.pending {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    font-family: 'Work Sans', sans-serif;
+  }
+  .panel-note {
+    margin-top: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+
+  .rank-list {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .rank-row {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .rank-row:last-child { border-bottom: none; }
+  .rank-row.closest { box-shadow: inset 3px 0 0 var(--green); }
+  .rank-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .rank-name {
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--ink);
+  }
+  .rank-guess {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--green);
+    text-align: right;
+  }
+  .rank-diff {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: right;
+    margin-top: 2px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 28px 20px 44px;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+
+  @media (max-width: 420px) {
+    header { padding: 28px 16px 20px; }
+    main { padding: 22px 14px 48px; }
+    .rank-row { grid-template-columns: 30px 1fr auto; padding: 11px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="back-link">← Back to 92 Club</a>
+  <h1>Season <span>Tiebreaker</span></h1>
+  <div class="subtitle">Total goals · Top 4 divisions · 2026/27</div>
+  <p class="tagline">Everyone's one-time guess for total goals scored across the Premier League, Championship, League One and League Two this season — highest to lowest.</p>
+</header>
+
+<main>
+  <div class="actual-panel">
+    <div class="label" id="panelLabel">Current projection</div>
+    <div class="value" id="actualValue">–</div>
+    <div class="panel-note" id="panelNote"></div>
+  </div>
+
+  <div class="rank-list" id="rankList"></div>
+</main>
+
+<footer>The 92 Club · Season Tiebreaker · Swanny's Prediction League</footer>
+
+<script>
+/* ============================================================
+   TIEBREAKER GUESSES — pulled from the Leaderboard tab of the
+   fixtures spreadsheet.
+   ============================================================ */
+const GUESSES = [
+  { player: "Cameron Walsh",  guess: 6100 },
+  { player: "Cathy & Oliver", guess: 5555 },
+  { player: "Jason Parsons",  guess: 5550 },
+  { player: "Mike Budd",      guess: 5495 },
+  { player: "Dave Budd",      guess: 5322 },
+  { player: "Steve Kenna",    guess: 5350 },
+  { player: "Lee May",        guess: 5349 },
+  { player: "Kirk Walsh",     guess: 5275 },
+  { player: "Lee Grainger",   guess: 5201 },
+  { player: "Jordy Chalmers", guess: 5150 },
+  { player: "James Boyce",    guess: 5103 },
+  { player: "Richard Boyce",  guess: 5102 },
+  { player: "Elliot Walsh",   guess: 4966 },
+];
+
+/* ============================================================
+   PROJECTION — a running estimate of the season's total goals,
+   built from the Leaderboard tab's projection model (goals per
+   game so far, extrapolated across each division's full fixture
+   list). Update PROJECTION and PROJECTION_DATE as the season
+   progresses and the spreadsheet's numbers move.
+   ============================================================ */
+const PROJECTION = 5672;
+const PROJECTION_DATE = "1 Sep 2026";
+
+// Set this to a number once the season finishes — it then takes
+// over from the projection everywhere on this page.
+const ACTUAL_TOTAL = null;
+
+function render() {
+  const usingActual = ACTUAL_TOTAL !== null;
+  const referenceValue = usingActual ? ACTUAL_TOTAL : PROJECTION;
+
+  document.getElementById('panelLabel').textContent = usingActual
+    ? 'Actual total (end of season)'
+    : 'Current projection';
+  document.getElementById('actualValue').textContent = referenceValue.toLocaleString('en-GB');
+  document.getElementById('panelNote').textContent = usingActual
+    ? 'Season complete — final total confirmed'
+    : `Estimated from goals-per-game so far, updated ${PROJECTION_DATE} · not final`;
+
+  const sorted = [...GUESSES].sort((a, b) => b.guess - a.guess);
+
+  let closestPlayer = null;
+  let closestDiff = Infinity;
+  sorted.forEach(g => {
+    const diff = Math.abs(g.guess - referenceValue);
+    if (diff < closestDiff) {
+      closestDiff = diff;
+      closestPlayer = g.player;
+    }
+  });
+
+  const listEl = document.getElementById('rankList');
+  listEl.innerHTML = sorted.map((g, i) => {
+    const isClosest = g.player === closestPlayer;
+    const diffLine = `<div class="rank-diff">${Math.abs(g.guess - referenceValue).toLocaleString('en-GB')} off${usingActual ? '' : ' proj.'}</div>`;
+    return `
+      <div class="rank-row ${isClosest ? 'closest' : ''}">
+        <span class="rank-num">${i + 1}</span>
+        <span class="rank-name">${g.player}${isClosest ? ' 🎯' : ''}</span>
+        <div>
+          <div class="rank-guess">${g.guess.toLocaleString('en-GB')}</div>
+          ${diffLine}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+render();
+</script>
+
+</body>
+</html>

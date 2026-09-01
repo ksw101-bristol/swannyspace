@@ -161,27 +161,25 @@
    ============================================================ */
 const MONTHS = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"];
 
-const PLAYERS = ["Kirk Walsh", "The Mays", "Mike Budd", "Richard Boyce", "Jordy Chalmers",
+const PLAYERS = ["Kirk Walsh", "Lee May", "Mike Budd", "Richard Boyce", "Jordy Chalmers",
   "Steve Kenna", "Cameron Walsh", "James Boyce", "Cathy & Oliver", "Lee Grainger",
-  "Jason Parsons", "Vicki Walsh", "Dave Budd", "Elliot Walsh", "Chris Hunt"];
+  "Jason Parsons", "Dave Budd", "Elliot Walsh"];
 
 // points[player] = array of 10 values, one per month, null = not played yet
 const POINTS = {
-  "Kirk Walsh":      [null,null,null,null,null,null,null,null,null,null],
-  "The Mays":        [null,null,null,null,null,null,null,null,null,null],
-  "Mike Budd":       [null,null,null,null,null,null,null,null,null,null],
-  "Richard Boyce":   [null,null,null,null,null,null,null,null,null,null],
-  "Jordy Chalmers":  [null,null,null,null,null,null,null,null,null,null],
-  "Steve Kenna":     [null,null,null,null,null,null,null,null,null,null],
-  "Cameron Walsh":   [null,null,null,null,null,null,null,null,null,null],
-  "James Boyce":     [null,null,null,null,null,null,null,null,null,null],
-  "Cathy & Oliver":  [null,null,null,null,null,null,null,null,null,null],
-  "Lee Grainger":    [null,null,null,null,null,null,null,null,null,null],
-  "Jason Parsons":   [null,null,null,null,null,null,null,null,null,null],
-  "Vicki Walsh":     [null,null,null,null,null,null,null,null,null,null],
-  "Dave Budd":       [null,null,null,null,null,null,null,null,null,null],
-  "Elliot Walsh":    [null,null,null,null,null,null,null,null,null,null],
-  "Chris Hunt":      [null,null,null,null,null,null,null,null,null,null],
+  "Kirk Walsh":      [12,  null,null,null,null,null,null,null,null,null],
+  "Lee May":         [21,  null,null,null,null,null,null,null,null,null],
+  "Mike Budd":       [11,  null,null,null,null,null,null,null,null,null],
+  "Richard Boyce":   [9,   null,null,null,null,null,null,null,null,null],
+  "Jordy Chalmers":  [14,  null,null,null,null,null,null,null,null,null],
+  "Steve Kenna":     [12,  null,null,null,null,null,null,null,null,null],
+  "Cameron Walsh":   [13,  null,null,null,null,null,null,null,null,null],
+  "James Boyce":     [23,  null,null,null,null,null,null,null,null,null],
+  "Cathy & Oliver":  [4,   null,null,null,null,null,null,null,null,null],
+  "Lee Grainger":    [11,  null,null,null,null,null,null,null,null,null],
+  "Jason Parsons":   [21,  null,null,null,null,null,null,null,null,null],
+  "Dave Budd":       [9,   null,null,null,null,null,null,null,null,null],
+  "Elliot Walsh":    [9,   null,null,null,null,null,null,null,null,null],
 };
 
 function heatColor(value, max) {

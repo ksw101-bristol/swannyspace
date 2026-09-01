@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>August · Live Scores · 92 Club</title>
+<title>August · Final Result · 92 Club</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -242,10 +242,9 @@
 
 <header>
   <a href="/" class="back-link">← Back to 92 Club</a>
-  <h1>August <span>Live Scores</span></h1>
+  <h1>August <span>Final Result</span></h1>
   <div class="subtitle" style="font-family:'IBM Plex Mono',monospace;color:var(--amber);font-size:12px;margin-top:6px;">Fri 28 – Sun 30 Aug 2026</div>
-  <div class="live-pill"><span class="live-dot"></span> Updating every 60s</div>
-  <div id="lastUpdated">Last updated: —</div>
+  <div class="live-pill" style="color:var(--amber);"><span style="width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block;"></span> Round finalised · scores locked in</div>
 </header>
 
 <main>
@@ -267,25 +266,21 @@
 
 <script>
 /* ============================================================
-   FIXTURES — edit this list each month to match the 10 games
-   actually picked. searchHome/searchAway are used to match
-   against the API response team names. If api-football uses a
-   different name for a team, add altHomeTokens/altAwayTokens,
-   e.g. altHomeTokens: ["USA"] for "United States".
-   kickoff is shown on the card and is just for display — it
-   doesn't affect the live lookup, which uses ROUND_FROM/ROUND_TO.
+   FIXTURES — August round, FINALISED. The result object holds the
+   locked-in final score entered on the fixtures spreadsheet once
+   full time was confirmed. This page no longer polls the live API.
    ============================================================ */
 const FIXTURES = [
-  { id: 1, league: 39, leagueName: "Premier League", home: "Crystal Palace", away: "Manchester City", kickoff: "Fri 28 Aug, 20:00", searchHome: "Crystal Palace", searchAway: "Manchester City" },
-  { id: 2, league: 40, leagueName: "Championship", home: "Wrexham", away: "Birmingham City", kickoff: "Fri 28 Aug, 20:00", searchHome: "Wrexham", searchAway: "Birmingham City", altAwayTokens: ["Birmingham"] },
-  { id: 3, league: 39, leagueName: "Premier League", home: "Liverpool", away: "Nottingham Forest", kickoff: "Sat 29 Aug, 12:30", searchHome: "Liverpool", searchAway: "Nottingham Forest", altAwayTokens: ["Nott'm Forest", "Forest"] },
-  { id: 4, league: 40, leagueName: "Championship", home: "Bristol City", away: "Portsmouth", kickoff: "Sat 29 Aug, 15:00", searchHome: "Bristol City", searchAway: "Portsmouth" },
-  { id: 5, league: 41, leagueName: "League One", home: "Plymouth Argyle", away: "Bradford City", kickoff: "Sat 29 Aug, 15:00", searchHome: "Plymouth Argyle", searchAway: "Bradford City", altHomeTokens: ["Plymouth"], altAwayTokens: ["Bradford"] },
-  { id: 6, league: 41, leagueName: "League One", home: "Notts County", away: "Burton Albion", kickoff: "Sat 29 Aug, 15:00", searchHome: "Notts County", searchAway: "Burton Albion", altAwayTokens: ["Burton"] },
-  { id: 7, league: 42, leagueName: "League Two", home: "Crawley Town", away: "Bristol Rovers", kickoff: "Sat 29 Aug, 15:00", searchHome: "Crawley Town", searchAway: "Bristol Rovers", altHomeTokens: ["Crawley"] },
-  { id: 8, league: 42, leagueName: "League Two", home: "York City", away: "Exeter City", kickoff: "Sat 29 Aug, 15:00", searchHome: "York City", searchAway: "Exeter City", altHomeTokens: ["York"], altAwayTokens: ["Exeter"] },
-  { id: 9, league: 39, leagueName: "Premier League", home: "Chelsea", away: "Brighton & Hove Albion", kickoff: "Sun 30 Aug, 14:00", searchHome: "Chelsea", searchAway: "Brighton & Hove Albion", altAwayTokens: ["Brighton"] },
-  { id: 10, league: 39, leagueName: "Premier League", home: "Manchester United", away: "Ipswich Town", kickoff: "Sun 30 Aug, 16:30", searchHome: "Manchester United", searchAway: "Ipswich Town", altAwayTokens: ["Ipswich"] },
+  { id: 1, league: 39, leagueName: "Premier League", home: "Crystal Palace", away: "Manchester City", kickoff: "Fri 28 Aug, 20:00", result: { home: 1, away: 4 } },
+  { id: 2, league: 40, leagueName: "Championship", home: "Wrexham", away: "Birmingham City", kickoff: "Fri 28 Aug, 20:00", result: { home: 1, away: 2 } },
+  { id: 3, league: 39, leagueName: "Premier League", home: "Liverpool", away: "Nottingham Forest", kickoff: "Sat 29 Aug, 12:30", result: { home: 2, away: 2 } },
+  { id: 4, league: 40, leagueName: "Championship", home: "Bristol City", away: "Portsmouth", kickoff: "Sat 29 Aug, 15:00", result: { home: 2, away: 1 } },
+  { id: 5, league: 41, leagueName: "League One", home: "Plymouth Argyle", away: "Bradford City", kickoff: "Sat 29 Aug, 15:00", result: { home: 2, away: 0 } },
+  { id: 6, league: 41, leagueName: "League One", home: "Notts County", away: "Burton Albion", kickoff: "Sat 29 Aug, 15:00", result: { home: 2, away: 1 } },
+  { id: 7, league: 42, leagueName: "League Two", home: "Crawley Town", away: "Bristol Rovers", kickoff: "Sat 29 Aug, 15:00", result: { home: 0, away: 2 } },
+  { id: 8, league: 42, leagueName: "League Two", home: "York City", away: "Exeter City", kickoff: "Sat 29 Aug, 15:00", result: { home: 2, away: 1 } },
+  { id: 9, league: 39, leagueName: "Premier League", home: "Chelsea", away: "Brighton & Hove Albion", kickoff: "Sun 30 Aug, 14:00", result: { home: 4, away: 3 } },
+  { id: 10, league: 39, leagueName: "Premier League", home: "Manchester United", away: "Ipswich Town", kickoff: "Sun 30 Aug, 16:30", result: { home: 5, away: 2 } },
 ];
 
 /* ============================================================
@@ -307,19 +302,6 @@ const PREDICTIONS = {
   10: { "Kirk Walsh": "3-1", "Lee May": "2-1", "Mike Budd": "2-0", "Richard Boyce": "3-0", "Jordy Chalmers": "3-1", "Steve Kenna": "3-0", "Cameron Walsh": "4-1", "James Boyce": "2-0", "Cathy & Oliver": "2-0", "Lee Grainger": "3-0", "Jason Parsons": "2-1", "Dave Budd": "3-0", "Elliot Walsh": "3-1" },
 };
 
-const ROUND_FROM = "2026-08-28";
-const ROUND_TO = "2026-08-30";
-const POLL_INTERVAL_MS = 60000;
-
-function findMatch(fixture, apiMatches) {
-  const homeTokens = [fixture.searchHome, ...(fixture.altHomeTokens || [])];
-  const awayTokens = [fixture.searchAway, ...(fixture.altAwayTokens || [])];
-  return apiMatches.find(m =>
-    homeTokens.some(t => m.home.includes(t) || t.includes(m.home)) &&
-    awayTokens.some(t => m.away.includes(t) || t.includes(m.away))
-  );
-}
-
 function pointsFor(predHome, predAway, actualHome, actualAway) {
   if (actualHome === null || actualHome === undefined || actualAway === null || actualAway === undefined) return null;
   if (predHome === actualHome && predAway === actualAway) return 5;
@@ -331,32 +313,14 @@ function pointsFor(predHome, predAway, actualHome, actualAway) {
   return 0;
 }
 
-function statusLabel(status) {
-  if (status === 'NS') return { text: 'Not started', cls: 'status-ns' };
-  if (status === 'FT') return { text: 'Full time', cls: 'status-ft' };
-  if (['1H', '2H', 'HT', 'ET'].includes(status)) return { text: 'Live', cls: 'status-live' };
-  return { text: status, cls: 'status-ns' };
-}
-
-async function loadScores() {
-  let apiMatches = [];
-  try {
-    const res = await fetch(`/.netlify/functions/scores?from=${ROUND_FROM}&to=${ROUND_TO}`);
-    const data = await res.json();
-    apiMatches = data.matches || [];
-  } catch (err) {
-    console.error('Failed to fetch live scores', err);
-  }
-
+function renderResults() {
   const playerTotals = {};
   const matchListEl = document.getElementById('matchList');
   matchListEl.innerHTML = '';
 
   FIXTURES.forEach(fixture => {
-    const live = findMatch(fixture, apiMatches);
-    const homeScore = live ? (live.liveHomeScore ?? live.homeScore) : null;
-    const awayScore = live ? (live.liveAwayScore ?? live.awayScore) : null;
-    const status = live ? statusLabel(live.status) : statusLabel('NS');
+    const homeScore = fixture.result.home;
+    const awayScore = fixture.result.away;
 
     const preds = PREDICTIONS[fixture.id] || {};
     const chips = Object.entries(preds).map(([player, pred]) => {
@@ -377,15 +341,15 @@ async function loadScores() {
     card.innerHTML = `
       <div class="match-top">
         <span class="match-league">${fixture.leagueName}</span>
-        <span class="match-status ${status.cls}">${status.text}</span>
+        <span class="match-status status-ft">Full time</span>
       </div>
       <div class="match-kickoff">${fixture.kickoff || ''}</div>
       <div class="match-teams">
         <span class="home">${fixture.home}</span>
-        <span class="score">${homeScore ?? '–'} : ${awayScore ?? '–'}</span>
+        <span class="score">${homeScore} : ${awayScore}</span>
         <span class="away">${fixture.away}</span>
       </div>
-      <div class="preds-grid">${chips || '<span style="color:#5b675f;font-family:\'IBM Plex Mono\',monospace;font-size:12px;">No predictions logged yet</span>'}</div>
+      <div class="preds-grid">${chips || '<span style="color:#5b675f;font-family:\'IBM Plex Mono\',monospace;font-size:12px;">No predictions logged</span>'}</div>
     `;
     matchListEl.appendChild(card);
   });
@@ -399,13 +363,10 @@ async function loadScores() {
           <span class="lb-name">${player}</span>
           <span class="lb-pts">${pts}</span>
         </div>`).join('')
-    : '<div class="lb-row"><span class="lb-name">No predictions logged yet</span></div>';
-
-  document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString('en-GB');
+    : '<div class="lb-row"><span class="lb-name">No predictions logged</span></div>';
 }
 
-loadScores();
-setInterval(loadScores, POLL_INTERVAL_MS);
+renderResults();
 </script>
 
 </body>
