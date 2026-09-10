@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>September · Live Scores · 92 Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16211c;
+    --ink-soft: #5b675f;
+    --paper: #ffffff;
+    --panel: #f5f7f5;
+    --line: #e2e6e2;
+    --green: #1f7a4d;
+    --green-deep: #145536;
+    --amber: #d98c1f;
+    --amber-soft: #fbeed9;
+    --blue: #2b6ca3;
+    --live: #1f9d55;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    text-align: center;
+    padding: 36px 20px 26px;
+    border-bottom: 1px solid var(--line);
+  }
+  .back-link {
+    display: inline-block;
+    color: var(--green);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 12px;
+    text-decoration: none;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  h1 { font-family: 'Sora', sans-serif; font-weight: 800; font-size: clamp(24px, 6vw, 36px); }
+  h1 span { color: var(--green); }
+  .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    color: var(--amber);
+    font-size: 12px;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--live);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--live);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  #lastUpdated { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); margin-top: 6px; }
+
+  main { max-width: 860px; margin: 0 auto; padding: 28px 18px 64px; }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+  }
+
+  /* Leaderboard */
+  .leaderboard {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .lb-head, .lb-row {
+    display: grid;
+    grid-template-columns: 30px 1fr 52px 52px 56px;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 14px;
+  }
+  .lb-head {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--line);
+  }
+  .lb-head span { text-align: right; }
+  .lb-head span:first-child, .lb-head span:nth-child(2) { text-align: left; }
+  .lb-row {
+    border-bottom: 1px solid var(--line);
+    font-size: 13.5px;
+  }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row.top { background: var(--amber-soft); }
+  .lb-rank { font-family: 'IBM Plex Mono', monospace; color: var(--ink-soft); font-weight: 600; font-size: 13px; }
+  .lb-row.top .lb-rank { color: var(--amber); }
+  .lb-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lb-prev, .lb-current {
+    font-family: 'IBM Plex Mono', monospace;
+    text-align: right;
+    color: var(--ink-soft);
+  }
+  .lb-total {
+    font-family: 'IBM Plex Mono', monospace;
+    text-align: right;
+    color: var(--green);
+    font-weight: 700;
+  }
+  .lb-legend {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  /* Match cards */
+  .match-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .match-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .match-league {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 10px;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .match-status {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .status-ns { color: var(--ink-soft); background: var(--line); }
+  .status-live { color: var(--live); background: rgba(31,157,85,0.12); }
+  .status-ft { color: var(--amber); background: var(--amber-soft); }
+  .match-kickoff {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .match-teams {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .match-teams .home { text-align: right; }
+  .match-teams .away { text-align: left; }
+  .match-teams .score {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--green);
+    font-size: 22px;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .preds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 6px;
+  }
+  .pred-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-left: 3px solid transparent;
+  }
+  .pred-exact { border-left-color: var(--green); }
+  .pred-gd { border-left-color: var(--amber); }
+  .pred-result { border-left-color: var(--blue); }
+  .pred-wrong { border-left-color: var(--line); opacity: 0.65; }
+  .pred-chip .pname {
+    color: var(--ink-soft);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  .pred-chip .pscore {
+    color: var(--ink);
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  footer {
+    text-align: center;
+    padding: 28px 20px 44px;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+
+  @media (max-width: 480px) {
+    header { padding: 28px 16px 20px; }
+    main { padding: 22px 14px 48px; }
+    .match-teams { font-size: 16px; grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 4px; }
+    .match-teams .home, .match-teams .away { text-align: center; order: 1; }
+    .match-teams .score { font-size: 20px; order: 0; }
+    .preds-grid { grid-template-columns: 1fr; }
+    .lb-head, .lb-row { grid-template-columns: 24px 1fr 42px 42px 48px; padding: 10px 10px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="back-link">← Back to 92 Club</a>
+  <h1>September <span>Live Scores</span></h1>
+  <div class="subtitle">Fri 11 – Sat 26 Sep 2026</div>
+  <div class="live-pill"><span class="live-dot"></span> Updating every 60s</div>
+  <div id="lastUpdated">Last updated: —</div>
+</header>
+
+<main>
+  <div class="section-label">Season Leaderboard</div>
+  <div class="leaderboard">
+    <div class="lb-head">
+      <span>#</span><span>Player</span><span>Prev</span><span>Sept</span><span>Total</span>
+    </div>
+    <div id="leaderboard"></div>
+  </div>
+  <div class="lb-legend">Prev = August total · Sept = this round so far · Total = season to date</div>
+
+  <div class="section-label">Fixtures &amp; Predictions</div>
+  <div id="matchList"></div>
+
+  <div class="legend">
+    <span><i style="background:var(--green)"></i> 5 pts — exact score</span>
+    <span><i style="background:var(--amber)"></i> 2 pts — result + goal difference</span>
+    <span><i style="background:var(--blue)"></i> 1 pt — correct result</span>
+    <span><i style="background:var(--line)"></i> 0 pts</span>
+  </div>
+</main>
+
+<footer>The 92 Club · September Round · Swanny's Prediction League</footer>
+
+<script>
+/* ============================================================
+   PREVIOUS TOTALS — locked-in points from prior finalised rounds
+   (currently just August). Add each new month's final total here
+   once that round is finalised, so this always reflects the full
+   season so far, not just August.
+   ============================================================ */
+const PREVIOUS_TOTALS = {
+  "James Boyce":     23,
+  "Lee May":         21,
+  "Jason Parsons":   21,
+  "Jordy Chalmers":  14,
+  "Cameron Walsh":   13,
+  "Kirk Walsh":      12,
+  "Steve Kenna":     12,
+  "Mike Budd":       11,
+  "Lee Grainger":    11,
+  "Richard Boyce":   9,
+  "Dave Budd":       9,
+  "Elliot Walsh":    9,
+  "Cathy & Oliver":  4,
+};
+
+/* ============================================================
+   FIXTURES — edit this list each month to match the 10 games
+   actually picked. searchHome/searchAway are used to match
+   against the API response team names. If api-football uses a
+   different name for a team, add altHomeTokens/altAwayTokens,
+   e.g. altHomeTokens: ["USA"] for "United States".
+   ============================================================ */
+const FIXTURES = [
+  { id: 1, league: 40, leagueName: "Championship", home: "West Ham United", away: "Wrexham", kickoff: "Fri 11 Sep, 20:00", searchHome: "West Ham United", searchAway: "Wrexham", altHomeTokens: ["West Ham"] },
+  { id: 2, league: 39, leagueName: "Premier League", home: "Liverpool", away: "Fulham", kickoff: "Sat 12 Sep, 15:00", searchHome: "Liverpool", searchAway: "Fulham" },
+  { id: 3, league: 39, leagueName: "Premier League", home: "Manchester United", away: "Manchester City", kickoff: "Sun 13 Sep, 16:30", searchHome: "Manchester United", searchAway: "Manchester City" },
+  { id: 4, league: 40, leagueName: "Championship", home: "Bristol City", away: "Watford", kickoff: "Fri 18 Sep, 20:00", searchHome: "Bristol City", searchAway: "Watford" },
+  { id: 5, league: 41, leagueName: "League One", home: "Oxford United", away: "Cambridge United", kickoff: "Sat 19 Sep, 15:00", searchHome: "Oxford United", searchAway: "Cambridge United" },
+  { id: 6, league: 40, leagueName: "Championship", home: "Wolverhampton Wanderers", away: "West Bromwich Albion", kickoff: "Sun 20 Sep, 12:00", searchHome: "Wolverhampton Wanderers", searchAway: "West Bromwich Albion", altHomeTokens: ["Wolves"], altAwayTokens: ["West Brom"] },
+  { id: 7, league: 39, leagueName: "Premier League", home: "Manchester City", away: "Sunderland", kickoff: "Sun 20 Sep, 14:00", searchHome: "Manchester City", searchAway: "Sunderland" },
+  { id: 8, league: 41, leagueName: "League One", home: "Wycombe Wanderers", away: "Reading", kickoff: "Sat 26 Sep, 15:00", searchHome: "Wycombe Wanderers", searchAway: "Reading" },
+  { id: 9, league: 42, leagueName: "League Two", home: "Bristol Rovers", away: "Exeter City", kickoff: "Sat 26 Sep, 15:00", searchHome: "Bristol Rovers", searchAway: "Exeter City" },
+  { id: 10, league: 42, leagueName: "League Two", home: "Oldham Athletic", away: "Salford City", kickoff: "Sat 26 Sep, 17:30", searchHome: "Oldham Athletic", searchAway: "Salford City", altAwayTokens: ["Salford"] },
+];
+
+/* ============================================================
+   PREDICTIONS — all 13 confirmed entrants' September submissions.
+   Key = fixture id, value = { player: "H-A" }.
+   ============================================================ */
+const PREDICTIONS = {
+  1:  { "Kirk Walsh": "2-1", "Lee May": "2-1", "Mike Budd": "3-1", "Richard Boyce": "2-0", "Jordy Chalmers": "2-0", "Steve Kenna": "3-0", "Cameron Walsh": "3-1", "James Boyce": "1-1", "Cathy & Oliver": "3-0", "Lee Grainger": "2-0", "Jason Parsons": "2-1", "Dave Budd": "2-1", "Elliot Walsh": "2-1" },
+  2:  { "Kirk Walsh": "2-0", "Lee May": "2-0", "Mike Budd": "2-0", "Richard Boyce": "1-0", "Jordy Chalmers": "3-1", "Steve Kenna": "2-0", "Cameron Walsh": "4-1", "James Boyce": "2-0", "Cathy & Oliver": "2-1", "Lee Grainger": "2-0", "Jason Parsons": "2-1", "Dave Budd": "2-0", "Elliot Walsh": "3-1" },
+  3:  { "Kirk Walsh": "1-2", "Lee May": "1-2", "Mike Budd": "1-2", "Richard Boyce": "1-1", "Jordy Chalmers": "1-2", "Steve Kenna": "1-2", "Cameron Walsh": "2-3", "James Boyce": "0-2", "Cathy & Oliver": "1-2", "Lee Grainger": "2-1", "Jason Parsons": "1-2", "Dave Budd": "2-2", "Elliot Walsh": "1-2" },
+  4:  { "Kirk Walsh": "1-1", "Lee May": "1-0", "Mike Budd": "1-0", "Richard Boyce": "2-2", "Jordy Chalmers": "2-1", "Steve Kenna": "2-1", "Cameron Walsh": "2-0", "James Boyce": "2-0", "Cathy & Oliver": "1-0", "Lee Grainger": "2-1", "Jason Parsons": "2-1", "Dave Budd": "3-1", "Elliot Walsh": "2-1" },
+  5:  { "Kirk Walsh": "2-1", "Lee May": "1-1", "Mike Budd": "2-1", "Richard Boyce": "1-2", "Jordy Chalmers": "2-1", "Steve Kenna": "2-0", "Cameron Walsh": "2-0", "James Boyce": "2-1", "Cathy & Oliver": "0-0", "Lee Grainger": "2-1", "Jason Parsons": "2-1", "Dave Budd": "0-1", "Elliot Walsh": "2-2" },
+  6:  { "Kirk Walsh": "1-1", "Lee May": "1-2", "Mike Budd": "2-0", "Richard Boyce": "1-3", "Jordy Chalmers": "2-2", "Steve Kenna": "1-1", "Cameron Walsh": "3-1", "James Boyce": "1-0", "Cathy & Oliver": "1-0", "Lee Grainger": "2-0", "Jason Parsons": "2-1", "Dave Budd": "1-1", "Elliot Walsh": "3-0" },
+  7:  { "Kirk Walsh": "2-0", "Lee May": "1-0", "Mike Budd": "3-1", "Richard Boyce": "3-0", "Jordy Chalmers": "3-0", "Steve Kenna": "3-0", "Cameron Walsh": "2-0", "James Boyce": "3-0", "Cathy & Oliver": "1-0", "Lee Grainger": "2-0", "Jason Parsons": "3-0", "Dave Budd": "3-1", "Elliot Walsh": "3-1" },
+  8:  { "Kirk Walsh": "1-2", "Lee May": "1-2", "Mike Budd": "1-1", "Richard Boyce": "4-1", "Jordy Chalmers": "1-0", "Steve Kenna": "0-2", "Cameron Walsh": "1-3", "James Boyce": "1-0", "Cathy & Oliver": "0-1", "Lee Grainger": "2-1", "Jason Parsons": "1-2", "Dave Budd": "1-1", "Elliot Walsh": "1-2" },
+  9:  { "Kirk Walsh": "2-0", "Lee May": "2-0", "Mike Budd": "2-0", "Richard Boyce": "3-2", "Jordy Chalmers": "2-1", "Steve Kenna": "2-0", "Cameron Walsh": "3-1", "James Boyce": "2-0", "Cathy & Oliver": "2-1", "Lee Grainger": "3-1", "Jason Parsons": "2-1", "Dave Budd": "1-0", "Elliot Walsh": "0-1" },
+  10: { "Kirk Walsh": "2-2", "Lee May": "1-1", "Mike Budd": "2-2", "Richard Boyce": "0-0", "Jordy Chalmers": "2-1", "Steve Kenna": "1-2", "Cameron Walsh": "2-1", "James Boyce": "1-2", "Cathy & Oliver": "0-1", "Lee Grainger": "2-1", "Jason Parsons": "1-2", "Dave Budd": "1-1", "Elliot Walsh": "2-1" },
+};
+
+const ROUND_FROM = "2026-09-11";
+const ROUND_TO = "2026-09-26";
+const POLL_INTERVAL_MS = 60000;
+
+function findMatch(fixture, apiMatches) {
+  const homeTokens = [fixture.searchHome, ...(fixture.altHomeTokens || [])];
+  const awayTokens = [fixture.searchAway, ...(fixture.altAwayTokens || [])];
+  return apiMatches.find(m =>
+    homeTokens.some(t => m.home.includes(t) || t.includes(m.home)) &&
+    awayTokens.some(t => m.away.includes(t) || t.includes(m.away))
+  );
+}
+
+function pointsFor(predHome, predAway, actualHome, actualAway) {
+  if (actualHome === null || actualHome === undefined || actualAway === null || actualAway === undefined) return null;
+  if (predHome === actualHome && predAway === actualAway) return 5;
+  const predGD = predHome - predAway;
+  const actualGD = actualHome - actualAway;
+  if (predGD === actualGD) return 2;
+  const sign = n => (n > 0 ? 1 : n < 0 ? -1 : 0);
+  if (sign(predGD) === sign(actualGD)) return 1;
+  return 0;
+}
+
+function statusLabel(status) {
+  if (status === 'NS') return { text: 'Not started', cls: 'status-ns' };
+  if (status === 'FT') return { text: 'Full time', cls: 'status-ft' };
+  if (['1H', '2H', 'HT', 'ET'].includes(status)) return { text: 'Live', cls: 'status-live' };
+  return { text: status, cls: 'status-ns' };
+}
+
+async function loadScores() {
+  let apiMatches = [];
+  try {
+    const res = await fetch(`/.netlify/functions/scores?from=${ROUND_FROM}&to=${ROUND_TO}`);
+    const data = await res.json();
+    apiMatches = data.fixtures || data.matches || [];
+  } catch (err) {
+    console.error('Failed to fetch live scores', err);
+  }
+
+  const currentRoundTotals = {};
+  const matchListEl = document.getElementById('matchList');
+  matchListEl.innerHTML = '';
+
+  FIXTURES.forEach(fixture => {
+    const live = findMatch(fixture, apiMatches);
+    const homeScore = live ? (live.liveHomeScore ?? live.homeScore) : null;
+    const awayScore = live ? (live.liveAwayScore ?? live.awayScore) : null;
+    const status = live ? statusLabel(live.status) : statusLabel('NS');
+
+    const preds = PREDICTIONS[fixture.id] || {};
+    const chips = Object.entries(preds).map(([player, pred]) => {
+      const [ph, pa] = pred.split('-').map(Number);
+      const pts = pointsFor(ph, pa, homeScore, awayScore);
+      currentRoundTotals[player] = (currentRoundTotals[player] || 0) + (pts || 0);
+
+      let cls = 'pred-wrong';
+      if (pts === 5) cls = 'pred-exact';
+      else if (pts === 2) cls = 'pred-gd';
+      else if (pts === 1) cls = 'pred-result';
+
+      return `<div class="pred-chip ${cls}"><span class="pname">${player}</span><span class="pscore">${pred}${pts !== null ? ` (${pts})` : ''}</span></div>`;
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className = 'match-card';
+    card.innerHTML = `
+      <div class="match-top">
+        <span class="match-league">${fixture.leagueName}</span>
+        <span class="match-status ${status.cls}">${status.text}</span>
+      </div>
+      <div class="match-kickoff">${fixture.kickoff || ''}</div>
+      <div class="match-teams">
+        <span class="home">${fixture.home}</span>
+        <span class="score">${homeScore ?? '–'} : ${awayScore ?? '–'}</span>
+        <span class="away">${fixture.away}</span>
+      </div>
+      <div class="preds-grid">${chips || '<span style="color:#5b675f;font-family:\'IBM Plex Mono\',monospace;font-size:12px;">No predictions logged</span>'}</div>
+    `;
+    matchListEl.appendChild(card);
+  });
+
+  // Build full player list from PREVIOUS_TOTALS ∪ current round entrants
+  const allPlayers = new Set([...Object.keys(PREVIOUS_TOTALS), ...Object.keys(currentRoundTotals)]);
+  const rows = [...allPlayers].map(player => {
+    const prev = PREVIOUS_TOTALS[player] || 0;
+    const current = currentRoundTotals[player] || 0;
+    return { player, prev, current, total: prev + current };
+  }).sort((a, b) => b.total - a.total);
+
+  const lbEl = document.getElementById('leaderboard');
+  lbEl.innerHTML = rows.length
+    ? rows.map((r, i) => `
+        <div class="lb-row ${i === 0 ? 'top' : ''}">
+          <span class="lb-rank">${i + 1}</span>
+          <span class="lb-name">${r.player}</span>
+          <span class="lb-prev">${r.prev}</span>
+          <span class="lb-current">${r.current}</span>
+          <span class="lb-total">${r.total}</span>
+        </div>`).join('')
+    : '<div class="lb-row"><span class="lb-name">No predictions logged</span></div>';
+
+  document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString('en-GB');
+}
+
+loadScores();
+setInterval(loadScores, POLL_INTERVAL_MS);
+</script>
+
+</body>
+</html>

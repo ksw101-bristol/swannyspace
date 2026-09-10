@@ -110,6 +110,11 @@
     border: 1px solid rgba(217,140,31,0.3);
     color: var(--ink);
   }
+  .action-disabled {
+    opacity: 0.55;
+    cursor: default;
+    pointer-events: none;
+  }
   .action-tiebreaker {
     background: var(--blue-soft);
     border: 1px solid rgba(43,108,163,0.3);
@@ -255,13 +260,13 @@
 
 <main>
   <div class="primary-actions">
-    <a href="/92-club-august-live" class="action-btn action-live">
+    <a href="/92-club-september-live" class="action-btn action-live">
       <div class="action-label">Live Scores</div>
-      <div class="action-meta">August round · final result</div>
+      <div class="action-meta">September round · live</div>
     </a>
-    <a href="/92-club-september-round" class="action-btn action-next">
-      <div class="action-label">Next Round →</div>
-      <div class="action-meta">September · predictions open</div>
+    <a href="#" class="action-btn action-next action-disabled" onclick="return false;">
+      <div class="action-label">October</div>
+      <div class="action-meta">Predictions open soon</div>
     </a>
     <a href="/92-club-tiebreaker" class="action-btn action-tiebreaker">
       <div class="action-label">Tiebreaker</div>
