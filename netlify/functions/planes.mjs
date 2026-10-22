@@ -2,7 +2,7 @@
 // so the browser doesn't hit the feeds' cross-site (CORS) restrictions.
 //
 //   /.netlify/functions/planes?lat=51.4836&lon=-2.5063&r=30   -> { ac: [...] }
-//   /.netlify/functions/planes?hex=4ca7b5&callsign=RYR123      -> adsbdb details
+//   /.netlify/functions/planes?hex=4ca7b5                       -> aircraft + route details
 
 const HEADERS = { "User-Agent": "swannyspace-overhead/1.0", Accept: "application/json" };
 
@@ -97,6 +97,104 @@ async function routeset(callsign, lat, lon) {
   }
 }
 
+// ---- Live lookup by hex (free) -----------------------------------------
+async function liveAircraft(hex) {
+  for (const base of ["https://api.adsb.lol/v2/hex/", "https://api.airplanes.live/v2/hex/"]) {
+    try {
+      const d = await getJson(base + hex);
+      const a = (d.ac || d.aircraft || [])[0];
+      if (a) return a;
+      return null; // feed answered: plane isn't flying
+    } catch (e) { /* try the next feed */ }
+  }
+  return null;
+}
+
+// ---- FlightAware AeroAPI with a hard daily cap ---------------------------
+// Netlify environment variables:
+//   AEROAPI_KEY  your FlightAware AeroAPI key (required to use FlightAware)
+//   DAILY_CAP    max paid lookups per UTC day (default 100)
+const ROUTE_TTL_MS = 2 * 60 * 60 * 1000;   // found routes are reused for 2 hours
+const MISS_TTL_MS = 20 * 60 * 1000;        // "no airborne flight" is remembered for 20 minutes
+
+async function blobStore() {
+  try {
+    const { getStore } = await import("@netlify/blobs");
+    return getStore({ name: "overhead", consistency: "strong" });
+  } catch (e) {
+    return null;
+  }
+}
+
+async function flightAwareRoute(reg, cs) {
+  const key = process.env.AEROAPI_KEY;
+  if (!key) return { route: null, capped: false };
+
+  // Fail closed: without storage we can't count calls, so we don't make any.
+  const store = await blobStore();
+  if (!store) return { route: null, capped: true };
+
+  const cacheKey = `route/${reg || "-"}/${cs || "-"}`;
+  try {
+    const hit = await store.get(cacheKey, { type: "json" });
+    if (hit && Date.now() - hit.at < (hit.route ? ROUTE_TTL_MS : MISS_TTL_MS)) {
+      return { route: hit.route, capped: false };
+    }
+  } catch (e) { /* cache miss */ }
+
+  // Daily budget
+  const cap = Math.max(0, parseInt(process.env.DAILY_CAP || "100", 10) || 0);
+  const day = new Date().toISOString().slice(0, 10);
+  const countKey = `count/${day}`;
+  let used = 0;
+  try {
+    used = Number(await store.get(countKey)) || 0;
+  } catch (e) {
+    return { route: null, capped: true };
+  }
+  if (used >= cap) return { route: null, capped: true };
+  try {
+    await store.set(countKey, String(used + 1));
+  } catch (e) {
+    return { route: null, capped: true }; // couldn't record the spend, so don't spend
+  }
+
+  // Registration is the most reliable identifier; fall back to the callsign.
+  const ident = reg || cs;
+  const typeParam = reg ? "&ident_type=registration" : "";
+  let route = null;
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 8000);
+    const r = await fetch(
+      `https://aeroapi.flightaware.com/aeroapi/flights/${encodeURIComponent(ident)}?max_pages=1${typeParam}`,
+      { headers: { "x-apikey": key, Accept: "application/json" }, signal: ctrl.signal }
+    ).finally(() => clearTimeout(t));
+    if (r.ok) {
+      const data = await r.json();
+      const airborne = (data.flights || [])
+        .filter(f => f.actual_off && !f.actual_on && !f.cancelled)
+        .sort((a, b) => String(b.actual_off).localeCompare(String(a.actual_off)))[0];
+      if (airborne && airborne.origin && airborne.destination) {
+        const ap = a => ({
+          iata: a.code_iata || null, icao: a.code_icao || a.code || null,
+          name: a.name || null, city: a.city || null,
+        });
+        route = {
+          origin: ap(airborne.origin),
+          destination: ap(airborne.destination),
+          flight: airborne.ident_iata || airborne.ident || null,
+          airline: null,
+          source: "FlightAware",
+        };
+      }
+    }
+  } catch (e) { /* fall through to free sources */ }
+
+  try { await store.set(cacheKey, JSON.stringify({ at: Date.now(), route })); } catch (e) {}
+  return { route, capped: false };
+}
+
 export default async (req) => {
   const q = new URL(req.url).searchParams;
 
@@ -104,35 +202,51 @@ export default async (req) => {
   const hex = (q.get("hex") || "").toLowerCase();
   if (hex) {
     if (!/^[0-9a-f]{6}$/.test(hex)) return json({ error: "Bad hex code" }, 400);
-    const cs = (q.get("callsign") || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
-    const pLat = Number(q.get("lat")), pLon = Number(q.get("lon"));
-    const havePos = Number.isFinite(pLat) && Number.isFinite(pLon) && q.get("lat") !== null;
 
-    const [db, rs] = await Promise.all([
-      getJson(`https://api.adsbdb.com/v0/aircraft/${hex}` + (cs ? `?callsign=${cs}` : "")).catch(() => null),
-      cs && havePos ? routeset(cs, pLat, pLon).catch(() => null) : null,
+    // Look the plane up in the live feed ourselves. Registration, callsign and
+    // position come from here, never from the request, and a code that isn't
+    // currently flying never triggers a paid lookup.
+    const [live, db] = await Promise.all([
+      liveAircraft(hex),
+      getJson(`https://api.adsbdb.com/v0/aircraft/${hex}`).catch(() => null),
     ]);
+    const cs = (live?.flight || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const reg = (live?.r || "").trim().toUpperCase().replace(/[^A-Z0-9-]/g, "");
+    const pLat = Number(live?.lat), pLon = Number(live?.lon);
+    const havePos = Number.isFinite(pLat) && Number.isFinite(pLon);
+
     const resp = db && typeof db.response === "object" ? db.response : {};
     const aircraft = resp.aircraft || null;
-    const fr = resp.flightroute || null;
 
-    let route = null;
-    // 1) adsb.lol route, which is checked against the plane's position
-    if (rs) route = rs;
-    // 2) adsbdb route, only if the plane is plausibly on it
-    else if (fr && fr.origin && fr.destination) {
-      const cand = {
-        origin: airportFromAdsbdb(fr.origin),
-        destination: airportFromAdsbdb(fr.destination),
-        source: "adsbdb",
-      };
-      if (!havePos || onRoute(pLat, pLon, cand.origin, cand.destination)) route = cand;
+    let route = null, capped = false;
+
+    // 1) FlightAware (paid, capped)
+    if (live && (reg || cs)) {
+      const fa = await flightAwareRoute(reg, cs);
+      route = fa.route;
+      capped = fa.capped;
+    }
+
+    // 2) Free sources, checked against the plane's position
+    let fr = null;
+    if (!route && cs) {
+      const [db2, rs] = await Promise.all([
+        getJson(`https://api.adsbdb.com/v0/callsign/${cs}`).catch(() => null),
+        havePos ? routeset(cs, pLat, pLon).catch(() => null) : null,
+      ]);
+      fr = db2 && typeof db2.response === "object" ? db2.response.flightroute : null;
+      if (rs) route = rs;
+      else if (fr && fr.origin && fr.destination && havePos) {
+        const cand = { origin: airportFromAdsbdb(fr.origin), destination: airportFromAdsbdb(fr.destination), source: "adsbdb" };
+        if (onRoute(pLat, pLon, cand.origin, cand.destination)) route = cand;
+      }
     }
 
     return json({
       aircraft,
-      airline: fr && fr.airline ? fr.airline.name : null, // airline comes from the callsign prefix, so it's reliable
+      airline: route?.airline || (fr && fr.airline ? fr.airline.name : null),
       route,
+      capped,
     }, 200, 60);
   }
 
