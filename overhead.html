@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eceae3">
+<title>Overhead Staple Hill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Martian+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one e-ink-style "frame" card for the nearest plane, a quiet list of the next few below. */
+:root{
+  --paper:#eceae3; --panel:#f8f7f2; --ink:#16181c; --muted:#646a73; --rule:#cfcdc4;
+  --sky:#2b5fb8; --warn:#b5541a;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --mono:"Martian Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#0f1114; --panel:#181b20; --ink:#ecebe6; --muted:#9aa0a8; --rule:#2c3037;
+  --sky:#7aa7ff; --warn:#f0965a; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:14px/1.5 var(--mono);
+  padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.wrap{max-width:520px;margin:0 auto;display:grid;gap:16px}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{font:800 26px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;margin:0}
+.where{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.frame{background:var(--panel);border:2px solid var(--ink);border-radius:14px;overflow:hidden}
+.photo{aspect-ratio:16/9;max-width:100%;background:var(--rule);display:grid;place-items:center;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid var(--ink);position:relative}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo .credit{position:absolute;right:6px;bottom:4px;font-size:9px;color:#fff;text-shadow:0 1px 2px #000}
+.body{padding:18px 18px 16px;display:grid;gap:12px;text-align:center}
+.airline{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.route{font:800 clamp(40px,13vw,64px)/1 var(--display);letter-spacing:.02em;display:flex;justify-content:center;align-items:center;gap:.25em;flex-wrap:wrap}
+.route .arrow{font-weight:600;color:var(--sky)}
+.cities{font-size:11px;color:var(--muted);text-wrap:balance}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);margin:4px -18px -16px}
+.stat{padding:12px 6px;display:grid;gap:2px}
+.stat+.stat{border-left:1px solid var(--rule)}
+.stat b{font:600 15px/1.2 var(--mono);font-variant-numeric:tabular-nums}
+.stat span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:12px}
+dt{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:10px;padding-top:2px}
+dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
+h2{font:600 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+ul{list-style:none;margin:0;padding:0;display:grid}
+li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:8px 0;border-top:1px solid var(--rule);font-size:12px}
+li:first-child{border-top:0;padding-top:0}
+li .sub{grid-column:1/-1;color:var(--muted);font-size:11px}
+li .d{font-variant-numeric:tabular-nums}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted)}
+label{display:flex;gap:6px;align-items:center;cursor:pointer}
+button{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;background:var(--ink);color:var(--panel);border:0;border-radius:999px;padding:8px 14px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.status{font-size:11px;color:var(--muted);text-align:center}
+.status.err{color:var(--warn)}
+.empty{padding:40px 18px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Overhead</h1>
+    <div class="where" id="where">Staple Hill, Bristol</div>
+  </header>
+
+  <section class="frame" id="frame" aria-live="polite">
+    <div class="empty">Looking for aircraft…</div>
+  </section>
+
+  <div class="controls">
+    <label><input type="checkbox" id="highOnly" checked> Hide planes under 1,000 ft</label>
+    <button id="refresh" type="button">Refresh</button>
+  </div>
+  <div class="status" id="status"></div>
+
+  <section class="card" id="others" hidden>
+    <h2>Also nearby</h2>
+    <ul id="list"></ul>
+  </section>
+</div>
+
+<script>
+// ---- Settings ----------------------------------------------------------
+const HOME = { name: "Staple Hill, Bristol", lat: 51.4836, lon: -2.5063 };
+const RADIUS_NM = 30;          // search radius (nautical miles)
+const REFRESH_SECONDS = 15;    // how often to poll
+// Live positions: adsb.lol first, airplanes.live as a fallback (same format)
+const FEEDS = [
+  (lat, lon, r) => `https://api.adsb.lol/v2/point/${lat}/${lon}/${r}`,
+  (lat, lon, r) => `https://api.airplanes.live/v2/point/${lat}/${lon}/${r}`,
+];
+// Aircraft + route details
+const DETAILS = (hex, cs) => `https://api.adsbdb.com/v0/aircraft/${hex}` + (cs ? `?callsign=${encodeURIComponent(cs)}` : "");
+
+// ---- Helpers -----------------------------------------------------------
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const toRad = d => d * Math.PI / 180;
+function distKm(a, b, c, d) {
+  const R = 6371, dLat = toRad(c - a), dLon = toRad(d - b);
+  const h = Math.sin(dLat/2)**2 + Math.cos(toRad(a))*Math.cos(toRad(c))*Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function bearing(a, b, c, d) {
+  const y = Math.sin(toRad(d-b))*Math.cos(toRad(c));
+  const x = Math.cos(toRad(a))*Math.sin(toRad(c)) - Math.sin(toRad(a))*Math.cos(toRad(c))*Math.cos(toRad(d-b));
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+const compass = deg => ["N","NE","E","SE","S","SW","W","NW"][Math.round(deg / 45) % 8];
+const fmt = n => Math.round(n).toLocaleString("en-GB");
+
+const detailCache = new Map();
+async function getDetails(hex, callsign) {
+  const key = hex + "|" + (callsign || "");
+  if (detailCache.has(key)) return detailCache.get(key);
+  let out = { aircraft: null, route: null };
+  try {
+    const r = await fetch(DETAILS(hex, callsign));
+    if (r.ok) {
+      const j = await r.json();
+      const resp = j && j.response;
+      if (resp && typeof resp === "object") {
+        out.aircraft = resp.aircraft || null;
+        out.route = resp.flightroute || null;
+      }
+    }
+  } catch (e) { /* details are optional */ }
+  detailCache.set(key, out);
+  return out;
+}
+
+async function getPlanes() {
+  let lastErr;
+  for (const feed of FEEDS) {
+    try {
+      const r = await fetch(feed(HOME.lat, HOME.lon, RADIUS_NM), { cache: "no-store" });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      return j.ac || j.aircraft || [];
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error("No feed answered");
+}
+
+// ---- Render ------------------------------------------------------------
+let currentKey = null;
+async function update() {
+  $("status").className = "status";
+  $("status").textContent = "Updating…";
+  let planes;
+  try { planes = await getPlanes(); }
+  catch (e) {
+    $("status").className = "status err";
+    $("status").textContent = "Couldn't reach the flight feed. It will try again in " + REFRESH_SECONDS + "s.";
+    return;
+  }
+  const highOnly = $("highOnly").checked;
+  const list = planes
+    .filter(p => p.lat != null && p.lon != null)
+    .filter(p => p.alt_baro !== "ground")
+    .filter(p => !highOnly || (typeof p.alt_baro === "number" && p.alt_baro >= 1000))
+    .map(p => ({ ...p, km: distKm(HOME.lat, HOME.lon, p.lat, p.lon), brg: bearing(HOME.lat, HOME.lon, p.lat, p.lon) }))
+    .sort((a, b) => a.km - b.km);
+
+  const time = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  $("status").textContent = `${list.length} aircraft within ${Math.round(RADIUS_NM * 1.852)} km · updated ${time}`;
+
+  if (!list.length) {
+    currentKey = null;
+    $("frame").innerHTML = `<div class="empty">Quiet skies. Nothing within ${Math.round(RADIUS_NM*1.852)} km right now.</div>`;
+    $("others").hidden = true;
+    return;
+  }
+
+  const p = list[0];
+  const cs = (p.flight || "").trim();
+  const d = await getDetails(p.hex, cs);
+  const a = d.aircraft || {}, rt = d.route;
+
+  const from = rt?.origin?.iata_code || rt?.origin?.icao_code || "???";
+  const to = rt?.destination?.iata_code || rt?.destination?.icao_code || "???";
+  const airline = rt?.airline?.name || p.ownOp || a.registered_owner || "Unknown operator";
+  const type = [a.manufacturer, a.type].filter(Boolean).join(" ") || p.desc || p.t || "Unknown type";
+  const reg = a.registration || p.r || "—";
+  const alt = typeof p.alt_baro === "number" ? fmt(p.alt_baro) + " ft" : "—";
+  const spd = p.gs != null ? fmt(p.gs * 1.852) + " km/h" : "—";
+  const photo = a.url_photo || a.url_photo_thumbnail;
+
+  const key = p.hex + cs;
+  const photoHtml = photo
+    ? `<img src="${esc(photo)}" alt="Photo of ${esc(reg)}" loading="lazy"><span class="credit">airport-data.com</span>`
+    : `No photo for ${esc(reg)}`;
+
+  $("frame").innerHTML = `
+    <div class="photo">${photoHtml}</div>
+    <div class="body">
+      <div class="airline">${esc(airline)}${cs ? " · " + esc(cs) : ""}</div>
+      <div class="route">${esc(from)}<span class="arrow">→</span>${esc(to)}</div>
+      <div class="cities">${rt ? esc((rt.origin?.municipality || rt.origin?.name || "") + " to " + (rt.destination?.municipality || rt.destination?.name || "")) : "Route not published for this flight"}</div>
+      <div class="stats">
+        <div class="stat"><b>${alt}</b><span>Altitude</span></div>
+        <div class="stat"><b>${spd}</b><span>Speed</span></div>
+        <div class="stat"><b>${p.km.toFixed(1)} km</b><span>${compass(p.brg)} of you</span></div>
+      </div>
+    </div>`;
+  // Detail list under the frame
+  const extra = document.createElement("div");
+  extra.className = "body";
+  extra.style.borderTop = "2px solid var(--ink)";
+  extra.style.textAlign = "left";
+  extra.innerHTML = `<dl>
+      <dt>Aircraft</dt><dd>${esc(type)}${p.t ? " (" + esc(p.t) + ")" : ""}</dd>
+      <dt>Reg</dt><dd>${esc(reg)}</dd>
+      <dt>Owner</dt><dd>${esc(a.registered_owner || p.ownOp || "—")}${a.registered_owner_country_name ? ", " + esc(a.registered_owner_country_name) : ""}</dd>
+      <dt>Heading</dt><dd>${p.track != null ? Math.round(p.track) + "° (" + compass(p.track) + ")" : "—"}</dd>
+      <dt>Mode S</dt><dd>${esc(p.hex.toUpperCase())}</dd>
+      <dt>Track</dt><dd><a href="https://globe.adsb.lol/?icao=${esc(p.hex)}" target="_blank" rel="noopener" style="color:var(--sky)">Open live map</a></dd>
+    </dl>`;
+  $("frame").appendChild(extra);
+  currentKey = key;
+
+  const rest = list.slice(1, 6);
+  $("others").hidden = !rest.length;
+  $("list").innerHTML = rest.map(q => `
+    <li>
+      <span>${esc((q.flight || "").trim() || q.r || q.hex.toUpperCase())}</span>
+      <span class="d">${q.km.toFixed(1)} km ${compass(q.brg)}</span>
+      <span class="sub">${esc(q.desc || q.t || "Unknown type")} · ${typeof q.alt_baro === "number" ? fmt(q.alt_baro) + " ft" : "—"}</span>
+    </li>`).join("");
+}
+
+$("refresh").addEventListener("click", update);
+$("highOnly").addEventListener("change", update);
+$("where").textContent = HOME.name;
+update();
+setInterval(() => { if (!document.hidden) update(); }, REFRESH_SECONDS * 1000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) update(); });
+</script>
+</body>
+</html>
