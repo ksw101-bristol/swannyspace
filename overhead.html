@@ -231,7 +231,7 @@ async function update() {
   $("frame").innerHTML = `
     <div class="photo">${photoHtml}</div>
     <div class="body">
-      <div class="airline">${esc(airline)}${cs ? " · " + esc(cs) : ""}</div>
+      <div class="airline">${esc(airline)}${(rt?.flight || cs) ? " · " + esc(rt?.flight || cs) : ""}</div>
       <div class="route">${esc(from)}<span class="arrow">→</span>${esc(to)}</div>
       <div class="cities">${rt ? esc((rt.origin?.city || rt.origin?.name || "") + " to " + (rt.destination?.city || rt.destination?.name || "")) : "Route unconfirmed for this flight"}</div>
       <div class="stats">
