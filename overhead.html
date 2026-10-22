@@ -27,7 +27,20 @@ body{background:var(--paper);color:var(--ink);font:14px/1.5 var(--mono);
 .wrap{max-width:520px;margin:0 auto;display:grid;gap:16px}
 header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
 h1{font:800 26px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;margin:0}
-.where{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+header{position:relative}
+.where{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;display:flex;gap:8px;align-items:center;max-width:62vw;text-align:left}
+.where span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.where::after{content:"▾";color:var(--muted)}
+.loc{position:absolute;right:0;top:calc(100% + 8px);z-index:5;width:min(320px,100%);background:var(--panel);border:2px solid var(--ink);border-radius:12px;padding:14px;display:grid;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.loc input[type=text]{font:13px var(--mono);color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:9px 10px;width:100%;min-width:0}
+.loc .row{display:flex;gap:8px}
+.loc .row input{flex:1}
+.loc .ghost{background:transparent;color:var(--ink);border:1px solid var(--rule)}
+.loc .chips{display:flex;flex-wrap:wrap;gap:6px}
+.loc .chips button{background:var(--paper);color:var(--ink);border:1px solid var(--rule);text-transform:none;letter-spacing:0;font-weight:400;padding:6px 10px}
+.loc .msg{font-size:11px;color:var(--muted);min-height:1em}
+.loc .msg.err{color:var(--warn)}
+.loc .hint{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
 .frame{background:var(--panel);border:2px solid var(--ink);border-radius:14px;overflow:hidden}
 .photo{aspect-ratio:16/9;max-width:100%;background:var(--rule);display:grid;place-items:center;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid var(--ink);position:relative}
 .photo img{width:100%;height:100%;object-fit:cover;display:block}
@@ -65,7 +78,17 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--sky);outline-of
 <div class="wrap">
   <header>
     <h1>Overhead</h1>
-    <div class="where" id="where">Staple Hill, Bristol</div>
+    <button class="where" id="where" type="button" aria-expanded="false" aria-controls="loc"><span id="whereName">Staple Hill, Bristol</span></button>
+    <form class="loc" id="loc" hidden>
+      <div class="hint">Postcode or UK place</div>
+      <div class="row">
+        <input type="text" id="placeq" placeholder="e.g. BS16 or Bath" autocomplete="off" autocapitalize="characters" enterkeyhint="search">
+        <button type="submit">Go</button>
+      </div>
+      <button type="button" class="ghost" id="useGeo">Use my location</button>
+      <div class="chips" id="chips"></div>
+      <div class="msg" id="locMsg"></div>
+    </form>
   </header>
 
   <section class="frame" id="frame" aria-live="polite">
@@ -86,7 +109,14 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--sky);outline-of
 
 <script>
 // ---- Settings ----------------------------------------------------------
-const HOME = { name: "Staple Hill, Bristol", lat: 51.4836, lon: -2.5063 };
+const DEFAULT_HOME = { name: "Staple Hill, Bristol", lat: 51.4836, lon: -2.5063 };
+const PRESETS = [
+  DEFAULT_HOME,
+  { name: "Bristol Airport", lat: 51.3827, lon: -2.7191 },
+  { name: "Heathrow", lat: 51.4700, lon: -0.4543 },
+];
+let HOME = DEFAULT_HOME;
+try { const s = JSON.parse(localStorage.getItem("overhead-home")); if (s && isFinite(s.lat) && isFinite(s.lon)) HOME = s; } catch (e) {}
 const RADIUS_NM = 30;          // search radius (nautical miles)
 const REFRESH_SECONDS = 15;    // how often to poll
 // Data comes through the Netlify function (netlify/functions/planes.mjs)
@@ -148,17 +178,20 @@ async function getPlanes() {
 }
 
 // ---- Render ------------------------------------------------------------
-let currentKey = null;
+let currentKey = null, seq = 0;
 async function update() {
+  const my = ++seq;
   $("status").className = "status";
   $("status").textContent = "Updating…";
   let planes;
   try { planes = await getPlanes(); }
   catch (e) {
+    if (my !== seq) return;
     $("status").className = "status err";
     $("status").textContent = "Couldn't reach the flight feed. It will try again in " + REFRESH_SECONDS + "s.";
     return;
   }
+  if (my !== seq) return;
   const highOnly = $("highOnly").checked;
   const list = planes
     .filter(p => p.lat != null && p.lon != null)
@@ -180,6 +213,7 @@ async function update() {
   const p = list[0];
   const cs = (p.flight || "").trim();
   const d = await getDetails(p.hex, cs);
+  if (my !== seq) return;
   const a = d.aircraft || {}, rt = d.route;
 
   const from = rt?.origin?.iata_code || rt?.origin?.icao_code || "???";
@@ -234,9 +268,81 @@ async function update() {
     </li>`).join("");
 }
 
+// ---- Location picker ---------------------------------------------------
+const PC = "https://api.postcodes.io";
+function setHome(h) {
+  HOME = h;
+  try { localStorage.setItem("overhead-home", JSON.stringify(h)); } catch (e) {}
+  $("whereName").textContent = h.name;
+  togglePicker(false);
+  detailCache.clear();
+  $("frame").innerHTML = `<div class="empty">Looking for aircraft near ${esc(h.name)}…</div>`;
+  $("others").hidden = true;
+  update();
+}
+function togglePicker(open) {
+  $("loc").hidden = !open;
+  $("where").setAttribute("aria-expanded", String(open));
+  $("locMsg").textContent = ""; $("locMsg").className = "msg";
+  if (open) setTimeout(() => $("placeq").focus(), 0);
+}
+function locMsg(t, err) { $("locMsg").textContent = t; $("locMsg").className = "msg" + (err ? " err" : ""); }
+
+async function lookup(q) {
+  const clean = q.trim();
+  const compact = clean.replace(/\s+/g, "").toUpperCase();
+  // Full postcode, e.g. BS16 5AB
+  if (/^[A-Z]{1,2}\d[A-Z\d]?\d[A-Z]{2}$/.test(compact)) {
+    const j = await (await fetch(`${PC}/postcodes/${compact}`)).json();
+    if (j.result) return { name: `${j.result.postcode}, ${j.result.admin_ward || j.result.admin_district}`, lat: j.result.latitude, lon: j.result.longitude };
+  }
+  // Postcode district, e.g. BS16
+  if (/^[A-Z]{1,2}\d[A-Z\d]?$/.test(compact)) {
+    const j = await (await fetch(`${PC}/outcodes/${compact}`)).json();
+    if (j.result) return { name: `${j.result.outcode}, ${(j.result.admin_district || [])[0] || ""}`.replace(/, $/, ""), lat: j.result.latitude, lon: j.result.longitude };
+  }
+  // Town or village name
+  const j = await (await fetch(`${PC}/places?q=${encodeURIComponent(clean)}&limit=1`)).json();
+  const p = j.result && j.result[0];
+  if (p) return { name: [p.name_1, p.county_unitary || p.region].filter(Boolean).join(", "), lat: p.latitude, lon: p.longitude };
+  return null;
+}
+
+$("where").addEventListener("click", () => togglePicker($("loc").hidden));
+$("loc").addEventListener("submit", async e => {
+  e.preventDefault();
+  const q = $("placeq").value;
+  if (!q.trim()) return;
+  locMsg("Searching…");
+  try {
+    const h = await lookup(q);
+    if (h) { $("placeq").value = ""; setHome(h); }
+    else locMsg(`Couldn't find "${q.trim()}". Try a postcode or a town name.`, true);
+  } catch (err) { locMsg("Location search isn't responding. Try again in a moment.", true); }
+});
+$("useGeo").addEventListener("click", () => {
+  if (!navigator.geolocation) return locMsg("This browser can't share your location.", true);
+  locMsg("Finding you…");
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const lat = +pos.coords.latitude.toFixed(4), lon = +pos.coords.longitude.toFixed(4);
+    let name = "My location";
+    try {
+      const j = await (await fetch(`${PC}/postcodes?lon=${lon}&lat=${lat}&limit=1`)).json();
+      const r = j.result && j.result[0];
+      if (r) name = [r.admin_ward, r.admin_district].filter(Boolean).join(", ");
+    } catch (e) {}
+    setHome({ name, lat, lon });
+  }, () => locMsg("Location permission was refused. Allow it in your browser settings, or type a postcode.", true),
+  { enableHighAccuracy: false, timeout: 10000 });
+});
+$("chips").innerHTML = PRESETS.map((p, i) => `<button type="button" data-i="${i}">${esc(p.name)}</button>`).join("");
+$("chips").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setHome(PRESETS[+b.dataset.i]); });
+document.addEventListener("click", e => { if (!$("loc").hidden && !e.target.closest("#loc, #where")) togglePicker(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") togglePicker(false); });
+
 $("refresh").addEventListener("click", update);
 $("highOnly").addEventListener("change", update);
-$("where").textContent = HOME.name;
+$("whereName").textContent = HOME.name;
 update();
 setInterval(() => { if (!document.hidden) update(); }, REFRESH_SECONDS * 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) update(); });
