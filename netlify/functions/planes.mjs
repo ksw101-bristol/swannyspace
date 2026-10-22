@@ -198,6 +198,24 @@ async function flightAwareRoute(reg, cs) {
 export default async (req) => {
   const q = new URL(req.url).searchParams;
 
+  // Usage mode: today's paid lookups vs the cap (read-only, costs nothing)
+  if (q.has("usage")) {
+    const cap = Math.max(0, parseInt(process.env.DAILY_CAP || "100", 10) || 0);
+    const day = new Date().toISOString().slice(0, 10);
+    const store = await blobStore();
+    if (!store) return json({ day, used: null, cap, note: "Storage not available, so no paid lookups are being made" }, 200, 0);
+    let used = 0;
+    try { used = Number(await store.get(`count/${day}`)) || 0; } catch (e) { used = null; }
+    return json({
+      day,
+      used,
+      cap,
+      remaining: used == null ? null : Math.max(0, cap - used),
+      flightaware_key_set: Boolean(process.env.AEROAPI_KEY),
+      resets: "midnight UTC (1am UK time in summer)",
+    }, 200, 0);
+  }
+
   // Details mode
   const hex = (q.get("hex") || "").toLowerCase();
   if (hex) {
