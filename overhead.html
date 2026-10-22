@@ -126,7 +126,7 @@ const FEEDS = [
   (lat, lon, r) => `${API}?lat=${lat}&lon=${lon}&r=${r}`,
 ];
 // Aircraft + route details
-const DETAILS = (hex, cs) => `${API}?hex=${hex}` + (cs ? `&callsign=${encodeURIComponent(cs)}` : "");
+const DETAILS = (hex, cs, lat, lon) => `${API}?hex=${hex}&lat=${lat}&lon=${lon}` + (cs ? `&callsign=${encodeURIComponent(cs)}` : "");
 
 // ---- Helpers -----------------------------------------------------------
 const $ = id => document.getElementById(id);
@@ -146,22 +146,19 @@ const compass = deg => ["N","NE","E","SE","S","SW","W","NW"][Math.round(deg / 45
 const fmt = n => Math.round(n).toLocaleString("en-GB");
 
 const detailCache = new Map();
-async function getDetails(hex, callsign) {
+async function getDetails(hex, callsign, lat, lon) {
   const key = hex + "|" + (callsign || "");
   if (detailCache.has(key)) return detailCache.get(key);
-  let out = { aircraft: null, route: null };
+  let out = { aircraft: null, route: null, airline: null };
   try {
-    const r = await fetch(DETAILS(hex, callsign));
+    const r = await fetch(DETAILS(hex, callsign, lat.toFixed(4), lon.toFixed(4)));
     if (r.ok) {
       const j = await r.json();
-      const resp = j && j.response;
-      if (resp && typeof resp === "object") {
-        out.aircraft = resp.aircraft || null;
-        out.route = resp.flightroute || null;
-      }
+      out = { aircraft: j.aircraft || null, route: j.route || null, airline: j.airline || null };
     }
   } catch (e) { /* details are optional */ }
-  detailCache.set(key, out);
+  // Only cache once a route is confirmed, so an unknown route gets re-checked as the plane moves
+  if (out.route || !callsign) detailCache.set(key, out);
   return out;
 }
 
@@ -213,13 +210,13 @@ async function update() {
 
   const p = list[0];
   const cs = (p.flight || "").trim();
-  const d = await getDetails(p.hex, cs);
+  const d = await getDetails(p.hex, cs, p.lat, p.lon);
   if (my !== seq) return;
   const a = d.aircraft || {}, rt = d.route;
 
-  const from = rt?.origin?.iata_code || rt?.origin?.icao_code || "???";
-  const to = rt?.destination?.iata_code || rt?.destination?.icao_code || "???";
-  const airline = rt?.airline?.name || p.ownOp || a.registered_owner || "Unknown operator";
+  const from = rt?.origin?.iata || rt?.origin?.icao || "???";
+  const to = rt?.destination?.iata || rt?.destination?.icao || "???";
+  const airline = d.airline || p.ownOp || a.registered_owner || "Unknown operator";
   const type = [a.manufacturer, a.type].filter(Boolean).join(" ") || p.desc || p.t || "Unknown type";
   const reg = a.registration || p.r || "—";
   const alt = typeof p.alt_baro === "number" ? fmt(p.alt_baro) + " ft" : "—";
@@ -236,7 +233,7 @@ async function update() {
     <div class="body">
       <div class="airline">${esc(airline)}${cs ? " · " + esc(cs) : ""}</div>
       <div class="route">${esc(from)}<span class="arrow">→</span>${esc(to)}</div>
-      <div class="cities">${rt ? esc((rt.origin?.municipality || rt.origin?.name || "") + " to " + (rt.destination?.municipality || rt.destination?.name || "")) : "Route not published for this flight"}</div>
+      <div class="cities">${rt ? esc((rt.origin?.city || rt.origin?.name || "") + " to " + (rt.destination?.city || rt.destination?.name || "")) : "Route unconfirmed for this flight"}</div>
       <div class="stats">
         <div class="stat"><b>${alt}</b><span>Altitude</span></div>
         <div class="stat"><b>${spd}</b><span>Speed</span></div>
