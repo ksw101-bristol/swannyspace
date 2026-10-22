@@ -89,13 +89,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--sky);outline-of
 const HOME = { name: "Staple Hill, Bristol", lat: 51.4836, lon: -2.5063 };
 const RADIUS_NM = 30;          // search radius (nautical miles)
 const REFRESH_SECONDS = 15;    // how often to poll
-// Live positions: adsb.lol first, airplanes.live as a fallback (same format)
+// Data comes through the Netlify function (netlify/functions/planes.mjs)
+const API = "/.netlify/functions/planes";
 const FEEDS = [
-  (lat, lon, r) => `https://api.adsb.lol/v2/point/${lat}/${lon}/${r}`,
-  (lat, lon, r) => `https://api.airplanes.live/v2/point/${lat}/${lon}/${r}`,
+  (lat, lon, r) => `${API}?lat=${lat}&lon=${lon}&r=${r}`,
 ];
 // Aircraft + route details
-const DETAILS = (hex, cs) => `https://api.adsbdb.com/v0/aircraft/${hex}` + (cs ? `?callsign=${encodeURIComponent(cs)}` : "");
+const DETAILS = (hex, cs) => `${API}?hex=${hex}` + (cs ? `&callsign=${encodeURIComponent(cs)}` : "");
 
 // ---- Helpers -----------------------------------------------------------
 const $ = id => document.getElementById(id);
