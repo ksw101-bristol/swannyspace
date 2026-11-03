@@ -276,10 +276,8 @@
 
 <header>
   <a href="/" class="back-link">← Back to 92 Club</a>
-  <h1>October <span>Live Scores</span></h1>
-  <div class="subtitle">Fri 9 – Mon 26 Oct 2026</div>
-  <div class="live-pill"><span class="live-dot"></span> Updating every 60s</div>
-  <div id="lastUpdated">Last updated: —</div>
+  <h1>October <span>Results</span></h1>
+  <div class="subtitle">Fri 9 – Mon 26 Oct 2026 · Full time</div>
 </header>
 
 <main>
@@ -290,7 +288,7 @@
     </div>
     <div id="leaderboard"></div>
   </div>
-  <div class="lb-legend">Prev = Aug + Sep total · Oct = this round so far · Total = season to date</div>
+  <div class="lb-legend">Prev = Aug + Sep total · Oct = this round, final · Total = season to date</div>
 
   <div class="section-label">Fixtures &amp; Predictions</div>
   <div id="matchList"></div>
@@ -308,49 +306,48 @@
 <script>
 /* ============================================================
    PREVIOUS TOTALS — locked-in points from prior finalised rounds
-   (August + September combined). Add each new month's final total
-   here once that round is finalised, so this always reflects the
-   full season so far, not just the prior month.
+   (August + September). Add each new month's final total here
+   once that round is finalised, so this always reflects the full
+   season so far, not just the prior months.
    ============================================================ */
 const PREVIOUS_TOTALS = {
-  "Lee May":         36,
-  "James Boyce":     33,
-  "Jason Parsons":   32,
-  "Mike Budd":       25,
-  "Cathy & Oliver":  23,
-  "Jordy Chalmers":  22,
-  "Cameron Walsh":   21,
-  "Steve Kenna":     20,
-  "Dave Budd":       20,
-  "Elliot Walsh":    19,
-  "Lee Grainger":    18,
-  "Kirk Walsh":      18,
-  "Richard Boyce":   13,
+  "Lee May": 36,
+  "James Boyce": 33,
+  "Jason Parsons": 32,
+  "Mike Budd": 25,
+  "Cathy & Oliver": 23,
+  "Jordy Chalmers": 22,
+  "Cameron Walsh": 21,
+  "Steve Kenna": 20,
+  "Dave Budd": 20,
+  "Elliot Walsh": 19,
+  "Lee Grainger": 18,
+  "Kirk Walsh": 18,
+  "Richard Boyce": 13,
 };
 
 /* ============================================================
-   FIXTURES — edit this list each month to match the 10 games
-   actually picked. searchHome/searchAway are used to match
-   against the API response team names. If api-football uses a
-   different name for a team, add altHomeTokens/altAwayTokens,
-   e.g. altHomeTokens: ["Spurs"] for "Tottenham Hotspur".
+   FIXTURES — October round, FINALISED. The result object holds
+   the locked-in final score entered on the fixtures spreadsheet
+   once full time was confirmed. This page no longer polls the
+   live API.
    ============================================================ */
 const FIXTURES = [
-  { id: 1, league: 40, leagueName: "Championship", home: "West Ham United", away: "Queens Park Rangers", kickoff: "Fri 9 Oct, 20:00", searchHome: "West Ham United", searchAway: "Queens Park Rangers", altHomeTokens: ["West Ham"], altAwayTokens: ["QPR"] },
-  { id: 2, league: 39, leagueName: "Premier League", home: "Manchester United", away: "Tottenham Hotspur", kickoff: "Sat 10 Oct, 17:30", searchHome: "Manchester United", searchAway: "Tottenham Hotspur", altAwayTokens: ["Spurs", "Tottenham"] },
-  { id: 3, league: 39, leagueName: "Premier League", home: "Liverpool", away: "Manchester City", kickoff: "Sun 11 Oct, 16:30", searchHome: "Liverpool", searchAway: "Manchester City" },
-  { id: 4, league: 40, leagueName: "Championship", home: "Bristol City", away: "Blackburn Rovers", kickoff: "Tue 13 Oct, 19:45", searchHome: "Bristol City", searchAway: "Blackburn Rovers", altAwayTokens: ["Blackburn"] },
-  { id: 5, league: 42, leagueName: "League Two", home: "Shrewsbury Town", away: "Bristol Rovers", kickoff: "Sat 17 Oct, 12:30", searchHome: "Shrewsbury Town", searchAway: "Bristol Rovers", altHomeTokens: ["Shrewsbury"] },
-  { id: 6, league: 39, leagueName: "Premier League", home: "Leeds United", away: "Manchester United", kickoff: "Sun 18 Oct, 14:00", searchHome: "Leeds United", searchAway: "Manchester United", altHomeTokens: ["Leeds"] },
-  { id: 7, league: 40, leagueName: "Championship", home: "Wolverhampton Wanderers", away: "Portsmouth", kickoff: "Tue 20 Oct, 19:45", searchHome: "Wolverhampton Wanderers", searchAway: "Portsmouth", altHomeTokens: ["Wolves"] },
-  { id: 8, league: 41, leagueName: "League One", home: "Notts County", away: "Sheffield Wednesday", kickoff: "Tue 20 Oct, 19:45", searchHome: "Notts County", searchAway: "Sheffield Wednesday" },
-  { id: 9, league: 40, leagueName: "Championship", home: "Bolton Wanderers", away: "Middlesbrough", kickoff: "Fri 23 Oct, 20:00", searchHome: "Bolton Wanderers", searchAway: "Middlesbrough", altHomeTokens: ["Bolton"] },
-  { id: 10, league: 42, leagueName: "League Two", home: "Walsall", away: "Salford City", kickoff: "Mon 26 Oct, 20:00", searchHome: "Walsall", searchAway: "Salford City", altAwayTokens: ["Salford"] },
+  { id: 1, league: 40, leagueName: "Championship", home: "West Ham United", away: "Queens Park Rangers", kickoff: "Fri 9 Oct, 20:00", result: { home: 1, away: 1 } },
+  { id: 2, league: 39, leagueName: "Premier League", home: "Manchester United", away: "Tottenham Hotspur", kickoff: "Sat 10 Oct, 17:30", result: { home: 1, away: 1 } },
+  { id: 3, league: 39, leagueName: "Premier League", home: "Liverpool", away: "Manchester City", kickoff: "Sun 11 Oct, 16:30", result: { home: 0, away: 3 } },
+  { id: 4, league: 40, leagueName: "Championship", home: "Bristol City", away: "Blackburn Rovers", kickoff: "Tue 13 Oct, 19:45", result: { home: 0, away: 1 } },
+  { id: 5, league: 42, leagueName: "League Two", home: "Shrewsbury Town", away: "Bristol Rovers", kickoff: "Sat 17 Oct, 12:30", result: { home: 1, away: 0 } },
+  { id: 6, league: 39, leagueName: "Premier League", home: "Leeds United", away: "Manchester United", kickoff: "Sun 18 Oct, 14:00", result: { home: 1, away: 1 } },
+  { id: 7, league: 40, leagueName: "Championship", home: "Wolverhampton Wanderers", away: "Portsmouth", kickoff: "Tue 20 Oct, 19:45", result: { home: 1, away: 1 } },
+  { id: 8, league: 41, leagueName: "League One", home: "Notts County", away: "Sheffield Wednesday", kickoff: "Tue 20 Oct, 19:45", result: { home: 2, away: 0 } },
+  { id: 9, league: 40, leagueName: "Championship", home: "Bolton Wanderers", away: "Middlesbrough", kickoff: "Fri 23 Oct, 20:00", result: { home: 1, away: 5 } },
+  { id: 10, league: 42, leagueName: "League Two", home: "Walsall", away: "Salford City", kickoff: "Mon 26 Oct, 20:00", result: { home: 2, away: 4 } },
 ];
 
 /* ============================================================
-   PREDICTIONS — October submissions (all 13 in as of 9 Oct; game 2 was changed to
-   Man Utd v Spurs, so Richard Boyce (3-1) and Lee Grainger (2-0) are carried over from their original Arsenal v Spurs picks). Key = fixture id, value = { player: "H-A" }.
+   PREDICTIONS — all 13 entrants' October submissions (Game 2 replaced with Man Utd v Spurs; Richard Boyce and Lee Grainger carried over their original picks).
+   Key = fixture id, value = { player: "H-A" }.
    ============================================================ */
 const PREDICTIONS = {
   1:  { "Kirk Walsh": "2-1", "Lee May": "2-1", "Mike Budd": "2-0", "Richard Boyce": "2-2", "Jordy Chalmers": "2-1", "Cameron Walsh": "3-0", "James Boyce": "0-1", "Lee Grainger": "3-1", "Jason Parsons": "2-1", "Dave Budd": "2-0", "Elliot Walsh": "3-1", "Steve Kenna": "3-1", "Cathy & Oliver": "1-0" },
@@ -365,19 +362,6 @@ const PREDICTIONS = {
   10:  { "Kirk Walsh": "1-1", "Lee May": "1-0", "Mike Budd": "1-1", "Richard Boyce": "2-0", "Jordy Chalmers": "2-1", "Cameron Walsh": "1-1", "James Boyce": "2-1", "Lee Grainger": "2-0", "Jason Parsons": "2-1", "Dave Budd": "1-1", "Elliot Walsh": "0-1", "Steve Kenna": "1-0", "Cathy & Oliver": "0-1" },
 };
 
-const ROUND_FROM = "2026-10-09";
-const ROUND_TO = "2026-10-26";
-const POLL_INTERVAL_MS = 60000;
-
-function findMatch(fixture, apiMatches) {
-  const homeTokens = [fixture.searchHome, ...(fixture.altHomeTokens || [])];
-  const awayTokens = [fixture.searchAway, ...(fixture.altAwayTokens || [])];
-  return apiMatches.find(m =>
-    homeTokens.some(t => m.home.includes(t) || t.includes(m.home)) &&
-    awayTokens.some(t => m.away.includes(t) || t.includes(m.away))
-  );
-}
-
 function pointsFor(predHome, predAway, actualHome, actualAway) {
   if (actualHome === null || actualHome === undefined || actualAway === null || actualAway === undefined) return null;
   if (predHome === actualHome && predAway === actualAway) return 5;
@@ -389,32 +373,14 @@ function pointsFor(predHome, predAway, actualHome, actualAway) {
   return 0;
 }
 
-function statusLabel(status) {
-  if (status === 'NS') return { text: 'Not started', cls: 'status-ns' };
-  if (status === 'FT') return { text: 'Full time', cls: 'status-ft' };
-  if (['1H', '2H', 'HT', 'ET'].includes(status)) return { text: 'Live', cls: 'status-live' };
-  return { text: status, cls: 'status-ns' };
-}
-
-async function loadScores() {
-  let apiMatches = [];
-  try {
-    const res = await fetch(`/.netlify/functions/scores?from=${ROUND_FROM}&to=${ROUND_TO}`);
-    const data = await res.json();
-    apiMatches = data.fixtures || data.matches || [];
-  } catch (err) {
-    console.error('Failed to fetch live scores', err);
-  }
-
+function renderResults() {
   const currentRoundTotals = {};
   const matchListEl = document.getElementById('matchList');
   matchListEl.innerHTML = '';
 
   FIXTURES.forEach(fixture => {
-    const live = findMatch(fixture, apiMatches);
-    const homeScore = live ? (live.liveHomeScore ?? live.homeScore) : null;
-    const awayScore = live ? (live.liveAwayScore ?? live.awayScore) : null;
-    const status = live ? statusLabel(live.status) : statusLabel('NS');
+    const homeScore = fixture.result.home;
+    const awayScore = fixture.result.away;
 
     const preds = PREDICTIONS[fixture.id] || {};
     const chips = Object.entries(preds).map(([player, pred]) => {
@@ -435,12 +401,12 @@ async function loadScores() {
     card.innerHTML = `
       <div class="match-top">
         <span class="match-league">${fixture.leagueName}</span>
-        <span class="match-status ${status.cls}">${status.text}</span>
+        <span class="match-status status-ft">Full time</span>
       </div>
       <div class="match-kickoff">${fixture.kickoff || ''}</div>
       <div class="match-teams">
         <span class="home">${fixture.home}</span>
-        <span class="score">${homeScore ?? '–'} : ${awayScore ?? '–'}</span>
+        <span class="score">${homeScore} : ${awayScore}</span>
         <span class="away">${fixture.away}</span>
       </div>
       <div class="preds-grid">${chips || '<span style="color:#5b675f;font-family:\'IBM Plex Mono\',monospace;font-size:12px;">No predictions logged</span>'}</div>
@@ -467,12 +433,9 @@ async function loadScores() {
           <span class="lb-total">${r.total}</span>
         </div>`).join('')
     : '<div class="lb-row"><span class="lb-name">No predictions logged</span></div>';
-
-  document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString('en-GB');
 }
 
-loadScores();
-setInterval(loadScores, POLL_INTERVAL_MS);
+renderResults();
 </script>
 
 </body>
