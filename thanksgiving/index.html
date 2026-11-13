@@ -229,6 +229,7 @@ const CATEGORIES = [
   { id: "veg",      name: "Salads & veg",       target: 4 },
   { id: "crisps",   name: "Crisps & dips",      target: 5 },
   { id: "desserts", name: "Desserts",           target: 4 },
+  { id: "other",    name: "Other",              target: 0 },
 ];
 
 let entries = [];
@@ -366,7 +367,7 @@ function renderBoard() {
       if (n >= c.target) { status = "Plenty"; cls = "full"; }
       else if (n >= c.target - 1) { status = "Nearly there"; cls = "near"; }
       else { status = `Need ${c.target - n} more`; cls = "need"; }
-    } else { status = n ? "Cheers!" : "Bring your favourite"; cls = n ? "full" : "near"; }
+    } else { status = "Anything else"; cls = "full"; }
     const pct = c.target ? Math.min(100, (n / c.target) * 100) : (n ? 100 : 0);
     return `<div class="card cat-card">
       <div class="cat-head"><strong>${esc(c.name)}</strong><span class="count">${c.target ? `${n} / ${c.target}` : n}</span></div>
