@@ -1,1 +1,408 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thanksgiving Buffet · Sat 28 Nov</title>
+<meta name="description" content="Thanksgiving Buffet, Saturday 28 November 2026, 6.30pm. Tell us what you're bringing.">
+<meta property="og:title" content="Thanksgiving Buffet · Sat 28 Nov, 6.30pm">
+<meta property="og:description" content="Tell us what you're bringing, and see what's already coming.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f7efe2;
+    --paper: #fffaf2;
+    --bark: #3b2418;
+    --bark-soft: #6b4c3b;
+    --cranberry: #8c2f39;
+    --pumpkin: #d9772b;
+    --gold: #c9a13b;
+    --sage: #6f8a5b;
+    --line: #e8dccb;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--cream); color: var(--bark);
+    font: 16px/1.5 Inter, system-ui, sans-serif;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 18px 60px; }
 
+  header {
+    background: var(--cranberry); color: var(--cream);
+    padding: 44px 18px 56px; text-align: center; position: relative; overflow: hidden;
+  }
+  header::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 26px;
+    background: radial-gradient(circle at 13px 0, transparent 13px, var(--cream) 14px) repeat-x;
+    background-size: 26px 26px;
+  }
+  .leaves { font-size: 26px; letter-spacing: 10px; opacity: .9; }
+  h1 {
+    font-family: Fraunces, Georgia, serif; font-weight: 800;
+    font-size: clamp(38px, 9vw, 64px); line-height: 1; margin: 12px 0 14px;
+  }
+  .when {
+    display: inline-flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    font-weight: 600; font-size: 15px;
+  }
+  .when span { background: rgba(255,255,255,.14); padding: 6px 14px; border-radius: 99px; }
+  .countdown { margin-top: 14px; font-size: 14px; opacity: .85; }
+
+  h2 {
+    font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 26px;
+    margin: 36px 0 6px;
+  }
+  .sub { color: var(--bark-soft); margin: 0 0 16px; font-size: 15px; }
+
+  .card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px; box-shadow: 0 1px 0 rgba(59,36,24,.04);
+  }
+
+  /* form */
+  label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
+  label:first-child { margin-top: 0; }
+  select, input[type=text] {
+    width: 100%; font: inherit; padding: 12px 14px; border-radius: 10px;
+    border: 1.5px solid var(--line); background: #fff; color: var(--bark);
+  }
+  select:focus, input:focus { outline: none; border-color: var(--pumpkin); }
+  .cats { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cat-btn {
+    font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 99px; cursor: pointer;
+    border: 1.5px solid var(--line); background: #fff; color: var(--bark);
+  }
+  .cat-btn[aria-pressed=true] { background: var(--bark); color: var(--cream); border-color: var(--bark); }
+  .cat-btn .need { font-size: 11px; font-weight: 600; color: var(--cranberry); margin-left: 4px; }
+  .cat-btn[aria-pressed=true] .need { color: var(--gold); }
+  .hint { font-size: 13px; color: var(--bark-soft); margin-top: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip {
+    font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 99px; cursor: pointer;
+    background: #f3e6d3; border: 0; color: var(--bark);
+  }
+  .chip:hover { background: #ecd8bb; }
+  .warn {
+    margin-top: 10px; padding: 10px 12px; border-radius: 10px; font-size: 14px;
+    background: #fdf0dc; border-left: 4px solid var(--pumpkin); display: none;
+  }
+  .submit {
+    margin-top: 18px; width: 100%; font: inherit; font-weight: 600; font-size: 16px;
+    padding: 14px; border: 0; border-radius: 12px; cursor: pointer;
+    background: var(--pumpkin); color: #fff;
+  }
+  .submit:disabled { opacity: .55; cursor: default; }
+  .msg { margin-top: 10px; font-size: 14px; min-height: 1.2em; }
+  .msg.err { color: var(--cranberry); }
+  .msg.ok { color: var(--sage); font-weight: 600; }
+
+  .mine { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); display: none; }
+  .mine h3 { margin: 0 0 8px; font-size: 14px; }
+
+  /* board */
+  .board { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .cat-card { padding: 16px; }
+  .cat-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .cat-head strong { font-family: Fraunces, Georgia, serif; font-size: 18px; font-weight: 600; }
+  .count { font-size: 13px; color: var(--bark-soft); white-space: nowrap; }
+  .bar { height: 6px; border-radius: 99px; background: #efe3d1; margin: 8px 0 4px; overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 99px; background: var(--pumpkin); transition: width .4s; }
+  .status { font-size: 12px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+  .status.need { color: var(--cranberry); }
+  .status.near { color: var(--pumpkin); }
+  .status.full { color: var(--sage); }
+  ul.dishes { list-style: none; padding: 0; margin: 10px 0 0; }
+  ul.dishes li {
+    display: flex; justify-content: space-between; gap: 8px; align-items: center;
+    padding: 6px 0; border-top: 1px solid var(--line); font-size: 14px;
+  }
+  ul.dishes li:first-child { border-top: 0; }
+  .who { color: var(--bark-soft); font-size: 12px; white-space: nowrap; }
+  .empty { font-size: 13px; color: var(--bark-soft); font-style: italic; margin-top: 10px; }
+  .x {
+    border: 0; background: none; color: var(--cranberry); cursor: pointer;
+    font-size: 16px; line-height: 1; padding: 2px 4px;
+  }
+
+  .waiting { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-size: 13px; padding: 5px 11px; border-radius: 99px; background: #fff; border: 1px solid var(--line); }
+  .pill.done { background: #e7efe0; border-color: #cfdcc3; color: #3f5531; }
+
+  footer { text-align: center; font-size: 13px; color: var(--bark-soft); margin-top: 40px; }
+  .admin-bar {
+    background: var(--bark); color: var(--cream); text-align: center; font-size: 13px; padding: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="admin-bar" id="adminBar" hidden>Admin mode: you can remove any dish</div>
+<header>
+  <div class="leaves" aria-hidden="true">🍂 🦃 🥧</div>
+  <h1>Thanksgiving Buffet</h1>
+  <div class="when"><span>Saturday 28 November</span><span>6.30pm</span></div>
+  <div class="countdown" id="countdown"></div>
+</header>
+
+<main class="wrap">
+  <h2>What are you bringing?</h2>
+  <p class="sub">Pick your name, a category, and your dish. Have a look below first to see what's already covered.</p>
+
+  <form class="card" id="form" autocomplete="off">
+    <label for="household">Who are you?</label>
+    <select id="household" required>
+      <option value="">Choose your name…</option>
+    </select>
+    <div class="hint" id="lastYear"></div>
+
+    <label>Category</label>
+    <div class="cats" id="catBtns"></div>
+
+    <label for="dish">Your dish</label>
+    <input type="text" id="dish" maxlength="60" placeholder="e.g. Sausage rolls" required>
+    <div class="warn" id="dupWarn"></div>
+
+    <button class="submit" id="submit" type="submit">Add my dish</button>
+    <div class="msg" id="msg" role="status"></div>
+
+    <div class="mine" id="mine">
+      <h3 id="mineTitle">You're bringing</h3>
+      <ul class="dishes" id="mineList"></ul>
+    </div>
+  </form>
+
+  <h2>What's coming</h2>
+  <p class="sub">Targets are rough guides, so go for whatever's still short.</p>
+  <div class="board" id="board"><div class="card">Loading…</div></div>
+
+  <h2>Still to hear from</h2>
+  <div class="card"><div class="waiting" id="waiting"></div></div>
+
+  <footer>Made with 🥧 on swannyspace</footer>
+</main>
+
+<script>
+const API = "/.netlify/functions/thanksgiving";
+
+const HOUSEHOLDS = [
+  "K & V", "Pauline/Fordy", "Chris", "Jane", "Laura", "Soph", "Katie/Josh", "Mayer",
+  "Budd", "Ken", "Meli", "Jarv", "Eggy", "Yvette/Darren", "Cameron/Lilly", "Elliot/Ellie",
+];
+
+const LAST_YEAR = {
+  "K & V": ["Chilli Con Carne", "Chicken Tenders", "Pumpkin Pie"],
+  "Pauline/Fordy": ["Veg Quiche", "Surprise Cheese", "Cheesecake"],
+  "Chris": ["Sausage Rolls", "Carrot Sticks", "Cucumber Sticks"],
+  "Jane": ["Crisps", "Humous"],
+  "Laura": ["Pizzas"],
+  "Soph": ["Cheese & Pineapple", "Brie"],
+  "Katie/Josh": ["Crisps", "Humous"],
+  "Mayer": ["Mini Pork Pies", "Mini Scotch Eggs"],
+  "Budd": ["Samosas", "Stilton"],
+  "Ken": ["French Sticks", "Crackers"],
+  "Meli": ["Sliced Ham", "Salad"],
+  "Jarv": ["Crisps", "Strong Cheddar"],
+  "Eggy": ["Olives", "Sliced Beef"],
+  "Yvette/Darren": ["Chocolates"],
+};
+
+// Rough guess at where last year's dishes belong, so a tapped chip lands in the right category
+const GUESS = [
+  [/sliced|ham|beef|turkey breast|salami|chorizo|pastrami|chicken slice|cold meat/i, "meats"],
+  [/sausage roll|pork pie|scotch egg|samosa|quiche|pasty|pastries|pastry|pigs|vol.au.vent/i, "savoury"],
+  [/pie|cake|chocolate|trifle|brownie|crumble|tart|pudding|dessert|cookie|sweet/i, "desserts"],
+  [/cracker|french stick|bread|baguette|oatcake|breadstick|focaccia|crusty/i, "bread"],
+  [/cheese|brie|stilton|cheddar|camembert|wensleydale|red leicester|gouda|halloumi|feta/i, "cheese"],
+  [/crisp|humous|hummus|dip|tortilla|nachos|olive/i, "crisps"],
+  [/salad|carrot|cucumber|veg|coleslaw|slaw/i, "veg"],
+  [/chilli|chile|curry|tender|pizza|turkey|lasagne|stew|wings/i, "mains"],
+];
+
+const CATEGORIES = [
+  { id: "mains",    name: "Hot food & mains",   target: 3 },
+  { id: "savoury",  name: "Savoury pastries",   target: 5 },
+  { id: "meats",    name: "Meat slices",        target: 2 },
+  { id: "cheese",   name: "Cheeses",            target: 5 },
+  { id: "bread",    name: "Crackers & bread",   target: 2 },
+  { id: "veg",      name: "Salads & veg",       target: 4 },
+  { id: "crisps",   name: "Crisps & dips",      target: 5 },
+  { id: "desserts", name: "Desserts",           target: 4 },
+];
+
+let entries = [];
+let selectedCat = "";
+const params = new URLSearchParams(location.search);
+
+// Storage can be unavailable (private mode etc.) — fail soft
+const store = {
+  get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+let tokens = store.get("tg26-tokens", {});
+let adminKey = params.get("admin") || (() => { try { return sessionStorage.getItem("tg26-admin"); } catch { return null; } })();
+if (params.get("admin")) {
+  try { sessionStorage.setItem("tg26-admin", adminKey); } catch {}
+  history.replaceState(null, "", location.pathname);
+}
+if (adminKey) document.getElementById("adminBar").hidden = false;
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const norm = (s) => s.toLowerCase().replace(/[^a-z]/g, "").replace(/s$/, "");
+
+// ---------- countdown ----------
+(function countdown() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const day = new Date(2026, 10, 28);
+  const days = Math.round((day - today) / 86400000);
+  $("countdown").textContent =
+    days > 1 ? `${days} days to go` : days === 1 ? "Tomorrow!" : days === 0 ? "Tonight!" : "Thanks for coming 🧡";
+})();
+
+// ---------- form setup ----------
+HOUSEHOLDS.forEach((h) => $("household").insertAdjacentHTML("beforeend", `<option>${esc(h)}</option>`));
+const savedHousehold = store.get("tg26-household", "");
+if (HOUSEHOLDS.includes(savedHousehold)) $("household").value = savedHousehold;
+
+function renderCatButtons() {
+  $("catBtns").innerHTML = CATEGORIES.map((c) => {
+    const n = entries.filter((e) => e.category === c.id).length;
+    const short = c.target ? Math.max(0, c.target - n) : 0;
+    return `<button type="button" class="cat-btn" data-cat="${c.id}" aria-pressed="${c.id === selectedCat}">
+      ${esc(c.name)}${short ? `<span class="need">need ${short}</span>` : ""}</button>`;
+  }).join("");
+}
+$("catBtns").addEventListener("click", (e) => {
+  const b = e.target.closest(".cat-btn"); if (!b) return;
+  selectedCat = b.dataset.cat; renderCatButtons();
+});
+
+function renderHouseholdBits() {
+  const h = $("household").value;
+  const ly = LAST_YEAR[h];
+  $("lastYear").innerHTML = !h ? "" : ly
+    ? `Last year you brought: <div class="chips">${ly.map((d) => `<button type="button" class="chip" data-dish="${esc(d)}">+ ${esc(d)}</button>`).join("")}</div>`
+    : "New this year, welcome! 🎉";
+
+  const mine = entries.filter((e) => e.household === h);
+  $("mine").style.display = mine.length ? "block" : "none";
+  $("mineTitle").textContent = `${h} ${h.includes("/") || h.includes("&") ? "are" : "is"} bringing`;
+  $("mineList").innerHTML = mine.map((e) => `<li><span>${esc(e.dish)}</span>
+    <span class="who">${esc(catName(e.category))}${canDelete(e) ? ` <button class="x" type="button" data-del="${e.id}" title="Remove">✕</button>` : ""}</span></li>`).join("");
+}
+$("household").addEventListener("change", () => { store.set("tg26-household", $("household").value); renderHouseholdBits(); });
+$("lastYear").addEventListener("click", (e) => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  $("dish").value = c.dataset.dish;
+  const g = GUESS.find(([re]) => re.test(c.dataset.dish));
+  if (g) { selectedCat = g[1]; renderCatButtons(); }
+  checkDup();
+});
+
+function checkDup() {
+  const v = norm($("dish").value);
+  const w = $("dupWarn");
+  if (v.length < 3) { w.style.display = "none"; return; }
+  const hits = entries.filter((e) => { const d = norm(e.dish); return d.includes(v) || v.includes(d); });
+  if (hits.length) {
+    w.innerHTML = `Heads up: ${hits.map((e) => `<strong>${esc(e.household)}</strong> ${e.household.includes("/") || e.household.includes("&") ? "are" : "is"} already bringing ${esc(e.dish)}`).join("; ")}. You can still add it!`;
+    w.style.display = "block";
+  } else w.style.display = "none";
+}
+$("dish").addEventListener("input", checkDup);
+
+$("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = $("msg"); msg.className = "msg"; msg.textContent = "";
+  const household = $("household").value, dish = $("dish").value.trim();
+  if (!household) return showErr("Choose your name first");
+  if (!selectedCat) return showErr("Pick a category");
+  if (dish.length < 2) return showErr("Tell us what you're bringing");
+  $("submit").disabled = true;
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ household, category: selectedCat, dish }) });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "Something went wrong");
+    tokens[data.entry.id] = data.token; store.set("tg26-tokens", tokens);
+    entries.push(data.entry);
+    $("dish").value = ""; $("dupWarn").style.display = "none";
+    msg.className = "msg ok"; msg.textContent = `Added ${data.entry.dish}. Thank you! 🧡`;
+    render();
+  } catch (err) { showErr(err.message); }
+  finally { $("submit").disabled = false; }
+});
+function showErr(t) { const m = $("msg"); m.className = "msg err"; m.textContent = t; }
+
+// ---------- delete ----------
+const canDelete = (e) => !!(adminKey || tokens[e.id]);
+document.addEventListener("click", async (ev) => {
+  const b = ev.target.closest("[data-del]"); if (!b) return;
+  const e = entries.find((x) => x.id === b.dataset.del); if (!e) return;
+  b.disabled = true;
+  const headers = {};
+  if (tokens[e.id]) headers["x-edit-token"] = tokens[e.id];
+  if (adminKey) headers["x-admin-key"] = adminKey;
+  try {
+    const r = await fetch(`${API}?id=${encodeURIComponent(e.id)}`, { method: "DELETE", headers });
+    if (!r.ok) throw new Error((await r.json()).error);
+    entries = entries.filter((x) => x.id !== e.id);
+    delete tokens[e.id]; store.set("tg26-tokens", tokens);
+    render();
+  } catch (err) { b.disabled = false; showErr(err.message || "Couldn't remove that"); }
+});
+
+// ---------- board ----------
+const catName = (id) => (CATEGORIES.find((c) => c.id === id) || {}).name || id;
+
+function renderBoard() {
+  $("board").innerHTML = CATEGORIES.map((c) => {
+    const list = entries.filter((e) => e.category === c.id);
+    const n = list.length;
+    let status = "", cls = "";
+    if (c.target) {
+      if (n >= c.target) { status = "Plenty"; cls = "full"; }
+      else if (n >= c.target - 1) { status = "Nearly there"; cls = "near"; }
+      else { status = `Need ${c.target - n} more`; cls = "need"; }
+    } else { status = n ? "Cheers!" : "Bring your favourite"; cls = n ? "full" : "near"; }
+    const pct = c.target ? Math.min(100, (n / c.target) * 100) : (n ? 100 : 0);
+    return `<div class="card cat-card">
+      <div class="cat-head"><strong>${esc(c.name)}</strong><span class="count">${c.target ? `${n} / ${c.target}` : n}</span></div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="status ${cls}">${status}</div>
+      ${n ? `<ul class="dishes">${list.map((e) => `<li><span>${esc(e.dish)}</span><span class="who">${esc(e.household)}${canDelete(e) ? ` <button class="x" type="button" data-del="${e.id}" title="Remove">✕</button>` : ""}</span></li>`).join("")}</ul>`
+         : `<div class="empty">Nothing yet</div>`}
+    </div>`;
+  }).join("");
+}
+
+function renderWaiting() {
+  const signed = new Set(entries.map((e) => e.household));
+  const todo = HOUSEHOLDS.filter((h) => !signed.has(h));
+  const done = HOUSEHOLDS.filter((h) => signed.has(h));
+  $("waiting").innerHTML =
+    todo.map((h) => `<span class="pill">${esc(h)}</span>`).join("") +
+    done.map((h) => `<span class="pill done">✓ ${esc(h)}</span>`).join("") ||
+    "Everyone's in!";
+}
+
+function render() { renderCatButtons(); renderBoard(); renderWaiting(); renderHouseholdBits(); }
+
+async function load() {
+  try {
+    const r = await fetch(API, { cache: "no-store" });
+    if (!r.ok) throw new Error();
+    entries = (await r.json()).entries || [];
+    render();
+  } catch {
+    $("board").innerHTML = `<div class="card">Couldn't load the list. Try refreshing.</div>`;
+    renderCatButtons(); renderHouseholdBits();
+  }
+}
+load();
+setInterval(() => { if (!document.hidden) load(); }, 30000);
+</script>
+</body>
+</html>
