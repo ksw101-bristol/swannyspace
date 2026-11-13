@@ -8,7 +8,7 @@ const HOUSEHOLDS = [
   "K & V", "Pauline/Fordy", "Chris", "Jane", "Laura", "Soph", "Katie/Josh", "Mayer",
   "Budd", "Ken", "Meli", "Jarv", "Eggy", "Yvette/Darren", "Cameron/Lilly", "Elliot/Ellie",
 ];
-const CATEGORIES = ["mains", "savoury", "meats", "cheese", "bread", "crisps", "veg", "desserts"];
+const CATEGORIES = ["mains", "savoury", "meats", "cheese", "bread", "crisps", "veg", "desserts", "other"];
 const MAX_PER_HOUSEHOLD = 8;
 
 const json = (data, status = 200) =>
