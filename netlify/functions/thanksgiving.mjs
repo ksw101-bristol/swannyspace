@@ -5,8 +5,8 @@
 import { getStore } from "@netlify/blobs";
 
 const HOUSEHOLDS = [
-  "K & V", "Pauline/Fordy", "Chris", "Jane", "Laura", "Soph", "Katie/Josh", "Mayer",
-  "Budd", "Ken", "Meli", "Jarv", "Eggy", "Yvette/Darren", "Cameron/Lilly", "Elliot/Ellie",
+  "K & V", "Pauline/Fordy", "Chris/Sam crew", "Jane", "Laura", "Soph", "Katie/Josh", "Mayer",
+  "Budd", "Ken", "Meli", "Jarv", "Eggy", "Yvette/Darren", "Cameron/Lilly", "Elliot/Ellie", "Susan",
 ];
 const CATEGORIES = ["mains", "savoury", "meats", "cheese", "bread", "crisps", "veg", "desserts", "other"];
 const MAX_PER_HOUSEHOLD = 8;
